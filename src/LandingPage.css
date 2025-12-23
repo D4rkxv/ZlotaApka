@@ -1,0 +1,333 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+:root{
+    font-family: Poppins;
+    --primary-10 : rgba(14, 165, 233, 0.1);
+    --primary : #0EA5E9;
+    --blueGradient: linear-gradient(90deg,rgba(34, 211, 238, 1) 0%, rgba(14, 165, 233, 1) 100%);
+    --background: #F0F9FF;
+    --textColor : #0F172A;
+    --textColor-50: rgba(15, 23, 42, 0.5);
+    --pureWhite: #fefefe
+}
+*{
+    scroll-behavior: smooth;
+}
+body{
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+a{
+    text-decoration: none;
+    color: var(--textColor);
+}
+.links > a > p{
+    font-size: 20px;
+}
+.heroContainer{
+    height: 100vh;
+}
+.navbar{
+    position: sticky;
+    top: 0;
+    color: var(--textColor);
+    z-index: 100;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    height: 80px;
+    background-color: var(--primary-10);
+    backdrop-filter: blur(8px);
+}
+.vitaLogo{
+    display: flex;
+    margin-left: 64px;
+    align-items: center;
+    font-size: 24px;
+}
+.vitaLogo>img{
+    width: 32px;
+    height: 32px;
+}
+.vitaLogo>p{
+    padding-left: 10px;
+}
+.links{
+    display: flex; 
+    width: 528px;
+    justify-content: space-evenly;
+}
+.loginButtons{
+    display: flex;
+    margin-right: 64px;
+}
+.loginBtn{
+    border: 0.5px solid var(--primary);
+    border-radius: 12px;
+    padding: 8px 20px;
+    font-size: 20px;
+    color: var(--primary);
+    background-color: transparent;
+}
+.registerBtn{
+    margin-left: 16px;
+    background: var(--blueGradient);
+    font-size: 20px;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 20px;
+    color: var(--background);
+    font-weight: 300;
+}
+.registerBtn{
+    margin-left: 16px;
+    background: var(--blueGradient);
+    font-size: 20px;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--background);
+    font-weight: 300;
+}
+.heroImg{
+    z-index: -1;
+    position: absolute;
+    margin-top: -215px;
+}
+.heroP{
+    position: relative;
+    z-index: 1;
+    border-radius: 12px;
+    margin-left: 64px;
+    margin-top: 136px;
+    background-color: var(--primary-10);
+    backdrop-filter: blur(8px);
+    width: 706px;
+    height: 392px;
+    padding-left: 24px;
+}
+.heroP>p{
+    margin-top: -40px;
+    font-size: 20px;
+}
+.heroLine1{
+    color: var(--textColor);
+    padding-top: 24px;
+}
+.heroLine2{
+    margin-top: -44px;
+    background: var(--blueGradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.heroP>h1{
+    font-size: 56px;
+    font-weight: 500;
+}
+.registerBtn2{
+    background: var(--blueGradient);
+    font-size: 20px;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--background);
+    font-weight: 300;
+    margin-top: 60px;
+}
+.statisticContainer{
+    margin-top: -100px;
+    width: 100vw;
+    height: 200px;
+}
+.statistic{
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 286px;
+    margin-top: 100px;
+}
+.stat{
+    width: 241px;
+    height: 121px;
+    background-color: var(--background);
+    border: 1px solid var(--primary-10);
+    border-radius: 12px;
+    align-items: center;
+    justify-items: center;
+}
+.textInside{
+    padding-top: 20px;
+}
+.textInside p{
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+.statTop{
+    color: var(--textColor);
+  font-size: 36px;
+  font-weight: 600;
+}
+.statBot{
+    color: var(--textColor);
+    font-size: 16px;
+}
+.backgroundContainer{
+    background-color: var(--background);
+    width: 100vw;
+    height: 100%;
+}
+.aboutUs{
+    display: flex;
+    padding-left: 64px;
+    padding-right: 64px;
+    padding-top: 90px;
+}
+.aboutLeft{
+    top: 0;
+    width: 733px;
+}
+.aboutLeft p{
+    margin: 0;
+}
+.aboutRight{
+    margin-left: 24px;
+    width: 884px;
+    height: 690px;
+}
+.aboutTop{
+    font-size: 48px;
+}
+.aboutBot{
+    padding-top: 64px;
+    font-size: 28px;
+    font-weight: 300;
+}
+.features{
+    margin-top: 234px;
+    margin-left: 64px;
+    margin-right: 64px;
+}
+.features>p{
+    font-size: 48px;
+}
+.cardContainer{
+    display: flex;
+    justify-content:space-evenly;
+    margin-top: 95px;
+}
+.card{
+    background-color: var(--pureWhite);
+    border: 1px solid var(--primary);
+    width: 450px;
+    height: 512px;
+    border-radius: 12px;
+}
+.cardContent{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 48px 38px;
+}
+.cardContent>img{
+    width: 128px;
+    height: 128px;
+}
+.cardTop{
+    font-size: 24px;
+}
+.cardBot{
+    font-size: 20px;
+    color: var(--textColor-50);
+}
+.howItWork{
+    margin: 250px 64px 0px 64px;
+}
+.howItWork>p{
+    margin: 0;
+    font-size: 48px;
+}
+.steps{
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--background);
+}
+.step{
+    width: 404px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+}
+.circle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+    font-size: 36px;
+    background-color: var(--primary-10);
+}
+.circleP{
+    margin-top: 40px;
+}
+.circleP p{
+    margin: 0;
+    padding: 0;
+}
+.circleTitle{
+    font-size: 36px;
+    color: var(--textColor);
+}
+.circleDesc{
+    font-size: 32px;
+    color: var(--textColor-50);
+}
+.step1{
+    top: 217px;
+    left: 64px;
+}
+.step2{
+    top: 255px;
+    left: 655px;
+}
+.step3{
+    top: 205px;
+    left: 1266px;
+}
+.line{
+    position: absolute;
+}
+.line1{
+    left: 334px;
+    top: 241px;
+}
+.line2{
+    left: 928px;
+    top: 276px;
+}
+.footer{
+    background-color: #E2F1FF;
+    display: flex;
+    justify-content: space-between;
+    padding: 38px 64px;
+}
+.footerLinks{
+    display: flex;
+    width: 558px;
+    justify-content: space-evenly;
+}
+.footerLinks > a > p{
+    font-size: 16px;
+}
+#about{
+    scroll-margin-top: 90px;
+}
+#features{
+    scroll-margin-top: 90px;
+}
+#howItWork{
+    scroll-margin-top: 90px;
+}
