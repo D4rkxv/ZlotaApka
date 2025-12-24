@@ -1,13 +1,14 @@
-import './App.css'
+import "./App.css";
 import LandingPage from "./LandingPage.jsx";
+import LoginPage from "./LoginPage.jsx";
+import RegisterPage from "./RegisterPage.jsx";
 
 function App() {
-
   return (
     <>
-        <LandingPage/>
+      <RegisterPage />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
