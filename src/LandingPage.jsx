@@ -7,7 +7,6 @@ import Cloud from "./assets/Cloud.png";
 import Trends from "./assets/Trends.png";
 import Line1 from "./assets/line1.svg";
 import Line2 from "./assets/line2.svg";
-
 import "./LandingPage.css";
 
 function LandingPage() {
@@ -16,20 +15,24 @@ function LandingPage() {
       <div className="navbar">
         <div className="vitaLogo">
           <img src={Logo} className="navbarLogo" draggable={false} />
-          <p className="navbarName">VitaTrack</p>
+          <p className="navbarName">
+            <a href="https://olx.pl" className="logoName">
+              VitaTrack
+            </a>
+          </p>
         </div>
         <div className="links">
-          <a href="#home">
-            <p>Home</p>
+          <a href="#home" className="landingLink">
+            <p className="underlineLandingLink">Home</p>
           </a>
-          <a href="#about">
-            <p>About</p>
+          <a href="#about" className="landingLink">
+            <p className="underlineLandingLink">About</p>
           </a>
-          <a href="#features">
-            <p>Features</p>
+          <a href="#features" className="landingLink">
+            <p className="underlineLandingLink">Features</p>
           </a>
-          <a href="#howItWork">
-            <p>How it works</p>
+          <a href="#howItWork" className="landingLink">
+            <p className="underlineLandingLink">How it works</p>
           </a>
         </div>
         <div className="loginButtons">
@@ -43,7 +46,7 @@ function LandingPage() {
           <h1 className="heroLine1">Track your health.</h1>
           <h1 className="heroLine2">Transform your habits.</h1>
           <p>
-            VitaTrack helps you log workouts, calories, water and weight in{" "}
+            VitaTrack helps you log workouts, calories, water and weight in
             <br /> one simple dashboard, so you can see real progress every day.
           </p>
           <button className="registerBtn2">Start tracking now</button>
@@ -172,20 +175,20 @@ function LandingPage() {
         <div className="footer">
           <p>© 2025 VitaTrack. All rights reserved.</p>
           <div className="footerLinks">
-            <a href="#home">
-              <p>Home</p>
+            <a href="#home" className="link">
+              <p className="underlineLink">Home</p>
             </a>
-            <a href="#about">
-              <p>About</p>
+            <a href="#about" className="link">
+              <p className="underlineLink">About</p>
             </a>
-            <a href="#features">
-              <p>Features</p>
+            <a href="#features" className="link">
+              <p className="underlineLink">Features</p>
             </a>
-            <a href="#howItWork">
-              <p>How it works</p>
+            <a href="#howItWork" className="link">
+              <p className="underlineLink">How it works</p>
             </a>
-            <a href="https://www.otomoto.pl/osobowe/polonez">
-              <p>PrivacyPolicy</p>
+            <a href="https://www.otomoto.pl/osobowe/polonez" className="link">
+              <p className="underlineLink">PrivacyPolicy</p>
             </a>
           </div>
         </div>

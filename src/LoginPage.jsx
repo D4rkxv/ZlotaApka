@@ -11,33 +11,46 @@ function LoginPage() {
       <div className="leftContainer">
         <div className="vitaLogo">
           <img src={Logo} className="navbarLogo" draggable={false} />
-          <p className="navbarName">VitaTrack</p>
+          <p className="navbarName">
+            <a href="https://olx.pl" className="logoName">
+              VitaTrack
+            </a>
+          </p>
         </div>
         <div className="loginForm">
           <p>Welcome Back</p>
           <p>Enter your email and password to continue</p>
-          <div className="inputForm">
-            <div className="login">
-              <label htmlFor="loginInput">Login</label>
-              <input type="text" name="loginInput" id="loginInput" />
+          <form className="inputForm">
+            <div className="inputGroup">
+              <input type="text" name="loginInput" id="loginInput" required />
+              <label>Login</label>
             </div>
-            <div className="password">
-              <label htmlFor="passwordInput">Password</label>
-              <input type="password" name="passwordInput" id="passwordInput" />
-            </div>
-          </div>
-          <div className="underLogin">
-            <div className="rememberMeContainer">
+            <div className="inputGroup">
               <input
-                type="checkbox"
-                name="rememberCheckbox"
-                id="rememberCheckbox"
+                type="password"
+                name="passwordInput"
+                id="passwordInput"
+                required
               />
-              <label htmlFor="rememberCheckbox">Remember me?</label>
+              <label>Password</label>
             </div>
-            <p>Forgot Your Password?</p>
-          </div>
-          <button className="logInBtn">Log In</button>
+            <div className="underLogin">
+              <div className="rememberMeContainer">
+                <input
+                  type="checkbox"
+                  name="rememberCheckbox"
+                  id="rememberCheckbox"
+                />
+                <label>Remember me?</label>
+              </div>
+              <a href="https://olx.pl" className="link">
+                <p className="underlineLink">Forgot Your Password?</p>
+              </a>
+            </div>
+            <button type="submit" className="logInBtn">
+              Log In
+            </button>
+          </form>
           <div className="anotherOptions">
             <p>Or Login With</p>
           </div>
@@ -53,13 +66,15 @@ function LoginPage() {
           </div>
           <div className="underButton">
             <p>Don’t Have Account?</p>
-            <p>Register Now</p>
+            <a href="https://olx.pl" className="link">
+              <p className="underlineLink">Register Now</p>
+            </a>
           </div>
         </div>
         <div className="loginFooter">
           <p>© 2025 VitaTrack. All rights reserved.</p>
-          <a href="https://www.otomoto.pl/osobowe/polonez">
-            <p>PrivacyPolicy</p>
+          <a href="https://www.otomoto.pl/osobowe/polonez" className="link">
+            <p className="underlineLink">PrivacyPolicy</p>
           </a>
         </div>
       </div>

@@ -16,29 +16,36 @@ function RegisterPage() {
           <p>Create an Account</p>
           <p>Join now to change your life forever</p>
           <div className="inputForm">
-            <div className="name">
-              <label htmlFor="nameInput">Name</label>
-              <input type="text" name="nameInput" id="nameInput" />
+            <div className="inputGroup">
+              <input type="text" name="nameInput" id="nameInput" required />
+              <label>Name</label>
             </div>
-            <div className="login">
-              <label htmlFor="loginInput">Login</label>
-              <input type="text" name="loginInput" id="loginInput" />
+            <div className="inputGroup">
+              <input type="text" name="loginInput" id="loginInput" required />
+              <label>Login</label>
             </div>
-            <div className="password">
-              <label htmlFor="passwordInput">Password</label>
-              <input type="password" name="passwordInput" id="passwordInput" />
+            <div className="inputGroup">
+              <input
+                type="password"
+                name="passwordInput"
+                id="passwordInput"
+                required
+              />
+              <label>Password</label>
             </div>
-            <div className="repPassword">
-              <label htmlFor="repPasswordInput">Confirm Password</label>
+            <div className="inputGroup">
               <input
                 type="password"
                 name="repPasswordInput"
                 id="repPasswordInput"
+                required
               />
+              <label>Confirm Password</label>
             </div>
           </div>
-
-          <button className="logInBtn">Sign Up</button>
+          <button type="submit" className="logInBtn">
+            Sign Up
+          </button>
           <div className="anotherOptions">
             <p>Or Login With</p>
           </div>
@@ -54,13 +61,15 @@ function RegisterPage() {
           </div>
           <div className="underButton">
             <p>Already Have Account?</p>
-            <p>Login Now</p>
+            <a href="https://olx.pl" className="link">
+              <p className="underlineLink">Login Now</p>
+            </a>
           </div>
         </div>
         <div className="loginFooter">
           <p>© 2025 VitaTrack. All rights reserved.</p>
-          <a href="https://www.otomoto.pl/osobowe/polonez">
-            <p>PrivacyPolicy</p>
+          <a href="https://www.otomoto.pl/osobowe/polonez" className="link">
+            <p className="underlineLink">PrivacyPolicy</p>
           </a>
         </div>
       </div>
