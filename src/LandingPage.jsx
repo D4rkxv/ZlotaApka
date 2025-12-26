@@ -8,17 +8,18 @@ import Trends from "./assets/Trends.png";
 import Line1 from "./assets/line1.svg";
 import Line2 from "./assets/line2.svg";
 import "./LandingPage.css";
+import { useAuthLayout } from "./AuthContext";
 
 function LandingPage() {
+  const { goToLogin, goToRegister } = useAuthLayout();
+  console.log(goToRegister);
   return (
     <>
       <div className="navbar">
         <div className="vitaLogo">
           <img src={Logo} className="navbarLogo" draggable={false} />
           <p className="navbarName">
-            <a href="https://olx.pl" className="logoName">
-              VitaTrack
-            </a>
+            <a className="logoName">VitaTrack</a>
           </p>
         </div>
         <div className="links">
@@ -36,8 +37,12 @@ function LandingPage() {
           </a>
         </div>
         <div className="loginButtons">
-          <button className="loginBtn">Login</button>
-          <button className="registerBtn">Get Started</button>
+          <button className="loginBtn" onClick={goToLogin}>
+            Login
+          </button>
+          <button className="registerBtn" onClick={goToRegister}>
+            Get Started
+          </button>
         </div>
       </div>
       <div className="heroContainer">
@@ -49,7 +54,9 @@ function LandingPage() {
             VitaTrack helps you log workouts, calories, water and weight in
             <br /> one simple dashboard, so you can see real progress every day.
           </p>
-          <button className="registerBtn2">Start tracking now</button>
+          <button className="registerBtn2" onClick={goToRegister}>
+            Start tracking now
+          </button>
         </div>
       </div>
       <div className="statisticContainer">

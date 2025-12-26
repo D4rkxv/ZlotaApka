@@ -4,13 +4,20 @@ import Logo from "./assets/Ellipse4.png";
 import Google from "./assets/Google.svg";
 import "./LoginPage.css";
 
+import { useAuthLayout } from "./AuthContext";
+
 function RegisterPage() {
+  const { goToLanding, goToLogin } = useAuthLayout();
   return (
     <div className="formContainer">
       <div className="leftContainer">
         <div className="vitaLogo">
           <img src={Logo} className="navbarLogo" draggable={false} />
-          <p className="navbarName">VitaTrack</p>
+          <p className="navbarName">
+            <a className="logoName" onClick={goToLanding}>
+              VitaTrack
+            </a>
+          </p>
         </div>
         <div className="loginForm">
           <p>Create an Account</p>
@@ -61,8 +68,10 @@ function RegisterPage() {
           </div>
           <div className="underButton">
             <p>Already Have Account?</p>
-            <a href="https://olx.pl" className="link">
-              <p className="underlineLink">Login Now</p>
+            <a className="link">
+              <p className="underlineLink" onClick={goToLogin}>
+                Login Now
+              </p>
             </a>
           </div>
         </div>
