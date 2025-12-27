@@ -1,0 +1,122 @@
+:root {
+  font-family: Poppins;
+  --primary-10: rgba(14, 165, 233, 0.1);
+  --primary: #0ea5e9;
+  --blueGradient: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 1) 0%,
+    rgba(14, 165, 233, 1) 100%
+  );
+  --background: #f0f9ff;
+  --textColor: #0f172a;
+  --textColor-50: rgba(15, 23, 42, 0.5);
+  --pureWhite: #fefefe;
+}
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background-color: var(--background);
+}
+.widgetContainer {
+  display: flex;
+  flex-direction: column;
+}
+.dashboardContainer {
+  display: flex;
+}
+.siteTitle {
+  margin-top: 28px;
+  margin-left: 24px;
+  font-size: 28px;
+}
+.onTarget {
+  margin-top: 16px;
+  text-align: center;
+}
+.data {
+  position: relative;
+  z-index: 2;
+}
+.lineTarget {
+  position: absolute;
+  top: 40%;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed #d1d5db;
+  z-index: 1;
+}
+.barContainer {
+  width: 100%;
+  height: 180px;
+  position: relative;
+}
+.caloriesWidgetBar {
+  border: 1px solid var(--primary-10);
+  width: 485px;
+  height: 320px;
+  background-color: #fefefe;
+  border-radius: 16px;
+  padding: 12px 32px;
+  margin-left: 24px;
+  box-sizing: border-box;
+}
+.caloriesTitle {
+  font-size: 16px;
+}
+.progressWrapper {
+  margin-top: 12px;
+  width: 100%;
+}
+.progressTrack {
+  width: 100%;
+  height: 10px;
+  background-color: var(--textColor);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progressFill {
+  height: 100%;
+  width: 50%;
+  background: var(--blueGradient);
+  border-radius: 999px;
+  transition: width 0.25s ease-out;
+}
+.smallWidget {
+  width: 300px;
+  margin-left: 24px;
+  height: 100px;
+  padding: 12px 20px;
+  border: 1px solid var(--primary-10);
+  border-radius: 12px;
+}
+.smallWidget:nth-child(2) {
+  margin-left: 32px;
+}
+.smallWidget p {
+  margin: 0;
+  padding: 0;
+  margin-top: 4px;
+}
+.smallWidgetTitle {
+  font-size: 16px;
+}
+.smalWidgetDesc {
+  font-size: 20px;
+}
+.descLine {
+  display: flex;
+}
+.descLine img {
+  margin-left: 12px;
+}
+.smallWidgetGrayDesc {
+  color: var(--textColor-50);
+  font-size: 14px;
+}
+.topWidgets {
+  display: flex;
+}
+.midWidgets {
+  display: flex;
+  margin-top: 72px;
+}

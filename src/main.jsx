@@ -7,11 +7,13 @@ import App from "./App.jsx";
 import LandingPage from "./LandingPage.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./AuthContext.jsx";
+import { Dashboard } from "./Dashboard.jsx";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
+    {/* <AuthProvider>
       <App />
-    </AuthProvider>
+    </AuthProvider> */}
+    <Dashboard />
   </React.StrictMode>
 );
