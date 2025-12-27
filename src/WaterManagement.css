@@ -106,22 +106,27 @@
     padding: 12px;
     border: var(--primary-10) 1px solid;
     border-radius: 12px;
-    margin-bottom: 72px;
+    margin-bottom: 60px;
+}
+.barChartContainer{
+    height: 260px;
 }
 
 .usefulTipsContainer{
+    width: 60%;
     padding: 12px 32px;
     border: var(--primary-10) 1px solid;
     border-radius: 12px;
 }
 
 .waterLogContainer{
-    padding: 12px 270px 12px 32px;
+    width: 40%;
+    padding: 12px 20px;
     border: var(--primary-10) 1px solid;
     border-radius: 12px;
 }
 .waterLog{
-    margin-top: 44px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     gap: 1px;

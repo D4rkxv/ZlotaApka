@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DonutChart from './DonutChart';
 import './WaterManagement.css';
 import Edit from './assets/Edit.svg';
 import WaterGlass from './assets/WaterGlass.svg';
+import { Bar } from 'react-chartjs-2';
 
 
 const WaterManagement = () => {
@@ -34,21 +35,64 @@ const WaterManagement = () => {
   "Drink a small glass of water before and after exercise.",
   "Make drinking water a part of your mindfulness routine."
 ]);
+    const [selectedTips, setSelectedTips] = useState([]);
+    const data = {
+        labels: [
+        '20 Dec', '21 Dec', '22 Dec', '23 Dec', '24 Dec', '25 Dec',
+        '26 Dec', '27 Dec', '28 Dec', '29 Dec', '30 Dec', '31 Dec'
+        ],
+        datasets: [
+        {
+            data: [2300, 2900, 3700, 3000, 2100, 3450, 2600, 3500, 1950, 3300, 2850, 2500],
+            backgroundColor: '#1DA1F2',
+            borderRadius: 8, 
+            barThickness: 18, 
+        },
+        ],
+    };
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+        legend: {
+            display: false,   
+        },
+        tooltip: {
+            enabled: true,
+        },
+        },
+        scales: {
+        x: {
+            grid: {
+            display: false,  
+            },
+        },
+        y: {
+            min: 1000,
+            max: 4000,
+            ticks: {
+            stepSize: 500,
+            },
+            grid: {
+            display: false,  
+            },
+        },
+        },
+    };
 
     const handleHydrationChange = (amount) => {
         setCurrentHydration(prev => Math.max(0, prev + amount));
     };
 
-    const renderTips = () => {
-        let selectedTips = [];
+    useEffect(() =>{
+        setSelectedTips([]);
         for(let i = 0; i < 5; i++) {
             const randomIndex = Math.floor(Math.random() * tips.length);
             if(!selectedTips.includes(tips[randomIndex])) {
-                selectedTips.push(tips[randomIndex]);
+                setSelectedTips(prev => [...prev, tips[randomIndex]]);
             }
         }
-        return selectedTips.map((tip, index) => <li key={index} className="tip">{tip}</li>);
-    }
+    }, []);
 
     return (
         <div className="waterManagementContainer">
@@ -84,16 +128,14 @@ const WaterManagement = () => {
                     <div className="rightSide">
                         <div className="intakeTrendsContainer">
                             <p className="sectionTitle">Intake trends</p>
-
+                            <div className="barChartContainer">
+                                <Bar data={data} options={options} />
+                            </div>
                         </div>
                         <div className="divider">
                             <div className="waterLogContainer">
                                 <p className="sectionTitle">Water log</p>
                                 <div className="waterLog">
-                                    <div className="logEntry">
-                                        <img src={WaterGlass} alt="Glass of water" />
-                                        <p>8:20 - 300ml</p>
-                                    </div>
                                     <div className="logEntry">
                                         <img src={WaterGlass} alt="Glass of water" />
                                         <p>8:20 - 300ml</p>
@@ -120,7 +162,9 @@ const WaterManagement = () => {
                             <div className="usefulTipsContainer">
                                 <p className="sectionTitle">Useful tips</p>
                                 <ul>
-                                    {renderTips()}
+                                    {selectedTips.map((tip, index) => (
+                                        <li key={index}>{tip}</li>
+                                    ))}
                                 </ul>
                             </div>
                         </div>
