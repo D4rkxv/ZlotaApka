@@ -32,7 +32,7 @@
 .donutChart::before {
   content: "";
   position: absolute;
-  inset: 50px;
+  inset: 20%;
   background: var(--pureWhite);
   border-radius: 50%;
 }
