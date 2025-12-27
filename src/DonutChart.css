@@ -17,16 +17,14 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background:
-    conic-gradient(
+  background: conic-gradient(
       var(--primary) 0deg var(--percent),
       transparent var(--percent) 360deg
     ),
     repeating-conic-gradient(
       var(--primary) 0deg 0.8deg,
       transparent 0.8deg 3.2deg
-    )
-
+    );
 }
 
 .donutChart::before {
