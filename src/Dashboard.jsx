@@ -189,7 +189,7 @@ export function Dashboard() {
                 <Bar
                   data={caloriesData}
                   options={caloriesOptions}
-                  width={421}
+                  width={450}
                   height={180}
                 />
               </div>
@@ -234,7 +234,7 @@ export function Dashboard() {
                 <Bar
                   data={sleepData}
                   options={sleepOptions}
-                  width={421}
+                  width={450}
                   height={180}
                 />
               </div>

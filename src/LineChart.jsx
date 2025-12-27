@@ -50,11 +50,11 @@ function LineChart({ title, values, min, max }) {
   };
 
   return (
-    <div className="caloriesWidgetBar">
+    <div className="botWidgetBar">
       <p className="caloriesTitle">{title}</p>
       <div className="barContainer">
         <div className="data">
-          <Line data={data} options={options} width={421} height={180} />
+          <Line data={data} options={options} width={450} height={180} />
         </div>
       </div>
       <p className="waterTarget">+0.6Kg last Week</p>

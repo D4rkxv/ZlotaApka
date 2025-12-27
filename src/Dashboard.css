@@ -13,11 +13,12 @@
   --pureWhite: #fefefe;
 }
 .sidebar {
-  width: 260px;
+  width: 240px;
   height: 100vh;
   background-color: var(--background);
 }
 .widgetContainer {
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -43,22 +44,12 @@
   left: 0;
   right: 0;
   border-top: 1px dashed #d1d5db;
-  z-index: 1;
+  z-index: 1000;
 }
 .barContainer {
   width: 100%;
   height: 180px;
   position: relative;
-}
-.caloriesWidgetBar {
-  border: 1px solid var(--primary-10);
-  width: 485px;
-  height: 320px;
-  background-color: #fefefe;
-  border-radius: 16px;
-  padding: 12px 32px;
-  margin-left: 24px;
-  box-sizing: border-box;
 }
 .caloriesTitle {
   font-size: 16px;
@@ -115,20 +106,23 @@
 }
 .topWidgets {
   display: flex;
+  width: 100%;
 }
-.midWidgets {
+.midWidgets:not(:first-child) {
+  width: 100%;
   display: flex;
-  margin-top: 36px;
+  margin-top: 32px;
 }
 .botWidgets {
+  width: 100%;
   display: flex;
-  margin-top: 36px;
+  margin-top: 32px;
 }
 .dailyChallenges {
   border: 1px solid var(--primary-10);
   border-radius: 12px;
   margin-left: 36px;
-  width: 200px;
+  width: 255px;
   height: 320px;
   display: flex;
   flex-direction: column;
@@ -194,7 +188,7 @@ form {
 .smallWaterContainer {
   padding: 0px 32px;
   border-radius: 12px;
-  width: 258px;
+  width: 255px;
   display: flex;
   flex-direction: column;
   margin-left: 36px;
@@ -207,4 +201,30 @@ form {
 .waterTarget {
   font-size: 20px;
   text-align: center;
+}
+.botWidgetBar {
+  padding: 12px 32px;
+  height: 302px;
+  border-radius: 12px;
+  border: 1px solid var(--primary-10);
+}
+.botWidgetBar:first-of-type {
+  margin-left: 24px;
+}
+.botWidgetBar:last-of-type {
+  margin-left: 36px;
+}
+.caloriesWidgetBar {
+  border: 1px solid var(--primary-10);
+  height: 320px;
+  background-color: #fefefe;
+  border-radius: 12px;
+  padding: 12px 32px;
+  box-sizing: border-box;
+}
+.caloriesWidgetBar:first-of-type {
+  margin-left: 24px;
+}
+.caloriesWidgetBar:last-of-type {
+  margin-left: 36px;
 }
