@@ -1,0 +1,48 @@
+:root {
+  font-family: Poppins;
+  --primary-10: rgba(14, 165, 233, 0.1);
+  --primary: #0ea5e9;
+  --blueGradient: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 1) 0%,
+    rgba(14, 165, 233, 1) 100%
+  );
+  --background: #f0f9ff;
+  --textColor: #0f172a;
+  --textColor-50: rgba(15, 23, 42, 0.5);
+  --pureWhite: #fefefe;
+}
+.donutChart {
+  position: relative;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    conic-gradient(
+      var(--primary) 0deg var(--percent),
+      transparent var(--percent) 360deg
+    ),
+    repeating-conic-gradient(
+      var(--primary) 0deg 0.8deg,
+      transparent 0.8deg 3.2deg
+    )
+
+}
+
+.donutChart::before {
+  content: "";
+  position: absolute;
+  inset: 50px;
+  background: var(--pureWhite);
+  border-radius: 50%;
+}
+
+.donutHole {
+  position: relative;
+  text-align: center;
+}
+
+.percent {
+  font-size: 28px;
+  color: var(--textColor);
+}

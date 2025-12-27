@@ -1,0 +1,85 @@
+:root {
+  font-family: Poppins;
+  --primary-10: rgba(14, 165, 233, 0.1);
+  --primary: #0ea5e9;
+  --blueGradient: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 1) 0%,
+    rgba(14, 165, 233, 1) 100%
+  );
+  --background: #f0f9ff;
+  --textColor: #0f172a;
+  --textColor-50: rgba(15, 23, 42, 0.5);
+  --pureWhite: #fefefe;
+}
+.waterManagementContainer {
+    display: flex;
+}
+.waterManagementContainer .widgetContainer {
+    padding: 24px 28px;
+}
+.waterManagementContainer .siteTitle{
+    margin-left: 0;
+    font-size: 28px;
+}
+.hydrationTrackerContainer{
+    padding: 12px 32px;
+    border: var(--primary-10) 1px solid;
+    border-radius: 12px;
+}
+.sectionTitle{
+    font-size: 16px;
+    color: var(--textColor);
+}
+.centeredContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.donutChartContainer{
+    margin: 48px 20px 18px 20px;
+}
+.completion{
+    color: var(--textColor);
+    font-size: 24px;
+    margin-bottom: 50px;
+}
+.buttonsContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    margin-bottom: 20px;
+}
+.wideBtn{
+    margin: 0 12px;
+    font-size: 16px;
+    padding: 6px 32px;
+    border-radius: 24px;
+}
+.boxBtn{
+    margin: 0 9px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding: 6px;
+    border-radius: 12px;
+}
+.transparentBtn{
+    background-color: transparent;
+    border: var(--primary) 1px solid;
+    color: var(--primary);
+}
+.coloredBtn{
+    background-color: var(--primary);
+    border: var(--primary) 1px solid;
+    color: var(--pureWhite);
+}
+
+.hydrationSummaryContainer{
+    padding: 12px 32px;
+    border: var(--primary-10) 1px solid;
+    border-radius: 12px;
+    margin-top: 36px;
+}

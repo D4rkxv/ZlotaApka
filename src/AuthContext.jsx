@@ -4,7 +4,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [currentPage, setCurrentPage] = useState("landing");
-  const swtichPage = (page) => {
+  const switchPage = (page) => {
     setCurrentPage(page);
   };
   const goToLanding = () => setCurrentPage("landing");
@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         currentPage,
-        swtichPage,
+        swtichPage: switchPage,
         goToLanding,
         goToLogin,
         goToRegister,
