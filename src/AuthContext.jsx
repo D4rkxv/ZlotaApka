@@ -1,9 +1,24 @@
 import React, { useState, useContext, createContext } from "react";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [currentPage, setCurrentPage] = useState("landing");
+  const [user, setUser] = useState({
+    name: "jan kowalski",
+    email: "jankowalski@gmail.com",
+  }); //delete if u want start on landing page!
+  const [currentPage, setCurrentPage] = useState("loading");
+  const isAuthenticated = !!user;
+
+  const login = (userData) => {
+    setUser(userData);
+  };
+
+  const logout = () => {
+    setUser(null);
+    setCurrentPage("landing");
+    localStorage.removeItem("token");
+  };
   const switchPage = (page) => {
     setCurrentPage(page);
   };
@@ -11,19 +26,19 @@ export const AuthProvider = ({ children }) => {
   const goToLogin = () => setCurrentPage("login");
   const goToRegister = () => setCurrentPage("register");
 
-  const logout = () => {
-    setCurrentPage("landing");
-  };
-
   return (
     <AuthContext.Provider
       value={{
         currentPage,
-        swtichPage: switchPage,
+        setCurrentPage,
+        switchPage: switchPage,
         goToLanding,
         goToLogin,
         goToRegister,
         logout,
+        login,
+        user,
+        isAuthenticated,
       }}
     >
       {children}

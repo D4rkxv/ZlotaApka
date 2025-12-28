@@ -13,7 +13,7 @@ import profilePic from "./assets/testprofile.png";
 import { useDashboard } from "./DashboardContext.jsx";
 import profile from "./assets/profile.svg";
 import settings from "./assets/settings.svg";
-import logout from "./assets/logout.svg";
+import logoutImg from "./assets/logout.svg";
 import { useAuthLayout } from "./AuthContext.jsx";
 
 function Sidebar() {
@@ -27,7 +27,7 @@ function Sidebar() {
     goToProfile,
     selectedWidget,
   } = useDashboard();
-  const { logout } = useAuthLayout();
+  const { logout, isAuthenticated } = useAuthLayout();
   const handleProfileClick = () => {
     console.log(goToProfile);
     goToProfile();
@@ -37,8 +37,8 @@ function Sidebar() {
     setOpen(!open);
   };
   const handleLogoutClick = () => {
-    console.log(logout);
     logout();
+    setOpen(false);
   };
   return (
     <div className="sidebar">
@@ -158,7 +158,7 @@ function Sidebar() {
                 handleLogoutClick();
               }}
             >
-              <img src={logout} />
+              <img src={logoutImg} />
               <p>Logout</p>
             </div>
           </div>

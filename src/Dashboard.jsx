@@ -235,7 +235,7 @@ export function Dashboard() {
             </form>
           </div>
           <div className="caloriesWidgetBar">
-            <p className="caloriesTitle">Calories vs Goal</p>
+            <p className="caloriesTitle">Sleep This Week</p>
             <div className="barContainer">
               <div className="lineTarget" />
               <div className="data">
@@ -266,7 +266,9 @@ export function Dashboard() {
                 size={190}
               />
             </div>
-            <p className="waterTarget">1.7L / 3.0L</p>
+            <p className="waterTarget">
+              {currentHydration.toFixed(1)} / {hydrationGoal.toFixed(1)} L
+            </p>
           </div>
           <LineChart
             title="Activity Minutes"
