@@ -19,15 +19,10 @@
   flex-direction: column;
 }
 .dashboardContainer {
-  display: flex;
   overflow-y: hidden;
   overflow-x: hidden;
 }
-.siteTitle {
-  margin-top: 28px;
-  margin-left: 24px;
-  font-size: 28px;
-}
+
 .onTarget {
   margin-top: 16px;
   text-align: center;

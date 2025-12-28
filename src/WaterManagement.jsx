@@ -116,7 +116,7 @@ const WaterManagement = () => {
   }, []);
 
   return (
-    <div className="waterManagementContainer">
+    <div className="waterManagementContainer siteContainer">
       <Sidebar />
       <div className="widgetContainer">
         <p className="siteTitle">Water Management</p>

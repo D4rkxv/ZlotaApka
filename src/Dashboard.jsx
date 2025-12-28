@@ -141,7 +141,7 @@ export function Dashboard() {
     },
   };
   return (
-    <div className="dashboardContainer">
+    <div className="dashboardContainer siteContainer">
       <Sidebar />
       <div className="widgetContainer">
         <p className="siteTitle">Dashboard</p>
