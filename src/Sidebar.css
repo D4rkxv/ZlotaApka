@@ -1,0 +1,230 @@
+:root {
+  font-family: Poppins;
+  --primary-10: rgba(14, 165, 233, 0.1);
+  --primary: #0ea5e9;
+  --blueGradient: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 1) 0%,
+    rgba(14, 165, 233, 1) 100%
+  );
+  --background: #f0f9ff;
+  --textColor: #0f172a;
+  --textColor-50: rgba(15, 23, 42, 0.5);
+  --pureWhite: #fefefe;
+}
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background-color: var(--background);
+}
+.vitaLogoDashboard {
+  margin: 0;
+  color: var(--textColor);
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  margin-left: 18px;
+}
+.vitaLogoDashboard img {
+  height: 32px;
+  width: 32px;
+  margin-right: 8px;
+}
+.dashboardSearch {
+  margin-left: 18px;
+  margin-top: 24px;
+  font-size: 14px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--textColor);
+  color: var(--textColor);
+}
+.linksContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+  margin-left: 18px;
+}
+.midSidebarSection {
+  margin-top: 40px;
+}
+.botSidebarSection {
+  margin-top: 290px;
+}
+.dashboardSidebarContainer,
+.waterSidebarContainer,
+.foodSidebarContainer,
+.workoutSidebarContainer,
+.sleepSidebarContainer {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  margin-right: 28px;
+  border-radius: 4px;
+  margin-top: 32px;
+}
+.dashboardSidebarContainer.selected,
+.waterSidebarContainer.selected,
+.foodSidebarContainer.selected,
+.workoutSidebarContainer.selected,
+.sleepSidebarContainer.selected {
+  background-color: var(--pureWhite);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all 0.2s ease;
+}
+.dashboardSidebarContainer p,
+.waterSidebarContainer p,
+.foodSidebarContainer p,
+.workoutSidebarContainer p,
+.sleepSidebarContainer p {
+  color: var(--textColor);
+  padding-left: 12px;
+}
+
+.waterSidebarContainer:hover,
+.dashboardSidebarContainer:hover,
+.foodSidebarContainer:hover,
+.workoutSidebarContainer:hover,
+.sleepSidebarContainer:hover,
+.helpSidebarContainer:hover {
+  background: rgba(178, 190, 241, 0.1);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.helpSidebarContainer {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  margin-left: 18px;
+  padding-left: 8px;
+  margin-right: 28px;
+  border-radius: 4px;
+}
+.helpSidebarContainer p {
+  color: var(--textColor);
+  padding-left: 12px;
+  margin-right: 28px;
+}
+.acountContainer {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  background-color: var(--pureWhite);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-left: 18px;
+}
+.leftAccountSide {
+  height: 40px;
+  width: 40px;
+  border-radius: 4px;
+}
+.middleAccountSide {
+  margin-left: 8px;
+  display: flex;
+  flex-direction: column;
+}
+.middleAccountSide p {
+  margin: 0;
+  padding: 0;
+}
+.sidebarName {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--textColor);
+}
+.sidebarEmail {
+  font-size: 10px;
+  color: var(--textColor-50);
+}
+/* .accountWrapper {
+  position: relative;
+  width: 100%;
+}
+.acountContainer {
+  cursor: pointer;
+}
+.accountDropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  transform: translateY(16px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.22s ease-out;
+
+  background: var(--primary);
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+}
+.accountDropdown.open {
+  transform: translateY(-300px);
+  opacity: 1;
+  pointer-events: auto;
+}
+.accountItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+} */
+.accountCard {
+  background-color: #f5f9ff;
+  border-radius: 16px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  position: relative;
+}
+.accountCard.open {
+  transform: translateY(-210px);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+  padding-bottom: 20px;
+}
+.accountHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.accountMenu {
+  margin-top: 12px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.accountCard.open .accountMenu {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 16px;
+}
+.accountItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+}
+.accountItem:hover {
+  background: rgba(255, 255, 255, 0.8);
+}

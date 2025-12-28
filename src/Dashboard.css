@@ -12,11 +12,7 @@
   --textColor-50: rgba(15, 23, 42, 0.5);
   --pureWhite: #fefefe;
 }
-.sidebar {
-  width: 240px;
-  height: 100vh;
-  background-color: var(--background);
-}
+
 .widgetContainer {
   height: 100%;
   display: flex;
@@ -24,6 +20,8 @@
 }
 .dashboardContainer {
   display: flex;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 .siteTitle {
   margin-top: 28px;
@@ -73,6 +71,7 @@
   transition: width 0.25s ease-out;
 }
 .smallWidget {
+  cursor: pointer;
   width: 300px;
   margin-left: 24px;
   height: 100px;
@@ -80,6 +79,7 @@
   border: 1px solid var(--primary-10);
   border-radius: 12px;
 }
+
 .smallWidget:nth-child(2) {
   margin-left: 32px;
 }
@@ -186,6 +186,7 @@ form {
   transform: translateY(-50%) scaleX(1);
 }
 .smallWaterContainer {
+  cursor: pointer;
   padding: 0px 32px;
   border-radius: 12px;
   width: 255px;
@@ -194,7 +195,7 @@ form {
   margin-left: 36px;
   border: 1px solid var(--primary-10);
 }
-.donutChartContainer {
+.donutDashboardChartContainer {
   display: flex;
   justify-content: center;
 }

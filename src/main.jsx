@@ -9,13 +9,13 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./AuthContext.jsx";
 import { Dashboard } from "./Dashboard.jsx";
 import WaterManagement from "./WaterManagement.jsx";
+import { DashboardProvider } from "./DashboardContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     {/* <AuthProvider>
       <App />
     </AuthProvider> */}
-    {/* <Dashboard /> */}
-    <WaterManagement />
+    <App />
   </React.StrictMode>
 );

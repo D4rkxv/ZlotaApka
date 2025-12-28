@@ -1,27 +1,22 @@
 import "./App.css";
-import LandingPage from "./LandingPage.jsx";
-import { Routes, Route, Link } from "react-router";
-import LoginPage from "./LoginPage.jsx";
-import RegisterPage from "./RegisterPage.jsx";
-import Login from "./LoginPage.jsx";
-import { useAuthLayout } from "./AuthContext.jsx";
-
+import { AuthProvider, useAuthLayout } from "./AuthContext.jsx";
+import { DashboardProvider, useDashboard } from "./DashboardContext.jsx";
+import AuthenticatedApp from "./AuthenticatedApp.jsx";
+import GuestApp from "./GuestApp.jsx";
 function App() {
-  const { currentPage } = useAuthLayout();
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case "landing":
-        return <LandingPage />;
-      case "login":
-        return <LoginPage />;
-      case "register":
-        return <RegisterPage />;
-      default:
-        return <LandingPage />;
-    }
-  };
-  return <div className="app">{renderPage()}</div>;
+  return (
+    <AuthProvider>
+      <div className="app">
+        {true ? (
+          <DashboardProvider>
+            <AuthenticatedApp />
+          </DashboardProvider>
+        ) : (
+          <GuestApp />
+        )}
+      </div>
+    </AuthProvider>
+  );
 }
 
 export default App;

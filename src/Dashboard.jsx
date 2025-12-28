@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Bar } from "react-chartjs-2";
+import { useDashboard } from "./DashboardContext.jsx";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -38,6 +39,14 @@ const deficit = [0, -50, 120, 80, 0, -30, -100];
 const sleepValues = [7.5, 6.5, 7, 7.8, 5.5, 8.2, 6.0];
 
 export function Dashboard() {
+  const {
+    currentHydration,
+    setCurrentHydration,
+    hydrationGoal,
+    setHydrationGoal,
+  } = useDashboard();
+  const { goToDashboard, goToWater, goToFood, goToWorkouts, goToSleep } =
+    useDashboard();
   const caloriesData = {
     labels,
     datasets: [
@@ -133,8 +142,7 @@ export function Dashboard() {
   };
   return (
     <div className="dashboardContainer">
-      <div className="sidebar"></div>
-
+      <Sidebar />
       <div className="widgetContainer">
         <p className="siteTitle">Dashboard</p>
 
@@ -149,7 +157,7 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className="smallWidget">
+          <div className="smallWidget" onClick={goToWater}>
             <p className="smallWidgetTitle">Water</p>
             <p className="smalWidgetDesc">1.7L / 3.0L</p>
             <div className="progressWrapper">
@@ -249,10 +257,14 @@ export function Dashboard() {
             min={65}
             max={90}
           />
-          <div className="smallWaterContainer">
+          <div className="smallWaterContainer" onClick={goToWater}>
             <p className="caloriesTitle">Water</p>
-            <div className="donutChartContainer">
-              <DonutChart current={5500} goal={8000} size={190} />
+            <div className="donutDashboardChartContainer">
+              <DonutChart
+                current={currentHydration}
+                goal={hydrationGoal}
+                size={190}
+              />
             </div>
             <p className="waterTarget">1.7L / 3.0L</p>
           </div>
@@ -267,3 +279,4 @@ export function Dashboard() {
     </div>
   );
 }
+export default Dashboard;

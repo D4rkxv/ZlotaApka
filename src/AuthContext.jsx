@@ -11,6 +11,10 @@ export const AuthProvider = ({ children }) => {
   const goToLogin = () => setCurrentPage("login");
   const goToRegister = () => setCurrentPage("register");
 
+  const logout = () => {
+    setCurrentPage("landing");
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -19,6 +23,7 @@ export const AuthProvider = ({ children }) => {
         goToLanding,
         goToLogin,
         goToRegister,
+        logout,
       }}
     >
       {children}
