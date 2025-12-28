@@ -1,3 +1,18 @@
 button{
     cursor: pointer;
 }
+.siteContainer{
+    display: flex;
+    flex-direction: row;
+}
+.widgetContainer{
+    padding: 0px 28px;
+}
+.divider{
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+}
+.siteTitle {
+  font-size: 28px;
+}
