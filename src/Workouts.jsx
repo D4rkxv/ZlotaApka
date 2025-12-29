@@ -5,6 +5,67 @@ import "./Workouts.css";
 import "./FoodDiary.css";
 import running from "./assets/running.svg";
 function Workouts() {
+  const [tips, setTips] = useState([
+"Plan one “non-negotiable” 20-minute activity today – schedule it in your calendar like a meeting and treat it as something you can’t cancel.",
+"Commit to one “non-negotiable” 15-minute walk after breakfast – add it to your phone and do it rain or shine.",
+"Set one “non-negotiable” 10-minute stretch session tonight – calendar it like an important call.",
+"Pick one “non-negotiable” 5-minute push-up series first thing in the morning – set a reminder, no excuses.",
+"Schedule one “non-negotiable” 10-minute meditation at noon – treat it like a boss meeting.",
+"Do one “non-negotiable” 20-minute FBW workout after work – plan it in your app and stick to it.",
+"Lock in one “non-negotiable” 15-minute bike ride – note the time and prioritize it.",
+"Choose one “non-negotiable” 10-minute yoga before bed – alarm on, no skipping.",
+"Plan one “non-negotiable” 5-minute squat set upon waking – add to calendar now.",
+"Make one “non-negotiable” 20-minute dog walk – map the route and commit.",
+"Set one “non-negotiable” 10-minute core work in your break – calendar as essential.",
+"Do one “non-negotiable” 5-minute jump rope morning blast – timer ready.",
+"Schedule one “non-negotiable” 15-minute leg stretch evening routine – non-optional.",
+"Commit to one “non-negotiable” 3-minute plank daily – reminder set.",
+"Pick one “non-negotiable” 10-minute brisk lunch walk – calendar block it.",
+"Lock in one “non-negotiable” 5-minute pull-up session – no cancellations.",
+"Plan one “non-negotiable” 10-minute breathing exercise – time it precisely.",
+"Do one “non-negotiable” 15-minute dance to music – playlist queued, calendar added.",
+"Set one “non-negotiable” 5-set diamond push-ups – treat as mandatory.",
+"Choose one “non-negotiable” 20-minute post-dinner stroll – route planned.",
+"Schedule one “non-negotiable” 10-minute face yoga – build into routine.",
+"Commit to one “non-negotiable” 5-minute burpees morning kickoff – don't miss.",
+"Pick one “non-negotiable” 15-minute arm work with dumbbells – meeting status.",
+"Lock in one “non-negotiable” 10-minute deep breathing – alarm essential.",
+"Plan one “non-negotiable” 20-minute upper body FBW – top priority.",
+"Do one “non-negotiable” 10-minute home stairs climb – scheduled tight.",
+"Set one “non-negotiable” 15-minute full-body stretch – calendar locked.",
+"Choose one “non-negotiable” 5-minute jumping jacks – every single day.",
+"Schedule one “non-negotiable” 20-minute walking meditation – no rescheduling.",
+"Commit to one “non-negotiable” 10-set sumo squats – reminder active.",
+"Pick one “non-negotiable” 15-minute stationary bike – must-do.",
+"Lock in one “non-negotiable” 3-minute side plank – time blocked.",
+"Plan one “non-negotiable” 10-minute glutes focus – take it seriously.",
+"Do one “non-negotiable” 20-minute weighted walk – calendar entry.",
+"Set one “non-negotiable” 5-minute HIIT burst morning – never skip.",
+"Choose one “non-negotiable” 15-minute back stretch – plan ahead.",
+"Schedule one “non-negotiable” 10-minute knee push-ups – priority high.",
+"Commit to one “non-negotiable” 5-set deep squats – alarm on.",
+"Pick one “non-negotiable” 10-minute mindfulness session – like a meeting.",
+"Lock in one “non-negotiable” 15-minute in-place jog – daily habit.",
+"Plan one “non-negotiable” 20-minute lower body FBW – no backing out.",
+"Do one “non-negotiable” 3-minute wall sit – hour noted.",
+"Set one “non-negotiable” 10-minute hip stretch – obligatory.",
+"Choose one “non-negotiable” 5-minute mountain climbers – scheduled.",
+"Schedule one “non-negotiable” 20-minute reflective walk – meeting-level.",
+"Commit to one “non-negotiable” 10-set chair dips – reminder set.",
+"Pick one “non-negotiable” 15-minute 4-7-8 breathing – calendar it.",
+"Lock in one “non-negotiable” 5-minute supermans on floor – non-debatable.",
+"Plan one “non-negotiable” 20-minute light yoga evening – always do.",
+"Do one “non-negotiable” 15-minute calf raises – slot into your day."
+​
+]);
+
+ const [selectedTip, setSelectedTip] = useState("");
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * tips.length);
+    setSelectedTip(tips[randomIndex]);
+  }, []);
+
   const [workoutsDone, setWorkoutsDone] = useState(4);
   const [workoutGoal, setWorkoutGoal] = useState(5);
   const [isActive, setIsActive] = useState(false);
@@ -328,7 +389,12 @@ function Workouts() {
             </div>
           </div>
         </div>
-        <div className="botWorkoutContainer"></div>
+        <div className="botWorkoutContainer">
+          <div className="workoutTip">
+            <p className="sectionTitle">Tip of the day</p>
+            <p>{selectedTip}</p>
+          </div>
+        </div>
       </div>
     </div>
   );

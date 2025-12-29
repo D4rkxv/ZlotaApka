@@ -178,3 +178,11 @@
 .calories {
   color: var(--textColor-50);
 }
+.workoutTip {
+  margin-top: 36px;
+  color: var(--textColor);
+  width: 95%;
+  border: 1px solid var(--primary-10);
+  border-radius: 12px;
+  padding: 0px 32px;
+}
