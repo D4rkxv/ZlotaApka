@@ -1,0 +1,180 @@
+:root {
+  font-family: Poppins;
+  --primary-10: rgba(14, 165, 233, 0.1);
+  --primary: #0ea5e9;
+  --blueGradient: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 1) 0%,
+    rgba(14, 165, 233, 1) 100%
+  );
+  --background: #f0f9ff;
+  --textColor: #0f172a;
+  --textColor-50: rgba(15, 23, 42, 0.5);
+  --pureWhite: #fefefe;
+}
+.workoutsContainer {
+  display: flex;
+  height: 100vh;
+}
+.workoutsGoalStreakContainer {
+  border: var(--primary-10) 1px solid;
+  border-radius: 12px;
+  padding: 12px 32px;
+  width: 50%;
+}
+.leftTopWorkoutContainer {
+  display: flex;
+  gap: 24px;
+}
+.leftBotWorkoutContainer {
+  margin-top: 36px;
+  display: flex;
+  gap: 24px;
+}
+.todayWorkoutContainer {
+  width: 27.541vw;
+  height: 41.693vh;
+  border: 1px solid var(--primary-10);
+  border-radius: 12px;
+  padding: 12px 32px;
+}
+.todaysWorkoutInsideContainer {
+  display: flex;
+}
+.activityOneLog {
+  color: var(--textColor);
+  display: flex;
+}
+.activityOneLog p {
+  margin: 0;
+  padding: 0;
+  margin-top: 16px;
+}
+.activityTime {
+  color: var(--textColor-50);
+}
+.leftTodaysWorkoutTitle {
+  font-size: 20px;
+}
+.topTodaysWorkoutP p {
+  margin: 0;
+}
+.workoutGroup {
+  margin-top: 16px;
+}
+.todaysWorkoutProgress {
+  font-size: 16px;
+  color: var(--textColor-50);
+}
+.todaysWorkoutProgressP p {
+  margin: 0;
+  margin-top: 4px;
+}
+.todaysWorkoutLeft {
+  width: 60%;
+}
+.todaysWorkoutRight {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 5%;
+}
+.workoutBtn {
+  margin-top: 20%;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}
+.todaysWorkoutRightBot {
+  margin-top: 3vh;
+  display: flex;
+  justify-content: right;
+}
+.activityHistory {
+  max-height: 41.693vh;
+  padding: 12px 32px;
+  width: 10.176vw;
+  border: 1px solid var(--primary-10);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-radius: 12px;
+}
+.timerContainer {
+  width: 200px;
+  height: 200px;
+}
+.timerSvg {
+  width: 100%;
+  height: 100%;
+}
+.timerText {
+  font-size: clamp(12px, 2vw, 16px);
+  color: #000;
+  text-align: center;
+}
+.progressCircle {
+  transition: stroke-dashoffset 0.8 cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dot {
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.topWorkoutContainer {
+  color: var(--textColor);
+  display: flex;
+}
+.rightTopWorkoutContainer {
+  padding: 0px 28px;
+
+  border: 1px solid var(--primary-10);
+  border-radius: 12px;
+  margin-left: 24px;
+  width: 20.21vw;
+}
+.workoutManagerTop {
+  display: flex;
+  justify-content: space-between;
+}
+.addActivity {
+  color: var(--primary);
+  cursor: pointer;
+}
+.workoutList {
+  color: var(--textColor);
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.workoutItem {
+  padding: 24px 32px;
+  display: flex;
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  margin-top: 24px;
+}
+.workoutImgContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.workoutRightDesc p {
+  margin: 0;
+  padding: 0;
+}
+.workoutRightDesc {
+  margin-left: 20px;
+}
+.calories {
+  color: var(--textColor-50);
+}

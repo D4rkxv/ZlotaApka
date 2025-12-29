@@ -146,7 +146,7 @@ export function Dashboard() {
       <div className="widgetContainer">
         <p className="siteTitle">Dashboard</p>
 
-        <div className="topWidgets">
+        <div className="topWidgets" onClick={goToFood}>
           <div className="smallWidget">
             <p className="smallWidgetTitle">Calories</p>
             <p className="smalWidgetDesc">1820 / 3200</p>
@@ -189,7 +189,7 @@ export function Dashboard() {
         </div>
 
         <div className="midWidgets">
-          <div className="caloriesWidgetBar">
+          <div className="caloriesWidgetBar" onClick={goToFood}>
             <p className="caloriesTitle">Calories vs Goal</p>
             <div className="barContainer">
               <div className="lineTarget" />
@@ -270,12 +270,14 @@ export function Dashboard() {
               {currentHydration.toFixed(1)} / {hydrationGoal.toFixed(1)} L
             </p>
           </div>
-          <LineChart
-            title="Activity Minutes"
-            values={activityValues}
-            min={0}
-            max={60}
-          />
+          <div className="lineChartContainer" onClick={goToWorkouts}>
+            <LineChart
+              title="Activity Minutes"
+              values={activityValues}
+              min={0}
+              max={60}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -118,14 +118,14 @@ function Sidebar() {
         >
           <div className="accountHeader">
             <div className="leftAccountSide">
-              <img src={profilePic} />
+              <img src={profilePic} className="profilePicture" />
             </div>
             <div className="middleAccountSide">
               <p className="sidebarName">Jan Kowalski</p>
               <p className="sidebarEmail">Jankowalski@gmail.com</p>
             </div>
             <div className="rightAccountSide">
-              <img src={arrowUp} />
+              <img src={arrowUp} className="arrowCard" />
             </div>
           </div>
           <div className="accountMenu">

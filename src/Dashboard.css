@@ -14,13 +14,11 @@
 }
 
 .widgetContainer {
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
 .dashboardContainer {
-  overflow-y: hidden;
-  overflow-x: hidden;
 }
 
 .onTarget {
@@ -67,9 +65,9 @@
 }
 .smallWidget {
   cursor: pointer;
-  width: 300px;
+  width: 15.748vw;
   margin-left: 24px;
-  height: 100px;
+  height: 10.582vh;
   padding: 12px 20px;
   border: 1px solid var(--primary-10);
   border-radius: 12px;
@@ -101,6 +99,7 @@
 }
 .topWidgets {
   display: flex;
+  flex: auto;
   width: 100%;
 }
 .midWidgets:not(:first-child) {
@@ -108,17 +107,22 @@
   display: flex;
   margin-top: 32px;
 }
+.midWidgets {
+  display: flex;
+  flex: auto;
+}
 .botWidgets {
   width: 100%;
   display: flex;
+  flex: auto;
   margin-top: 32px;
 }
 .dailyChallenges {
   border: 1px solid var(--primary-10);
   border-radius: 12px;
   margin-left: 36px;
-  width: 255px;
-  height: 320px;
+  width: 13.386vw;
+  height: 33.862vh;
   display: flex;
   flex-direction: column;
   padding: 0px 32px;
@@ -182,9 +186,9 @@ form {
 }
 .smallWaterContainer {
   cursor: pointer;
-  padding: 0px 32px;
+  padding: 0px 3.386%;
   border-radius: 12px;
-  width: 255px;
+  width: 13.386vw;
   display: flex;
   flex-direction: column;
   margin-left: 36px;
@@ -200,7 +204,7 @@ form {
 }
 .botWidgetBar {
   padding: 12px 32px;
-  height: 302px;
+  height: 31.958vh;
   border-radius: 12px;
   border: 1px solid var(--primary-10);
 }
@@ -211,8 +215,9 @@ form {
   margin-left: 36px;
 }
 .caloriesWidgetBar {
+  cursor: pointer;
   border: 1px solid var(--primary-10);
-  height: 320px;
+  height: 33.862vh;
   background-color: #fefefe;
   border-radius: 12px;
   padding: 12px 32px;
@@ -223,4 +228,7 @@ form {
 }
 .caloriesWidgetBar:last-of-type {
   margin-left: 36px;
+}
+.lineChartContainer {
+  cursor: pointer;
 }

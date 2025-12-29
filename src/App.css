@@ -1,17 +1,21 @@
-button{
-    cursor: pointer;
+button {
+  cursor: pointer;
 }
-.siteContainer{
-    display: flex;
-    flex-direction: row;
+.siteContainer {
+  display: flex;
+  flex-direction: row;
 }
-.widgetContainer{
-    padding: 0px 28px;
+.widgetContainer {
+  padding: 0px 28px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
 }
-.divider{
-    display: flex;
-    flex-direction: row;
-    gap: 24px;
+.divider {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
 }
 .siteTitle {
   font-size: 28px;

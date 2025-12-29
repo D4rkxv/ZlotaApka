@@ -6,7 +6,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({
     name: "jan kowalski",
     email: "jankowalski@gmail.com",
-  }); //delete if u want start on landing page!
+  }); //delete if u want start on landing page! //  { name: "jan kowalski", email: "jankowalski@gmail.com", }
   const [currentPage, setCurrentPage] = useState("loading");
   const isAuthenticated = !!user;
 
