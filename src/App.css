@@ -13,6 +13,7 @@ button {
   flex-wrap: wrap;
 }
 .divider {
+  width: 100%;
   display: flex;
   flex-direction: row;
   gap: 24px;

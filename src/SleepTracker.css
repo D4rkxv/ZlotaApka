@@ -1,0 +1,153 @@
+:root {
+  font-family: Poppins;
+  --primary-10: rgba(14, 165, 233, 0.1);
+  --primary: #0ea5e9;
+  --blueGradient: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 1) 0%,
+    rgba(14, 165, 233, 1) 100%
+  );
+  --background: #f0f9ff;
+  --textColor: #0f172a;
+  --textColor-50: rgba(15, 23, 42, 0.5);
+  --pureWhite: #fefefe;
+}
+.sleepSummaryContainer{
+    border: var(--primary-10) 1px solid;
+    border-radius: 12px;
+    padding: 12px 32px;
+    width: 35vw;
+
+    
+}
+.lastNightSummary{
+    color: var(--textColor);
+    font-size: 24px;
+    margin-bottom: 0px;
+}
+.sleepGoal{
+    color: var(--primary);
+    font-size: 16px;
+    margin-top: 0px;
+}
+.sleepSummaryContainer .progressTrack{
+    width: 34vw;
+    height: 2vh;
+}
+.sleepSummaryContainer .progressFill{
+    width: 90%;
+}
+.sleepStartEndTime{
+    color: var(--textColor-50);
+    font-size: 14px;
+}
+
+.sleepScoreContainer{
+    border: var(--primary-10) 1px solid;
+    border-radius: 12px;
+    padding: 12px 32px;
+    height: 24vh;
+    width: 35vw;
+
+}
+.sleepScoreContainer .divider{
+    gap: 50px;
+    margin-top: -12vh;
+    margin-bottom: 0px;
+}
+.sleepScoreContainer .chartContainer{
+    width: 60%;
+    height: 80%;
+    margin-bottom: 0px;
+}
+.sleepScore{
+    width: 55%;
+    text-align: center;
+    font-size: 24px;
+    margin-top: -18vh
+}
+.sleepScoreDetails{
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin-bottom: 0px;
+}
+
+.sleepLogContainer{
+    border: var(--primary-10) 1px solid;
+    border-radius: 12px;
+    padding: 12px 32px;
+    width: 35vw;
+    margin-top: 6vh;
+}
+.sleepLogContainer .sectionTitle{
+    margin-bottom: 8vh;
+}
+.goneToBedInputContainer, .outOfBedInputContainer{
+    display: flex;
+    flex-direction: row;
+    align-content: space-between;
+    margin-top: 12px;
+}
+.goneToBedInputContainer label, .outOfBedInputContainer label{
+    width: 20%;
+}
+.goneToBedInputContainer input, .outOfBedInputContainer input{
+    width: 80%;
+}
+.sleepQualityContainer label{
+    margin-left: 5px;
+}
+.sleepLogContainer input{
+    width: 70%;
+    border: none;
+    margin: 0;
+    border-bottom: var(--textColor) 1px solid;
+    color: var(--textColor);
+    transition: all 0.3s ease;
+}
+.sleepLogContainer input:focus{
+    outline: none;
+    border-color: var(--primary);
+}
+.sleepQualityContainer{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    margin-top: 2vh;
+}
+input[type="radio"]{
+    accent-color: var(--primary);
+}
+.optionContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0px 25px;
+    
+}
+
+.sleepWeekChartContainer{
+    border: var(--primary-10) 1px solid ;
+    border-radius: 12px;
+    padding: 12px 32px;
+    margin-top: 6vh;
+    width: 35vw;
+    height: 30vh;
+}
+.sleepWeekChartContainer .chartContainer{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 90%;
+    height: 95%;
+}
+
+.sleepContainer .tip-container{
+    border: var(--primary-10) 1px solid ;
+    border-radius: 12px;
+    padding: 12px 32px;
+    margin-top: 4vh;
+}
