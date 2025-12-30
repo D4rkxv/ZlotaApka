@@ -133,7 +133,7 @@ const WaterManagement = () => {
                   />
                 </div>
                 <p className="completion">
-                  {currentHydration.toFixed(1)} / {hydrationGoal.toFixed(1)} L
+                  {currentHydration.toFixed(1)} L / {hydrationGoal.toFixed(1)} L
                 </p>
                 <div className="buttonsContainer">
                   <button

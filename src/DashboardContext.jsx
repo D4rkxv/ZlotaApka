@@ -15,7 +15,10 @@ export const DashboardProvider = ({ children }) => {
   const goToProfile = useCallback(() => setSelectedWidget("profile"), []);
 
   const [hydrationGoal, setHydrationGoal] = useState(3.0);
-  const [currentHydration, setCurrentHydration] = useState(1.7);
+  const [currentHydration, setCurrentHydration] = useState(0.5);
+  const waterProgressWidth = ((currentHydration / hydrationGoal) * 100).toFixed(
+    1
+  );
   return (
     <DashboardContext.Provider
       value={{
@@ -32,6 +35,7 @@ export const DashboardProvider = ({ children }) => {
         hydrationGoal,
         setCurrentHydration,
         setHydrationGoal,
+        waterProgressWidth,
       }}
     >
       {children}

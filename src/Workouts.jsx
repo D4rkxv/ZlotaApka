@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Sidebar from "./Sidebar";
 import { Bar } from "react-chartjs-2";
 import "./Workouts.css";
 import "./FoodDiary.css";
 import running from "./assets/running.svg";
 function Workouts() {
+ 
   const [tips, setTips] = useState([
 "Plan one “non-negotiable” 20-minute activity today – schedule it in your calendar like a meeting and treat it as something you can’t cancel.",
 "Commit to one “non-negotiable” 15-minute walk after breakfast – add it to your phone and do it rain or shine.",
@@ -58,7 +59,8 @@ function Workouts() {
 "Do one “non-negotiable” 15-minute calf raises – slot into your day."
 ​
 ]);
-
+ const [exercise , setExercise] = useState(0);
+ 
  const [selectedTip, setSelectedTip] = useState("");
 
   useEffect(() => {
@@ -71,7 +73,7 @@ function Workouts() {
   const [isActive, setIsActive] = useState(false);
   const handleClick = () => setIsActive(!isActive);
 
-  const deficit = [0, -50, 120, 80, 0, -30, -100];
+  const deficit = [`${0}`, `${-50}`, `${120}`, `${80}`, `${0}`, `${-30}`, `${-100}`];
 
   const [seconds, setSeconds] = useState(0);
 
@@ -166,15 +168,16 @@ function Workouts() {
                         Full Body Workout • 45min
                       </p>
                       <p className="todaysWorkoutProgress">
-                        0/6 exercises done
+                        {2}/6 exercises done
                       </p>
                     </div>
                     <form>
-                      <div className="workoutGroup">
+                      <div className="workoutGroup" >
                         <input
                           type="checkbox"
                           id="task1"
                           className="circleCheckbox"
+                          
                         />
                         <label htmlFor="task1" className="circleLabel">
                           Squats - 3x12
@@ -185,6 +188,7 @@ function Workouts() {
                           type="checkbox"
                           id="task2"
                           className="circleCheckbox"
+                      
                         />
                         <label htmlFor="task2" className="circleLabel">
                           Elevated push‑ups 3x8
@@ -195,6 +199,7 @@ function Workouts() {
                           type="checkbox"
                           id="task3"
                           className="circleCheckbox"
+                         
                         />
                         <label htmlFor="task3" className="circleLabel">
                           One‑arm dumbbell row 3x10
@@ -205,6 +210,7 @@ function Workouts() {
                           type="checkbox"
                           id="task4"
                           className="circleCheckbox"
+                        
                         />
                         <label htmlFor="task4" className="circleLabel">
                           Dumbbell overhead press 3x10
@@ -215,6 +221,7 @@ function Workouts() {
                           type="checkbox"
                           id="task5"
                           className="circleCheckbox"
+                   
                         />
                         <label htmlFor="task5" className="circleLabel">
                           Plank 3x40s
@@ -225,6 +232,7 @@ function Workouts() {
                           type="checkbox"
                           id="task6"
                           className="circleCheckbox"
+          
                         />
                         <label htmlFor="task6" className="circleLabel">
                           Glute bridge 3x12

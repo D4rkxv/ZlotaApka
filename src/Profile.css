@@ -1,0 +1,141 @@
+:root {
+  font-family: Poppins;
+  --primary-10: rgba(14, 165, 233, 0.1);
+  --primary: #0ea5e9;
+  --blueGradient: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 1) 0%,
+    rgba(14, 165, 233, 1) 100%
+  );
+  --background: #f0f9ff;
+  --textColor: #0f172a;
+  --textColor-50: rgba(15, 23, 42, 0.5);
+  --pureWhite: #fefefe;
+}
+.widgetContainer2 {
+  display: flex;
+}
+.profileContainer {
+  position: relative;
+  width: 100%;
+  height: 27.513vh;
+}
+.mountainImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+.topProfileSection {
+  display: flex;
+  width: 90vw;
+}
+.topProfileSection .profileContainer > div:last-child {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 24px;
+  padding: 24px 32px;
+  border-radius: 12px;
+  z-index: 2;
+}
+.profileEdit {
+  color: var(--primary);
+  cursor: pointer;
+}
+.bigProfilePic {
+  width: 200px;
+  height: 200px;
+  border-radius: 16px;
+  border: 1px solid var(--primary);
+  object-fit: cover;
+}
+.editProfileContainer {
+  width: 60vw;
+  display: flex;
+  justify-content: space-between;
+}
+.userData {
+  flex: 1;
+  display: flex;
+  align-items: end;
+}
+
+.userName {
+  margin: 0 0 4px 0;
+  font-size: 32px;
+  color: var(--textColor);
+  line-height: 1.2;
+}
+.userGoals {
+  margin: 0;
+  color: var(--textColor-50);
+  font-weight: 500;
+  font-size: 24px;
+}
+.botProfileSection {
+  display: flex;
+  position: relative;
+  margin-top: 172px;
+}
+.bodyMetricData {
+  padding: 0px 32px;
+  width: 31.446vw;
+  height: 37.354vh;
+  border: 1px solid var(--primary-10);
+  border-radius: 12px;
+}
+.topMetric {
+  display: flex;
+  justify-content: space-between;
+}
+.metricItem {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+}
+.metricItem p {
+  padding: 0;
+  margin: 0;
+}
+.metricItem p:first-child {
+  color: var(--textColor);
+  font-size: 24px;
+}
+.metricItem p:last-child {
+  color: var(--textColor-50);
+  font-size: 24px;
+}
+.botWidgetContainers {
+  width: 100%;
+  gap: 24px;
+  display: flex;
+  justify-content: center;
+}
+.editWidget {
+  color: var(--primary);
+  cursor: pointer;
+}
+.bodyGoals {
+  padding: 0px 32px;
+  width: 37.831vw;
+  height: 37.354vh;
+  border: 1px solid var(--primary-10);
+  border-radius: 12px;
+}
+.goalItem {
+  font-size: 24px;
+  margin-top: 24px;
+}
+.progressTrackProfile {
+  margin-top: 12px;
+}
+.goalItem p {
+  padding: 0;
+  margin: 0;
+}

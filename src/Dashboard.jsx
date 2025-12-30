@@ -44,6 +44,7 @@ export function Dashboard() {
     setCurrentHydration,
     hydrationGoal,
     setHydrationGoal,
+    waterProgressWidth,
   } = useDashboard();
   const { goToDashboard, goToWater, goToFood, goToWorkouts, goToSleep } =
     useDashboard();
@@ -146,8 +147,8 @@ export function Dashboard() {
       <div className="widgetContainer">
         <p className="siteTitle">Dashboard</p>
 
-        <div className="topWidgets" onClick={goToFood}>
-          <div className="smallWidget">
+        <div className="topWidgets">
+          <div className="smallWidget" onClick={goToFood}>
             <p className="smallWidgetTitle">Calories</p>
             <p className="smalWidgetDesc">1820 / 3200</p>
             <div className="progressWrapper">
@@ -159,10 +160,16 @@ export function Dashboard() {
 
           <div className="smallWidget" onClick={goToWater}>
             <p className="smallWidgetTitle">Water</p>
-            <p className="smalWidgetDesc">1.7L / 3.0L</p>
+            <p className="smalWidgetDesc">
+              {" "}
+              {currentHydration.toFixed(1)} L / {hydrationGoal.toFixed(1)} L
+            </p>
             <div className="progressWrapper">
               <div className="progressTrack">
-                <div className="progressFill" />
+                <div
+                  className="progressFill"
+                  style={{ width: `${waterProgressWidth}%` }}
+                />
               </div>
             </div>
           </div>
@@ -177,7 +184,7 @@ export function Dashboard() {
             <p className="smallWidgetGrayDesc">Goal: 86 Kg ( +6 remaining)</p>
           </div>
 
-          <div className="smallWidget">
+          <div className="smallWidget" onClick={goToSleep}>
             <p className="smallWidgetTitle">Sleep</p>
             <div className="descLine">
               <p className="smalWidgetDesc">10h</p>
@@ -234,7 +241,7 @@ export function Dashboard() {
               </div>
             </form>
           </div>
-          <div className="caloriesWidgetBar">
+          <div className="caloriesWidgetBar" onClick={goToSleep}>
             <p className="caloriesTitle">Sleep This Week</p>
             <div className="barContainer">
               <div className="lineTarget" />
