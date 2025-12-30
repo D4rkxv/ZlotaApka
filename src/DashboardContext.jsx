@@ -13,6 +13,7 @@ export const DashboardProvider = ({ children }) => {
   const goToWorkouts = useCallback(() => setSelectedWidget("workouts"), []);
   const goToSleep = useCallback(() => setSelectedWidget("sleep"), []);
   const goToProfile = useCallback(() => setSelectedWidget("profile"), []);
+  const goToSettings = useCallback(() => setSelectedWidget("settings"), []);
 
   const [hydrationGoal, setHydrationGoal] = useState(3.0);
   const [currentHydration, setCurrentHydration] = useState(0.5);
@@ -30,6 +31,7 @@ export const DashboardProvider = ({ children }) => {
         goToWorkouts,
         goToSleep,
         goToProfile,
+        goToSettings,
 
         currentHydration,
         hydrationGoal,

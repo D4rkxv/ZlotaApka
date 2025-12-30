@@ -128,6 +128,9 @@
     border-radius: 12px;
     margin-top: 32px;
     padding: 12px 32px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
     
 }
 

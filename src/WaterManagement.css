@@ -90,6 +90,7 @@
 }
 
 .intakeTrendsContainer {
+  width: 50vw;
   padding: 12px;
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
@@ -97,6 +98,7 @@
 }
 .barChartContainer {
   height: 260px;
+  width: 100%;
 }
 
 .usefulTipsContainer {

@@ -1,0 +1,64 @@
+:root {
+  font-family: Poppins;
+  --primary-10: rgba(14, 165, 233, 0.1);
+  --primary: #0ea5e9;
+  --blueGradient: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 1) 0%,
+    rgba(14, 165, 233, 1) 100%
+  );
+  --background: #f0f9ff;
+  --textColor: #0f172a;
+  --textColor-50: rgba(15, 23, 42, 0.5);
+  --pureWhite: #fefefe;
+}
+
+.resetDataContainer, .deleteAccountContainer{
+    border: var(--primary-10) 1px solid;
+    border-radius: 12px;
+    padding: 12px 32px;
+    width: 100%;
+    margin-bottom: 6vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+
+.settingsContainer .sectionTitle{
+    margin-bottom: 0px; 
+}
+.settingsContainer .divider{
+    justify-self: space-between;
+    align-content: space-between;
+}
+.sectionDescription{
+    font-size: 14px;
+    color: var(--textColor-50);
+    margin-top: 0px;
+}
+.buttonContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    padding: 20px;
+}
+
+.settingsContainer button{
+    font-size: 16px;
+    padding: 6px 28px;
+    border-radius: 24px;
+    text-align: center;
+    background-color: transparent;
+    border: crimson 1px solid;
+    color: crimson;
+    width: 10vw;
+    transition: all 0.3s ease;
+}
+.settingsContainer button:hover{
+    background-color: crimson;
+    color: var(--pureWhite);
+    cursor: pointer;
+}

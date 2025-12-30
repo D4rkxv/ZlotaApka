@@ -25,6 +25,7 @@ function Sidebar() {
     goToWorkouts,
     goToSleep,
     goToProfile,
+    goToSettings,
     selectedWidget,
   } = useDashboard();
   const { logout, isAuthenticated } = useAuthLayout();
@@ -34,6 +35,7 @@ function Sidebar() {
     setOpen(!open);
   };
   const handleSettingsClick = () => {
+    goToSettings();
     setOpen(!open);
   };
   const handleLogoutClick = () => {

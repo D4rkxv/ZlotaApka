@@ -12,6 +12,7 @@ import FoodDiary from "./FoodDiary.jsx";
 import Workouts from "./Workouts.jsx";
 import SleepTracker from "./SleepTracker.jsx";
 import Profile from "./Profile.jsx";
+import Settings from "./Settings.jsx";
 function AuthenticatedApp() {
   const { selectedWidget } = useDashboard();
   const renderWidget = () => {
@@ -28,6 +29,8 @@ function AuthenticatedApp() {
         return <SleepTracker />;
       case "profile":
         return <Profile />;
+      case "settings":
+        return <Settings />;
       default:
         return <Dashboard />;
     }

@@ -170,7 +170,7 @@ const WaterManagement = () => {
             <div className="intakeTrendsContainer">
               <p className="sectionTitle">Intake trends</p>
               <div className="barChartContainer">
-                <Bar data={data} options={options} />
+                <Bar data={data} options={options} key={location.pathname} />
               </div>
             </div>
             <div className="divider">
