@@ -232,3 +232,20 @@ form {
 .lineChartContainer {
   cursor: pointer;
 }
+
+.circleCheckbox:disabled {
+  pointer-events: none;
+}
+
+.circleCheckbox:disabled + .circleLabel {
+  color: #999;
+  pointer-events: none;
+}
+
+.circleCheckbox:disabled:checked + .circleLabel::before {
+  background: #ccc !important;
+}
+
+.circleCheckbox:checked + .circleLabel::before {
+  background: var(--primary);
+}
