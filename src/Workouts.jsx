@@ -6,10 +6,7 @@ import "./FoodDiary.css";
 import "./Dashboard.css";
 import { useDashboard } from "./DashboardContext";
 import running from "./assets/running.svg";
-import Running1 from "./assets/Running1.svg";
-import Running2 from "./assets/Running2.svg";
-import Meditation from "./assets/Meditation.svg";
-import Threadmill from "./assets/Threadmill.svg";
+
 function Workouts() {
   const [tips, setTips] = useState([
     "Plan one “non-negotiable” 20-minute activity today – schedule it in your calendar like a meeting and treat it as something you can’t cancel.",
@@ -70,16 +67,25 @@ function Workouts() {
     workoutGoal,
     setWorkoutsDone,
     setWorkoutGoal,
+    workoutProgressWidth,
+    isActive,
+    setIsActive,
+    seconds,
+    setSeconds,
+    workoutStatus,
+    setWorkoutStatus,
+    isChecked,
+    setIsChecked,
+    isDisabled,
+    setIsDisabled,
+    allSeconds,
+    setAllSeconds,
   } = useDashboard();
+
   const [currentWorkoutName, setCurrentWorkoutName] =
     useState("Full Body Workout");
-  const [workoutStatus, setWorkoutStatus] = useState("idle");
-  const [isChecked, setIsChecked] = useState(Array(6).fill(false));
   const [exerciseDone, setExerciseDone] = useState(0);
-  const [isDisabled, setIsDisabled] = useState(true);
   const [selectedTip, setSelectedTip] = useState("");
-  const [isActive, setIsActive] = useState(false);
-  const [seconds, setSeconds] = useState(0);
 
   const workouts = [
     { id: "task1", name: "Squats - 3x12" },
@@ -101,7 +107,7 @@ function Workouts() {
       const wasChecked = current[index];
 
       setExerciseDone((prevCount) =>
-        wasChecked ? prevCount - 1 / 2 : prevCount + 1 / 2
+        wasChecked ? prevCount - 1 : prevCount + 1
       );
 
       const newChecked = [...current];
@@ -113,7 +119,6 @@ function Workouts() {
     const randomIndex = Math.floor(Math.random() * tips.length);
     setSelectedTip(tips[randomIndex]);
   }, []);
-
   const handlePause = () => {
     setIsActive(!isActive);
     setIsDisabled(!isDisabled);
@@ -136,7 +141,8 @@ function Workouts() {
   const handleFinalClick = () => {
     const workoutName = `${currentWorkoutName || "Full Body Workout"} `;
     logWorkout(workoutName);
-
+    let tmpSec = seconds;
+    setAllSeconds((prev) => prev + tmpSec);
     setWorkoutStatus("idle");
     setIsChecked(Array(6).fill(false));
     setIsDisabled(true);
@@ -145,16 +151,6 @@ function Workouts() {
     setExerciseDone(0);
     setWorkoutsDone((prev) => prev + 1);
   };
-
-  const deficit = [
-    `${0}`,
-    `${-50}`,
-    `${120}`,
-    `${80}`,
-    `${0}`,
-    `${-30}`,
-    `${-100}`,
-  ];
 
   useEffect(() => {
     let interval = null;
@@ -167,15 +163,30 @@ function Workouts() {
     return () => clearInterval(interval);
   }, [isActive]);
 
-  const caloriesData = {
+  const todayMins = Math.floor(allSeconds / 60);
+
+  const getTodayIndex = () => {
+    const today = new Date().getDay();
+    return today === 0 ? 6 : today - 1;
+  };
+
+  const todayIndex = getTodayIndex();
+
+  const workoutData = {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     datasets: [
       {
         label: "",
-        data: deficit.map((d) => 1000 - d),
-        backgroundColor: deficit.map((d) =>
-          d <= 0 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)"
-        ),
+        data: new Array(7)
+          .fill(800)
+          .map((_, i) => (i === todayIndex ? 800 + todayMins * 20 : 800)),
+        backgroundColor: new Array(7)
+          .fill("rgba(0, 168, 255, 0.25)")
+          .map((_, i) =>
+            i === todayIndex && todayMins > 5
+              ? "#00A8FF"
+              : "rgba(0, 168, 255, 0.25)"
+          ),
         borderRadius: 6,
         borderSkipped: false,
         barThickness: 34,
@@ -213,6 +224,7 @@ function Workouts() {
       },
     },
   };
+
   return (
     <div className="workoutsContainer">
       <Sidebar />
@@ -224,17 +236,22 @@ function Workouts() {
               <div className="caloriesGoalContainer">
                 <p className="sectionTitle">Workout Summary</p>
                 <p className="caloriesCompletion">
-                  {workoutsDone} / {workoutGoal} workouts this week
+                  {workoutsDone > 0 ? workoutsDone : "0"} / {workoutGoal}{" "}
+                  workouts this week
                 </p>
                 <p className="caloriesLeft">
-                  Total time: 180 min • 1800kcal burned
+                  Total time: {(allSeconds / 60).toFixed(1)} min • 1800kcal
+                  burned
                 </p>
                 <div className="progressTrack">
-                  <div className="progressFill" />
+                  <div
+                    className="progressFill"
+                    style={{ width: `${workoutProgressWidth}%` }}
+                  />
                 </div>
               </div>
               <div className="workoutsGoalStreakContainer">
-                <Bar data={caloriesData} options={caloriesOptions} />
+                <Bar data={workoutData} options={caloriesOptions} />
               </div>
             </div>
             <div className="leftBotWorkoutContainer">
@@ -289,7 +306,9 @@ function Workouts() {
                           className="progressCircle"
                         />
                         <foreignObject x="30" y="45" width="60" height="30">
-                          <div className="timerText">{seconds}s</div>
+                          <div className="timerText">
+                            {seconds > 0 ? seconds : "00"}s
+                          </div>
                         </foreignObject>
                         <circle
                           cx="108"
@@ -330,7 +349,7 @@ function Workouts() {
               <div className="activityHistory">
                 <p className="sectionTitle">Activity History</p>
                 <div className="activityHistoryContainer">
-                  {activityHistory.slice(-5).map((item) => (
+                  {activityHistory.slice(0, 100).map((item) => (
                     <div key={item.id} className="history-item">
                       {item.time} - {item.name}
                     </div>
