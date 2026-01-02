@@ -18,8 +18,6 @@
   display: flex;
   flex-direction: column;
 }
-.dashboardContainer {
-}
 
 .onTarget {
   margin-top: 16px;
@@ -35,7 +33,7 @@
   left: 0;
   right: 0;
   border-top: 1px dashed #d1d5db;
-  z-index: 1000;
+  z-index: 3;
 }
 .barContainer {
   width: 100%;

@@ -153,7 +153,7 @@ const WaterManagement = () => {
                     +100ml
                   </button>
                   <button className="boxBtn coloredBtn">
-                    <img src={Edit} alt="editGoals" />
+                    <img src={Edit} alt="customAmount" />
                   </button>
                 </div>
               </div>

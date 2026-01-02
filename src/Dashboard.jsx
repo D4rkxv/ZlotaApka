@@ -29,6 +29,7 @@ import TrendUp from "./assets/TrendUp.svg";
 import TrendDown from "./assets/TrendDown.svg";
 import LineChart from "./LineChart.jsx";
 import DonutChart from "./DonutChart.jsx";
+import WelcomePopup from "./WelcomePopup.jsx";
 
 const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -39,6 +40,7 @@ const deficit = [0, -50, 120, 80, 0, -30, -100];
 const sleepValues = [7.5, 6.5, 7, 7.8, 5.5, 8.2, 6.0];
 
 export function Dashboard() {
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false)
   const {
     currentHydration,
     setCurrentHydration,
@@ -141,7 +143,10 @@ export function Dashboard() {
       },
     },
   };
+
   return (
+    <>
+    {showWelcomePopup ? <WelcomePopup setPopupVisibility={setShowWelcomePopup}/>:null}
     <div className="dashboardContainer siteContainer">
       <Sidebar />
       <div className="widgetContainer">
@@ -288,6 +293,7 @@ export function Dashboard() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 export default Dashboard;
