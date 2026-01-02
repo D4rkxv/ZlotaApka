@@ -1,0 +1,166 @@
+:root {
+  font-family: Poppins;
+  --primary-10: rgba(14, 165, 233, 0.1);
+  --primary: #0ea5e9;
+  --blueGradient: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 1) 0%,
+    rgba(14, 165, 233, 1) 100%
+  );
+  --background: #f0f9ff;
+  --textColor: #0f172a;
+  --textColor-50: rgba(15, 23, 42, 0.5);
+  --pureWhite: #fefefe;
+}
+
+.popupBackground{
+  position: fixed;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  inset: 0;
+  background-color: #33333380;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.popupContainer{
+  background-color: var(--pureWhite);
+  border-radius: 12px;
+  padding: 24px 16px;
+  width: 50%;
+  height: 90%;
+  margin: 20px;
+  color: var(--textColor);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.popupContainer::-webkit-scrollbar{
+    display: none;
+}
+.popupTitle{
+    font-size: 24px;
+    margin: 0px;
+}
+.popupDescription{
+    color: var(--primary);
+    font-size: 16px;
+    margin-top: 0px;
+}
+.popupSection{
+    margin: 24px 0px;
+}
+.popupSectionTitle{
+    font-size: 20px;
+}
+.welcomePopup input[type="text"], .popupContainer input[type="date"], .popupContainer input[type="number"]{
+    width: 100%;
+    border: none;
+    border-bottom: var(--textColor) 1px solid;
+    margin: 12px 0px;
+    font-size: 16px;
+}
+.popupContainer input:focus{
+    outline: none;
+    border-color: var(--primary);
+}
+.popupContainer input::placeholder, .popupContainer input::-webkit-input-placeholder{
+    color: var(--textColor-50);
+}
+.popupSubSection{
+    margin: 12px 0px;
+}
+.radioButtonContainer{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+}
+.radioButtonContainer input{
+    border-color: var(--primary);
+}
+.sliderContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+.sliderContainer input{
+    width: 80%;
+    accent-color: var(--primary);
+}
+.sliderContainer p{
+    text-align: center;
+}
+.popupButtonContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+}
+.popupButtonContainer button{
+    font-size: 16px;
+    padding: 6px 28px;
+    border-radius: 24px;
+    text-align: center;
+    background-color: transparent;
+    border: var(--primary) 1px solid;
+    color: var(--primary);
+    width: 10vw;
+    transition: all 0.3s ease;
+}
+.popupButtonContainer button:hover{
+    background-color: var(--primary);
+    color: var(--pureWhite);
+    cursor: pointer;
+}
+
+.workoutPopup{
+    width: 30%;
+    padding: 12px 32px;
+}
+.workoutPopup input{
+    border: var(--primary-10) 1px solid;
+    border-radius: 24px;
+    padding: 8px 16px;
+    width: 94%;
+    margin-top: 24px;
+    font-size: 16px;
+}
+.workoutInputs{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+.iconSelection{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-content: center;
+    margin-top: 12px;
+}
+.iconSelection button{
+    background-color: var(--pureWhite);
+    border: none;
+    width: 3vw;
+    height: 3vw;
+}
+.iconSelection button.selected{
+    border: var(--primary) 1px solid;
+    border-radius: 12px;
+    padding: 4px;
+}
+.workoutPopup .coloredBtn{
+    background-color: var(--primary);
+    color: var(--pureWhite);
+}
+.workoutPopup .popupButtonContainer{
+    margin-top: 25vh;
+}
+.workoutPopup .popupButtonContainer button{
+    margin-left: 16px;
+}

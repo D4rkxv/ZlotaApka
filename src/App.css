@@ -1,3 +1,18 @@
+:root {
+  font-family: Poppins;
+  --primary-10: rgba(14, 165, 233, 0.1);
+  --primary: #0ea5e9;
+  --blueGradient: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 1) 0%,
+    rgba(14, 165, 233, 1) 100%
+  );
+  --background: #f0f9ff;
+  --textColor: #0f172a;
+  --textColor-50: rgba(15, 23, 42, 0.5);
+  --pureWhite: #fefefe;
+}
+
 button {
   cursor: pointer;
 }
@@ -21,3 +36,4 @@ button {
 .siteTitle {
   font-size: 28px;
 }
+

@@ -6,11 +6,9 @@ import "./FoodDiary.css";
 import "./Dashboard.css";
 import { useDashboard } from "./DashboardContext";
 import running from "./assets/running.svg";
-import Running1 from "./assets/Running1.svg";
-import Running2 from "./assets/Running2.svg";
-import Meditation from "./assets/Meditation.svg";
-import Threadmill from "./assets/Threadmill.svg";
+import WorkoutPopup from "./WorkoutPopup";
 function Workouts() {
+  const [showWorkoutPopup, setShowWorkoutPopup] = useState(false)
   const [tips, setTips] = useState([
     "Plan one “non-negotiable” 20-minute activity today – schedule it in your calendar like a meeting and treat it as something you can’t cancel.",
     "Commit to one “non-negotiable” 15-minute walk after breakfast – add it to your phone and do it rain or shine.",
@@ -214,6 +212,8 @@ function Workouts() {
     },
   };
   return (
+    <>
+    {showWorkoutPopup ? <WorkoutPopup setPopupVisibility={setShowWorkoutPopup}/> : null}
     <div className="workoutsContainer">
       <Sidebar />
       <div className="widgetContainer">
@@ -342,7 +342,7 @@ function Workouts() {
           <div className="rightTopWorkoutContainer">
             <div className="workoutManagerTop">
               <p className="sectionTitle">Log activity</p>
-              <p className="addActivity">Add Activity</p>
+              <p className="addActivity" onClick={() => {setShowWorkoutPopup(true)}}>Add Activity</p>
             </div>
             <div className="workoutList">
               <div className="workoutItem">
@@ -410,6 +410,7 @@ function Workouts() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 export default Workouts;
