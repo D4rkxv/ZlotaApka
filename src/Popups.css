@@ -154,13 +154,9 @@
     border-radius: 12px;
     padding: 4px;
 }
-.workoutPopup .coloredBtn{
-    background-color: var(--primary);
-    color: var(--pureWhite);
-}
 .workoutPopup .popupButtonContainer{
     margin-top: 25vh;
 }
-.workoutPopup .popupButtonContainer button{
+.popupButtonContainer button{
     margin-left: 16px;
 }

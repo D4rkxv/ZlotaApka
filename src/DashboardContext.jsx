@@ -8,6 +8,17 @@ import React, {
 
 const DashboardContext = createContext();
 
+export class Meal{
+    constructor(name, grammage, calories, protein, fats, carbs){
+      this.name = name
+      this.grammage = grammage
+      this.calories = calories
+      this.protein = protein
+      this.fats = fats
+      this.carbs = carbs
+    }
+  }
+
 export const DashboardProvider = ({ children }) => {
   const [selectedWidget, setSelectedWidget] = useState("dashboard");
 
@@ -346,6 +357,130 @@ export const DashboardProvider = ({ children }) => {
     1
   );
   const workoutProgressWidth = ((workoutsDone / workoutGoal) * 100).toFixed(1);
+  //food
+  const getListFromStorage = (key) => {
+  try {
+    const data = localStorage.getItem(key)
+    return data ? JSON.parse(data) : []
+  } catch {
+    return []
+  }
+}
+
+  const [breakfastList, setBreakfastList] = useState(() => getListFromStorage("breakfastList"))
+  const [lunchList, setLunchList] = useState(() => getListFromStorage("lunchList"))
+  const [snacksList, setSnacksList] = useState(() => getListFromStorage("snacksList"))
+  const [dinnerList, setDinnerList] = useState(() => getListFromStorage("dinnerList"))
+  const [caloriesCount, setCaloriesCount] = useState(0)
+  const [fatsCount, setFatsCount] = useState(0)
+  const [proteinCount, setProteinCount] = useState(0)
+  const [carbsCount, setCarbsCount] = useState(0)
+
+  useEffect(() => {
+    localStorage.setItem("breakfastList", JSON.stringify(breakfastList))
+  }, [breakfastList])
+
+  useEffect(() => {
+    localStorage.setItem("lunchList", JSON.stringify(lunchList))
+  }, [lunchList])
+
+  useEffect(() => {
+    localStorage.setItem("snacksList", JSON.stringify(snacksList))
+  }, [snacksList])
+
+  useEffect(() => {
+    localStorage.setItem("dinnerList", JSON.stringify(dinnerList))
+  }, [dinnerList])
+
+  useEffect(() => {
+    const today = new Date().toISOString().split("T")[0]
+    const lastDate = localStorage.getItem("lastDate")
+
+    if (lastDate !== today) {
+      setBreakfastList([])
+      setLunchList([])
+      setSnacksList([])
+      setDinnerList([])
+
+      localStorage.setItem("lastDate", today)
+    }
+  }, [])
+
+  const countCalories = (list) =>{
+    let calories = 0;
+    list.map((meal) =>{
+      calories += meal.calories
+    })
+    return calories
+  }
+  const countAllCalories = () =>{
+    return countCalories(breakfastList) + countCalories(lunchList) + countCalories(dinnerList) + countCalories(snacksList)
+  }
+  const countAllProtein = () =>{
+    let protein = 0
+    breakfastList.map((meal) =>{
+      protein += meal.protein
+    })
+    lunchList.map((meal) =>{
+      protein += meal.protein    
+    })
+    snacksList.map((meal) =>{
+      protein += meal.protein
+    })
+    dinnerList.map((meal) =>{
+      protein += meal.protein
+    })
+    return protein
+  }
+  const countAllFats = () =>{
+    let fats = 0
+    breakfastList.map((meal) =>{
+      fats += meal.fats
+    })
+    lunchList.map((meal) =>{
+      fats += meal.fats
+    })
+    snacksList.map((meal) =>{
+      fats += meal.fats
+    })
+    dinnerList.map((meal) =>{
+      fats += meal.fats
+    })
+    return fats
+  }
+  const countAllCarbs = () =>{
+    let carbs = 0
+    breakfastList.map((meal) =>{
+      carbs += meal.carbs
+    })
+    lunchList.map((meal) =>{
+      carbs += meal.carbs
+    })
+    snacksList.map((meal) =>{
+      carbs += meal.carbs
+    })
+    dinnerList.map((meal) =>{
+      carbs += meal.carbs
+    })
+    return carbs
+  }
+
+  useEffect(() => {
+    setCaloriesCount(countAllCalories)
+    setFatsCount(countAllFats)
+    setProteinCount(countAllProtein)
+    setCarbsCount(countAllCarbs)
+  }, [breakfastList, lunchList, dinnerList, snacksList])
+
+  const addMealsToList = (setList, meal) =>{
+    setList(prev => [...prev, meal]);
+  }
+
+
+   
+
+
+
   return (
     <DashboardContext.Provider
       value={{
@@ -398,6 +533,22 @@ export const DashboardProvider = ({ children }) => {
         setHydrationGoal,
         waterProgressWidth,
         workoutProgressWidth,
+        //food
+        breakfastList,
+        setBreakfastList,
+        lunchList,
+        setLunchList,
+        snacksList,
+        setSnacksList,
+        dinnerList,
+        setDinnerList,
+        addMealsToList,
+        countAllCalories,
+        caloriesCount,
+        fatsCount,
+        proteinCount,
+        carbsCount,
+        countCalories
       }}
     >
       {children}
