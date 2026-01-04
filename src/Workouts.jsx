@@ -8,7 +8,6 @@ import { useDashboard } from "./DashboardContext";
 import running from "./assets/running.svg";
 import WorkoutPopup from "./WorkoutPopup";
 function Workouts() {
-  const [showWorkoutPopup, setShowWorkoutPopup] = useState(false)
   const [tips, setTips] = useState([
     "Plan one “non-negotiable” 20-minute activity today – schedule it in your calendar like a meeting and treat it as something you can’t cancel.",
     "Commit to one “non-negotiable” 15-minute walk after breakfast – add it to your phone and do it rain or shine.",
@@ -81,21 +80,23 @@ function Workouts() {
     setIsDisabled,
     allSeconds,
     setAllSeconds,
+    dailyWorkoutMinutes,
+    setDailyWorkoutMinutes,
+    quickActivities,
+    allCalories,
+    addCalories,
+    addTime,
+    currentWorkout,
+    todayKey,
+    allWorkouts,
   } = useDashboard();
 
+  const [showWorkoutPopup, setShowWorkoutPopup] = useState(false);
   const [currentWorkoutName, setCurrentWorkoutName] =
     useState("Full Body Workout");
   const [exerciseDone, setExerciseDone] = useState(0);
   const [selectedTip, setSelectedTip] = useState("");
 
-  const workouts = [
-    { id: "task1", name: "Squats - 3x12" },
-    { id: "task2", name: "Elevated push-ups 3x8" },
-    { id: "task3", name: "One-arm dumbbell row 3x10" },
-    { id: "task4", name: "Dumbbell overhead press 3x10" },
-    { id: "task5", name: "Plank 3x40s" },
-    { id: "task6", name: "Glute bridge 3x12" },
-  ];
   const checkIfCompleted = () => {
     if (exerciseDone == 5) {
       setWorkoutStatus("final");
@@ -106,11 +107,9 @@ function Workouts() {
     setIsChecked((prev) => {
       const current = Array.isArray(prev) ? prev : Array(6).fill(false);
       const wasChecked = current[index];
-
       setExerciseDone((prevCount) =>
         wasChecked ? prevCount - 1 : prevCount + 1
       );
-
       const newChecked = [...current];
       newChecked[index] = !newChecked[index];
       return newChecked;
@@ -141,9 +140,7 @@ function Workouts() {
   };
   const handleFinalClick = () => {
     const workoutName = `${currentWorkoutName || "Full Body Workout"} `;
-    logWorkout(workoutName);
-    let tmpSec = seconds;
-    setAllSeconds((prev) => prev + tmpSec);
+    logWorkout({ name: workoutName });
     setWorkoutStatus("idle");
     setIsChecked(Array(6).fill(false));
     setIsDisabled(true);
@@ -151,6 +148,18 @@ function Workouts() {
     setIsActive(false);
     setExerciseDone(0);
     setWorkoutsDone((prev) => prev + 1);
+    const today = new Date().toISOString().split("T")[0];
+    const workoutMins = Math.floor(seconds / 60);
+    setAllSeconds((prev) => prev + seconds);
+    setDailyWorkoutMinutes((prev) => ({
+      ...prev,
+      [today]: (prev[today] || 0) + workoutMins,
+    }));
+  };
+  const handleWorkoutItemClick = (quickItem) => {
+    logWorkout(quickItem);
+    addCalories(quickItem.calories);
+    addTime(quickItem.time);
   };
 
   useEffect(() => {
@@ -160,37 +169,34 @@ function Workouts() {
         setSeconds((prevSeconds) => prevSeconds + 1);
       }, 1000);
     }
-
     return () => clearInterval(interval);
   }, [isActive]);
 
-  const todayMins = Math.floor(allSeconds / 60);
-
-  const getTodayIndex = () => {
-    const today = new Date().getDay();
-    return today === 0 ? 6 : today - 1;
+  const getWeekMinutes = () => {
+    const today = new Date();
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - (6 - i));
+      const dateStr = date.toISOString().split("T")[0];
+      week.push(dailyWorkoutMinutes[dateStr] || 0);
+    }
+    const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+    week[todayIndex] += allSeconds / 60;
+    return week;
   };
-
-  const todayIndex = getTodayIndex();
 
   const workoutData = {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     datasets: [
       {
-        label: "",
-        data: new Array(7)
-          .fill(800)
-          .map((_, i) => (i === todayIndex ? 800 + todayMins * 20 : 800)),
-        backgroundColor: new Array(7)
-          .fill("rgba(0, 168, 255, 0.25)")
-          .map((_, i) =>
-            i === todayIndex && todayMins > 5
-              ? "#00A8FF"
-              : "rgba(0, 168, 255, 0.25)"
-          ),
+        label: "Workout",
+        data: getWeekMinutes().map((val) => val),
+        backgroundColor: getWeekMinutes().map((val) =>
+          val > 40 ? "#00A8FF" : "rgba(0,168,255,0.25)"
+        ),
         borderRadius: 6,
-        borderSkipped: false,
-        barThickness: 34,
+        barThickness: 32,
       },
     ],
   };
@@ -206,6 +212,7 @@ function Workouts() {
     },
     scales: {
       x: {
+        offset: true,
         grid: { display: false },
         ticks: {
           color: "#9ca3af",
@@ -214,224 +221,207 @@ function Workouts() {
       },
       y: {
         display: false,
-        min: 800,
-        max: 1200,
+        min: 0,
+        max: 120,
       },
     },
     datasets: {
       bar: {
-        categoryPercentage: 1,
-        barPercentage: 1,
+        categoryPercentage: 0.3,
+        barPercentage: 0.3,
       },
     },
   };
 
   return (
     <>
-    {showWorkoutPopup ? <WorkoutPopup setPopupVisibility={setShowWorkoutPopup}/> : null}
-    <div className="workoutsContainer">
-      <Sidebar />
-      <div className="widgetContainer">
-        <p className="siteTitle">Workouts</p>
-        <div className="topWorkoutContainer">
-          <div className="leftTopContainer">
-            <div className="leftTopWorkoutContainer">
-              <div className="caloriesGoalContainer">
-                <p className="sectionTitle">Workout Summary</p>
-                <p className="caloriesCompletion">
-                  {workoutsDone > 0 ? workoutsDone : "0"} / {workoutGoal}{" "}
-                  workouts this week
-                </p>
-                <p className="caloriesLeft">
-                  Total time: {(allSeconds / 60).toFixed(1)} min • 1800kcal
-                  burned
-                </p>
-                <div className="progressTrack">
-                  <div
-                    className="progressFill"
-                    style={{ width: `${workoutProgressWidth}%` }}
+      {showWorkoutPopup ? (
+        <WorkoutPopup setPopupVisibility={setShowWorkoutPopup} />
+      ) : null}
+      <div className="workoutsContainer">
+        <Sidebar />
+        <div className="widgetContainer">
+          <p className="siteTitle">Workouts</p>
+          <div className="topWorkoutContainer">
+            <div className="leftTopContainer">
+              <div className="leftTopWorkoutContainer">
+                <div className="caloriesGoalContainer">
+                  <p className="sectionTitle">Workout Summary</p>
+                  <p className="caloriesCompletion">
+                    {workoutsDone > 0 ? workoutsDone : "0"} / {workoutGoal}{" "}
+                    workouts this week
+                  </p>
+                  <p className="caloriesLeft">
+                    Total time: {(allSeconds / 60).toFixed(1)} min •{" "}
+                    {allCalories > 0 ? allCalories : "0"}kcal burned
+                  </p>
+                  <div className="progressTrack">
+                    <div
+                      className="progressFill"
+                      style={{ width: `${workoutProgressWidth}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="workoutsGoalStreakContainer">
+                  <Bar
+                    data={workoutData}
+                    options={caloriesOptions}
+                    width={450}
+                    height={180}
                   />
                 </div>
               </div>
-              <div className="workoutsGoalStreakContainer">
-                <Bar data={workoutData} options={caloriesOptions} />
-              </div>
-            </div>
-            <div className="leftBotWorkoutContainer">
-              <div className="todayWorkoutContainer">
-                <p className="sectionTitle">Today’s workout</p>
-                <div className="todaysWorkoutInsideContainer">
-                  <div className="todaysWorkoutLeft">
-                    <div className="topTodaysWorkoutP">
-                      <p className="leftTodaysWorkoutTitle">
-                        Full Body Workout • 45min
-                      </p>
-                      <p className="todaysWorkoutProgress">
-                        {exerciseDone}/6 exercises done
-                      </p>
-                    </div>
-                    <form>
-                      {workouts.map((workout, index) => (
-                        <div key={workout.id} className="workoutGroup">
-                          <input
-                            type="checkbox"
-                            id={workout.id}
-                            className="circleCheckbox"
-                            disabled={isDisabled}
-                            checked={isChecked[index]}
-                            onChange={() => handleExersiceClick(index)}
-                          />
-                          <label htmlFor={workout.id} className="circleLabel">
-                            {workout.name}
-                          </label>
-                        </div>
-                      ))}
-                    </form>
-                    <div className="todaysWorkoutProgressP">
-                      <p className="todaysWorkoutProgress">
-                        Estimated calories: ~280 kcal
-                      </p>
-                    </div>
-                  </div>
-                  <div className="todaysWorkoutRight">
-                    <p className="timer">Timer</p>
-                    <div className="timerContainer">
-                      <svg viewBox="0 0 120 120" className="timerSvg">
-                        <circle
-                          cx="60"
-                          cy="60"
-                          r="50"
-                          fill="none"
-                          stroke="#00a8ff"
-                          strokeWidth="15"
-                          strokeDasharray="314"
-                          pathLength="1"
-                          className="progressCircle"
-                        />
-                        <foreignObject x="30" y="45" width="60" height="30">
-                          <div className="timerText">
-                            {seconds > 0 ? seconds : "00"}s
+              <div className="leftBotWorkoutContainer">
+                <div className="todayWorkoutContainer">
+                  <p className="sectionTitle">Today’s workout</p>
+                  <div className="todaysWorkoutInsideContainer">
+                    <div className="todaysWorkoutLeft">
+                      <div className="topTodaysWorkoutP">
+                        <p className="leftTodaysWorkoutTitle">
+                          Full Body Workout • 45min
+                        </p>
+                        <p className="todaysWorkoutProgress">
+                          {exerciseDone}/6 exercises done
+                        </p>
+                      </div>
+                      <form>
+                        {currentWorkout?.map((workout, index) => (
+                          <div key={workout.id} className="workoutGroup">
+                            <input
+                              type="checkbox"
+                              id={workout.id}
+                              className="circleCheckbox"
+                              disabled={isDisabled}
+                              checked={isChecked[index]}
+                              onChange={() => handleExersiceClick(index)}
+                            />
+                            <label htmlFor={workout.id} className="circleLabel">
+                              {workout.name}
+                            </label>
                           </div>
-                        </foreignObject>
-                        <circle
-                          cx="108"
-                          cy="12"
-                          r="6"
-                          isCompleted
-                          fill="#000000"
-                          className="dot"
-                        />
-                      </svg>
+                        ))}
+                      </form>
+                      <div className="todaysWorkoutProgressP">
+                        <p className="todaysWorkoutProgress">
+                          Estimated calories: ~280 kcal
+                        </p>
+                      </div>
                     </div>
-                    <div className="todaysWorkoutRightBot">
-                      {workoutStatus === "idle" ? (
-                        <button className="workoutBtn1" onClick={handleClick}>
-                          Start Workout
-                        </button>
-                      ) : workoutStatus === "running" ? (
-                        <>
-                          <button className="workoutBtn2" onClick={handlePause}>
-                            {"Pause"}
+                    <div className="todaysWorkoutRight">
+                      <p className="timer">Timer</p>
+                      <div className="timerContainer">
+                        <svg viewBox="0 0 120 120" className="timerSvg">
+                          <circle
+                            cx="60"
+                            cy="60"
+                            r="50"
+                            fill="none"
+                            stroke="#00a8ff"
+                            strokeWidth="15"
+                            strokeDasharray="314"
+                            pathLength="1"
+                            className="progressCircle"
+                          />
+                          <foreignObject x="30" y="45" width="60" height="30">
+                            <div className="timerText">
+                              {seconds > 0 ? seconds : "00"}s
+                            </div>
+                          </foreignObject>
+                          <circle
+                            cx="108"
+                            cy="12"
+                            r="6"
+                            isCompleted
+                            fill="#000000"
+                            className="dot"
+                          />
+                        </svg>
+                      </div>
+                      <div className="todaysWorkoutRightBot">
+                        {workoutStatus === "idle" ? (
+                          <button className="workoutBtn1" onClick={handleClick}>
+                            Start Workout
                           </button>
-                          <button className="workoutBtn1" onClick={handleStop}>
-                            {"Stop workout"}
+                        ) : workoutStatus === "running" ? (
+                          <>
+                            <button
+                              className="workoutBtn2"
+                              onClick={handlePause}
+                            >
+                              {"Pause"}
+                            </button>
+                            <button
+                              className="workoutBtn1"
+                              onClick={handleStop}
+                            >
+                              {"Stop workout"}
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            className="workoutBtn1"
+                            onClick={handleFinalClick}
+                          >
+                            Finish Workout
                           </button>
-                        </>
-                      ) : (
-                        <button
-                          className="workoutBtn1"
-                          onClick={handleFinalClick}
-                        >
-                          Finish Workout
-                        </button>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
+                <div className="activityHistory">
+                  <p className="sectionTitle">Activity History</p>
+                  <div className="activityHistoryContainer">
+                    {activityHistory.slice(0, 100).map((item) => (
+                      <div key={item.id} className="historyItem">
+                        {item.time} - {item.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div className="activityHistory">
-                <p className="sectionTitle">Activity History</p>
-                <div className="activityHistoryContainer">
-                  {activityHistory.slice(0, 100).map((item) => (
-                    <div key={item.id} className="history-item">
-                      {item.time} - {item.name}
+            </div>
+            <div className="rightTopWorkoutContainer">
+              <div className="workoutManagerTop">
+                <p className="sectionTitle">Log activity</p>
+                <p
+                  className="addActivity"
+                  onClick={() => {
+                    setShowWorkoutPopup(true);
+                  }}
+                >
+                  Add Activity
+                </p>
+              </div>
+              <div className="workoutList">
+                {quickActivities.map((item) => (
+                  <div
+                    key={item.id}
+                    className="workoutItem"
+                    onClick={() => handleWorkoutItemClick(item)}
+                  >
+                    <div className="workoutImgContainer">
+                      <img src={item.icon} alt={item.name} />
                     </div>
-                  ))}
-                </div>
+                    <div className="workoutRightDesc">
+                      <p className="activityType">
+                        {item.name} • {item.time} min
+                      </p>
+                      <p className="calories">~{item.calories}kcal</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-          <div className="rightTopWorkoutContainer">
-            <div className="workoutManagerTop">
-              <p className="sectionTitle">Log activity</p>
-              <p className="addActivity" onClick={() => {setShowWorkoutPopup(true)}}>Add Activity</p>
+          <div className="botWorkoutContainer">
+            <div className="workoutTip">
+              <p className="sectionTitle">Tip of the day</p>
+              <p>{selectedTip}</p>
             </div>
-            <div className="workoutList">
-              <div className="workoutItem">
-                <div className="workoutImgContainer">
-                  <img src={running} />
-                </div>
-                <div className="workoutRightDesc">
-                  <p className="activityType">Running • 40 min </p>
-                  <p className="calories">~240kcal</p>
-                </div>
-              </div>
-              <div className="workoutItem">
-                <div className="workoutImgContainer">
-                  <img src={running} />
-                </div>
-                <div className="workoutRightDesc">
-                  <p className="activityType">Running • 40 min </p>
-                  <p className="calories">~240kcal</p>
-                </div>
-              </div>
-              <div className="workoutItem">
-                <div className="workoutImgContainer">
-                  <img src={running} />
-                </div>
-                <div className="workoutRightDesc">
-                  <p className="activityType">Running • 40 min </p>
-                  <p className="calories">~240kcal</p>
-                </div>
-              </div>
-              <div className="workoutItem">
-                <div className="workoutImgContainer">
-                  <img src={running} />
-                </div>
-                <div className="workoutRightDesc">
-                  <p className="activityType">Running • 40 min </p>
-                  <p className="calories">~240kcal</p>
-                </div>
-              </div>
-              <div className="workoutItem">
-                <div className="workoutImgContainer">
-                  <img src={running} />
-                </div>
-                <div className="workoutRightDesc">
-                  <p className="activityType">Running • 40 min </p>
-                  <p className="calories">~240kcal</p>
-                </div>
-              </div>
-              <div className="workoutItem">
-                <div className="workoutImgContainer">
-                  <img src={running} />
-                </div>
-                <div className="workoutRightDesc">
-                  <p className="activityType">Running • 40 min </p>
-                  <p className="calories">~240kcal</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="botWorkoutContainer">
-          <div className="workoutTip">
-            <p className="sectionTitle">Tip of the day</p>
-            <p>{selectedTip}</p>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 }

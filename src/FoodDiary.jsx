@@ -30,37 +30,37 @@ const FoodDiary = () => {
   const [caloriesConsumed, setCaloriesConsumed] = useState(1440);
   const [caloriesGoal, setCaloriesGoal] = useState(3200);
   const [tips, setTips] = useState([
-  "Eat regular meals to keep your energy levels stable throughout the day.",
-  "Include vegetables or fruit in every meal for essential vitamins and fiber.",
-  "Choose whole foods over highly processed products whenever possible.",
-  "Start your day with a balanced breakfast containing protein and fiber.",
-  "Drink water before meals to support digestion and portion control.",
-  "Eat slowly and mindfully to better recognize hunger and fullness cues.",
-  "Aim to fill half your plate with vegetables at main meals.",
-  "Include a source of protein in every meal to stay full longer.",
-  "Limit sugary snacks and opt for fruit, nuts, or yogurt instead.",
-  "Plan your meals ahead to avoid unhealthy food choices.",
-  "Choose whole grains instead of refined carbohydrates.",
-  "Listen to your body’s hunger signals instead of eating out of habit.",
-  "Keep healthy snacks available to avoid reaching for junk food.",
-  "Include healthy fats like nuts, seeds, and olive oil in your diet.",
-  "Avoid skipping meals, as it can lead to overeating later.",
-  "Balance your plate with carbohydrates, protein, and fats.",
-  "Reduce portion sizes if you often feel overly full after meals.",
-  "Limit sugary drinks and choose water or unsweetened beverages.",
-  "Eat more home-cooked meals to control ingredients and portions.",
-  "Add variety to your meals to ensure a wide range of nutrients.",
-  "Choose lean protein sources like fish, chicken, beans, or tofu.",
-  "Pay attention to how foods make you feel after eating them.",
-  "Avoid eating while distracted, such as while watching TV.",
-  "Read food labels to better understand what you are consuming.",
-  "Include fiber-rich foods to support digestion and gut health.",
-  "Allow yourself occasional treats to maintain a balanced relationship with food.",
-  "Stop eating when you feel comfortably full, not stuffed.",
-  "Eat meals at consistent times to support metabolism.",
-  "Focus on long-term habits instead of quick diet fixes.",
-  "Enjoy your food without guilt and appreciate each meal."
-    ]);
+    "Eat regular meals to keep your energy levels stable throughout the day.",
+    "Include vegetables or fruit in every meal for essential vitamins and fiber.",
+    "Choose whole foods over highly processed products whenever possible.",
+    "Start your day with a balanced breakfast containing protein and fiber.",
+    "Drink water before meals to support digestion and portion control.",
+    "Eat slowly and mindfully to better recognize hunger and fullness cues.",
+    "Aim to fill half your plate with vegetables at main meals.",
+    "Include a source of protein in every meal to stay full longer.",
+    "Limit sugary snacks and opt for fruit, nuts, or yogurt instead.",
+    "Plan your meals ahead to avoid unhealthy food choices.",
+    "Choose whole grains instead of refined carbohydrates.",
+    "Listen to your body’s hunger signals instead of eating out of habit.",
+    "Keep healthy snacks available to avoid reaching for junk food.",
+    "Include healthy fats like nuts, seeds, and olive oil in your diet.",
+    "Avoid skipping meals, as it can lead to overeating later.",
+    "Balance your plate with carbohydrates, protein, and fats.",
+    "Reduce portion sizes if you often feel overly full after meals.",
+    "Limit sugary drinks and choose water or unsweetened beverages.",
+    "Eat more home-cooked meals to control ingredients and portions.",
+    "Add variety to your meals to ensure a wide range of nutrients.",
+    "Choose lean protein sources like fish, chicken, beans, or tofu.",
+    "Pay attention to how foods make you feel after eating them.",
+    "Avoid eating while distracted, such as while watching TV.",
+    "Read food labels to better understand what you are consuming.",
+    "Include fiber-rich foods to support digestion and gut health.",
+    "Allow yourself occasional treats to maintain a balanced relationship with food.",
+    "Stop eating when you feel comfortably full, not stuffed.",
+    "Eat meals at consistent times to support metabolism.",
+    "Focus on long-term habits instead of quick diet fixes.",
+    "Enjoy your food without guilt and appreciate each meal.",
+  ]);
   const [selectedTip, setSelectedTip] = useState("");
 
   useEffect(() => {
@@ -68,20 +68,17 @@ const FoodDiary = () => {
     setSelectedTip(tips[randomIndex]);
   }, []);
 
-  const weightValues = [84, 79.8, 79.5, 76.2, 79, 78.9, 75.7];
-  const activityValues = [0, 10, 50, 25, 57, 43, 12];
-
   const deficit = [0, -50, 120, 80, 0, -30, -100];
 
   const macrosData = {
-    labels: ['Protein', 'Fat', 'Carbs'],
+    labels: ["Protein", "Fat", "Carbs"],
     datasets: [
       {
         data: [900, 8000, 5000],
         backgroundColor: [
-          '#5B5FEF', // Protein 
-          '#FDB022', // Fat 
-          '#22C1A2', // Carbs 
+          "#5B5FEF", // Protein
+          "#FDB022", // Fat
+          "#22C1A2", // Carbs
         ],
         borderWidth: 0,
       },
@@ -89,13 +86,13 @@ const FoodDiary = () => {
   };
 
   const macrosOptions = {
-    cutout: '70%',
+    cutout: "70%",
     plugins: {
       legend: {
-        position: 'left',
+        position: "left",
         labels: {
           usePointStyle: true,
-          pointStyle: 'circle',
+          pointStyle: "circle",
         },
       },
     },
@@ -137,8 +134,8 @@ const FoodDiary = () => {
       },
       y: {
         display: false,
-        min: 800,
-        max: 1200,
+        min: 0,
+        max: 1000,
       },
     },
     datasets: {
@@ -150,11 +147,11 @@ const FoodDiary = () => {
   };
 
   const mealDistributionData = {
-    labels: ['B', 'L', 'D', 'S'],
+    labels: ["B", "L", "D", "S"],
     datasets: [
       {
         data: [18, 30, 25, 20],
-        backgroundColor: '#14A3E3',
+        backgroundColor: "#14A3E3",
         borderRadius: 12,
         barThickness: 14,
       },
@@ -162,7 +159,7 @@ const FoodDiary = () => {
   };
 
   const mealDistributionOptions = {
-    indexAxis: 'y',
+    indexAxis: "y",
     plugins: {
       legend: {
         display: false,
@@ -182,7 +179,7 @@ const FoodDiary = () => {
         },
         ticks: {
           callback: (value) => `${value}%`,
-          color: '#8A8FA3',
+          color: "#8A8FA3",
         },
         border: {
           display: false,
@@ -193,14 +190,14 @@ const FoodDiary = () => {
           display: false,
         },
         ticks: {
-          color: '#1E1E2F',
+          color: "#1E1E2F",
           font: {
-            weight: '500',
+            weight: "500",
           },
         },
         border: {
           display: true,
-          color: '#1E1E2F',
+          color: "#1E1E2F",
           width: 2,
         },
       },
@@ -217,8 +214,12 @@ const FoodDiary = () => {
           <div className="leftSide">
             <div className="caloriesGoalContainer">
               <p className="sectionTitle">Calories left</p>
-              <p className="caloriesCompletion">{caloriesConsumed} / {caloriesGoal} kcal</p>
-              <p className="caloriesLeft">{caloriesGoal - caloriesConsumed} kcal left</p>
+              <p className="caloriesCompletion">
+                {caloriesConsumed} / {caloriesGoal} kcal
+              </p>
+              <p className="caloriesLeft">
+                {caloriesGoal - caloriesConsumed} kcal left
+              </p>
               <div className="progressTrack">
                 <div className="progressFill" />
               </div>
@@ -295,7 +296,7 @@ const FoodDiary = () => {
                 </div>
               </div>
               <div className="coloriesGoalStreakContainer">
-                 <Bar data={caloriesData} options={caloriesOptions} />
+                <Bar data={caloriesData} options={caloriesOptions} />
               </div>
             </div>
             <div className="divider">
@@ -333,7 +334,10 @@ const FoodDiary = () => {
               <div className="mealDistributionContainer">
                 <p className="sectionTitle">Meal Distribution</p>
                 <div className="chartContainer">
-                  <Bar data={mealDistributionData} options={mealDistributionOptions} />
+                  <Bar
+                    data={mealDistributionData}
+                    options={mealDistributionOptions}
+                  />
                 </div>
               </div>
             </div>
@@ -381,5 +385,5 @@ const FoodDiary = () => {
       </div>
     </div>
   );
-}
+};
 export default FoodDiary;

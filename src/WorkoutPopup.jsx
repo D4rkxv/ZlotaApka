@@ -1,44 +1,109 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useDashboard } from "./DashboardContext.jsx";
 import Running1 from "./assets/Running1.svg";
 import Running2 from "./assets/Running2.svg";
 import Meditation from "./assets/Meditation.svg";
 import Threadmill from "./assets/Threadmill.svg";
-import "./Popups.css"
+import "./Popups.css";
 
-const WorkoutPopup = ({setPopupVisibility}) => {
-    const [selectedIcon, setSelectedIcon] = useState(1)
-    
-    return(
-        <div className="popupBackground">
-            <div className="popupContainer workoutPopup">
-                <form onSubmit={(e) =>{
-                    e.preventDefault()
-                    setPopupVisibility(false)
-                }}>
-                    <p className="popupTitle">Add new activity</p>
-                    <div className="popupSection">
-                        <p className="popupSectionTitle workoutInputs">Activity type</p>
-                        <input type="text" placeholder='Activity name' required />
-                        <input type="text" placeholder='Time' required />
-                        <input type="text" placeholder='Calories lost' required />
-                    </div>
-                    <div className="popupSection">
-                        <p className="popupSectionTitle">Activity icon</p>
-                        <div className="iconSelection">
-                            <button type='button' className={selectedIcon==1 ? "selected":null} onClick={() => (setSelectedIcon(1))}><img src={Running1} alt="Jogging"/></button>
-                            <button type='button' className={selectedIcon==2 ? "selected":null} onClick={() => (setSelectedIcon(2))}><img src={Meditation} alt="Meditation"/></button>
-                            <button type='button' className={selectedIcon==3 ? "selected":null} onClick={() => (setSelectedIcon(3))}><img src={Threadmill} alt="Threadmill" /></button>
-                            <button type='button' className={selectedIcon==4 ? "selected":null} onClick={() => (setSelectedIcon(4))}><img src={Running2} alt="Sprint"/></button>
-                        </div>
-                    </div>
-                    <div className="popupButtonContainer">
-                        <button className='transparentBtn' onClick={() => {setPopupVisibility(false)}}>Cancel</button>
-                        <button type='submit' className='coloredBtn'>Save</button>
-                    </div>
-                </form>
+const WorkoutPopup = ({ setPopupVisibility }) => {
+  const { logWorkout, logCustomActivity, addCalories, addTime } =
+    useDashboard();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    time: "",
+    calories: "",
+  });
+  const [selectedIcon, setSelectedIcon] = useState(1);
+
+  const icons = [Running1, Meditation, Threadmill, Running2];
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    const activityData = {
+      name: formData.name,
+      time: Number(formData.time),
+      calories: Number(formData.calories),
+      icon: icons[selectedIcon - 1],
+    };
+
+    logCustomActivity(activityData);
+    logWorkout(activityData);
+    addCalories(activityData.calories);
+    addTime(activityData.time);
+
+    setPopupVisibility(false);
+    setFormData({ name: "", time: "", calories: "" });
+    setSelectedIcon(1);
+  };
+
+  return (
+    <div className="popupBackground">
+      <div className="popupContainer workoutPopup">
+        <form onSubmit={handleSave}>
+          <p className="popupTitle">Add new activity</p>
+          <div className="popupSection">
+            <p className="popupSectionTitle workoutInputs">Activity type</p>
+            <input
+              type="text"
+              placeholder="Activity name"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Time (min)"
+              value={formData.time}
+              onChange={(e) =>
+                setFormData({ ...formData, time: e.target.value })
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Calories lost"
+              value={formData.calories}
+              onChange={(e) =>
+                setFormData({ ...formData, calories: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div className="popupSection">
+            <p className="popupSectionTitle">Activity icon</p>
+            <div className="iconSelection">
+              {[1, 2, 3, 4].map((id) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={selectedIcon === id ? "selected" : null}
+                  onClick={() => setSelectedIcon(id)}
+                >
+                  <img src={icons[id - 1]} alt={`Icon ${id}`} />
+                </button>
+              ))}
             </div>
-        </div>
-    )
-}
+          </div>
+          <div className="popupButtonContainer">
+            <button
+              type="button"
+              className="transparentBtn"
+              onClick={() => setPopupVisibility(false)}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="coloredBtn">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
-export default WorkoutPopup
+export default WorkoutPopup;

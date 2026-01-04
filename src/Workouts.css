@@ -157,6 +157,7 @@
   -ms-overflow-style: none;
 }
 .workoutItem {
+  cursor: pointer;
   padding: 24px 32px;
   display: flex;
   border: 1px solid var(--primary);
@@ -203,6 +204,14 @@
   border: none;
   color: var(--pureWhite);
   border-radius: 24px;
+}
+.noQuickText {
+  height: 50vh;
+  color: var(--textColor-50);
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .btn.shake {
   animation: shake1 0.4s;
