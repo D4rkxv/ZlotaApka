@@ -41,12 +41,14 @@ const sleepValues = [7.5, 6.5, 7, 7.8, 5.5, 8.2, 6.0];
 
 export function Dashboard() {
   const [showWelcomePopup, setShowWelcomePopup] = useState(false)
+  const [caloriesGoal, setCaloriesGoal] = useState(3200);
   const {
     currentHydration,
     setCurrentHydration,
     hydrationGoal,
     setHydrationGoal,
     waterProgressWidth,
+    caloriesCount
   } = useDashboard();
   const { goToDashboard, goToWater, goToFood, goToWorkouts, goToSleep } =
     useDashboard();
@@ -155,10 +157,10 @@ export function Dashboard() {
         <div className="topWidgets">
           <div className="smallWidget" onClick={goToFood}>
             <p className="smallWidgetTitle">Calories</p>
-            <p className="smalWidgetDesc">1820 / 3200</p>
+            <p className="smalWidgetDesc">{caloriesCount} / {caloriesGoal}</p>
             <div className="progressWrapper">
               <div className="progressTrack">
-                <div className="progressFill" />
+                <div className="progressFill" style={{ width: `${Math.min(((caloriesCount / caloriesGoal) * 100).toFixed(0), 100)}%` }}/>
               </div>
             </div>
           </div>
