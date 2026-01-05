@@ -13,147 +13,145 @@
   --pureWhite: #fefefe;
 }
 
-.caloriesGoalContainer{
-    border: var(--primary-10) 1px solid;
-    border-radius: 12px;
-    padding: 12px 32px;
-    height: 16vh;
+.caloriesGoalContainer {
+  border: var(--primary-10) 1px solid;
+  border-radius: 12px;
+  padding: 12px 32px;
+  height: 16vh;
 }
-.caloriesGoalContainer .sectionTitle{
-   margin: 0;
-   font-size: 16px;
-   color: var(--textColor);
+.caloriesGoalContainer .sectionTitle {
+  margin: 0;
+  font-size: 16px;
+  color: var(--textColor);
 }
-.caloriesCompletion{
-    color: var(--textColor);
-    font-size: 24px;
-    margin-bottom: 0px;
+.caloriesCompletion {
+  color: var(--textColor);
+  font-size: 24px;
+  margin-bottom: 0px;
 }
-.caloriesLeft{
-    color: var(--primary);
-    font-size: 16px;
-    margin-top: 0px;
+.caloriesLeft {
+  color: var(--primary);
+  font-size: 16px;
+  margin-top: 0px;
 }
-.caloriesGoalContainer .progressTrack{
-    width: 22vw;
-    height: 2vh;
+.caloriesGoalContainer .progressTrack {
+  width: 22vw;
+  height: 2vh;
 }
 
-.mealManagerContainer{
-    border: var(--primary-10) 1px solid;
-    border-radius: 12px;
-    padding: 12px 32px;
-    margin-top: 32px;
-    height: 26vh;
+.mealManagerContainer {
+  border: var(--primary-10) 1px solid;
+  border-radius: 12px;
+  padding: 12px 32px;
+  margin-top: 32px;
+  height: 26vh;
 }
-.mealManagerTop{
-    display: flex;
-    flex-direction: row;
-    justify-content:space-between;
+.mealManagerTop {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
-.mealTitleContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-content: center;
+.mealTitleContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
 }
-.mealTitle{
-    color: var(--textColor);
-    font-size: 16px;
+.mealTitle {
+  color: var(--textColor);
+  font-size: 16px;
 }
-.mealCaloriesGoal{
-    color: var(--textColor-50);
-    font-size: 16px;
+.mealCaloriesGoal {
+  color: var(--textColor-50);
+  font-size: 16px;
 }
-.addMeal{
-    color: var(--primary);
-    font-size: 16px;
-    transition: 0.3s ease;
-
+.addMeal {
+  color: var(--primary);
+  font-size: 16px;
+  transition: 0.3s ease;
 }
-.addMeal:hover{
-    cursor: pointer;
-    text-decoration: underline;
+.addMeal:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
-.mealList{
-    margin-top: 0px;
-    max-height: 80%;
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+.mealList {
+  margin-top: 0px;
+  max-height: 80%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 .mealList::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
-.mealItem{
-    margin-bottom: 8px;
+.mealItem {
+  margin-bottom: 8px;
 }
-.mealName{
-    color: var(--textColor);
-    font-size: 20px;
-    margin-bottom: 0px;
+.mealName {
+  color: var(--textColor);
+  font-size: 20px;
+  margin-bottom: 0px;
 }
-.mealDescription{
-    color: var(--textColor-50);
-    font-size: 14px;
-    margin-top: 0px;
-}
-
-.macrosContainer{
-    height: 16vh;
-    border: var(--primary-10) 1px solid;
-    border-radius: 12px;
-    padding: 12px 32px;
-    width: 50%;
-}
-.macrosContainer .chartContainer{
-    margin-top: -6vh;
-    margin-left: -0.5vw;
+.mealDescription {
+  color: var(--textColor-50);
+  font-size: 14px;
+  margin-top: 0px;
 }
 
-.coloriesGoalStreakContainer{
-    border: var(--primary-10) 1px solid;
-    border-radius: 12px;
-    padding: 12px 32px;
-    width: 50%;
+.macrosContainer {
+  height: 16vh;
+  border: var(--primary-10) 1px solid;
+  border-radius: 12px;
+  padding: 12px 32px;
+  width: 50%;
+}
+.macrosContainer .chartContainer {
+  margin-top: -6vh;
+  margin-left: -0.5vw;
 }
 
-.lunch{
-    width: 60%;
-}
-.mealDistributionContainer{
-    width: 40%;
-    height: 26vh;
-    border: var(--primary-10) 1px solid;
-    border-radius: 12px;
-    margin-top: 32px;
-    padding: 12px 32px;
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    
+.coloriesGoalStreakContainer {
+  border: var(--primary-10) 1px solid;
+  border-radius: 12px;
+  padding: 12px 32px;
+  width: 50%;
 }
 
-.snacks{
-    width: 60%;
+.lunch {
+  width: 60%;
 }
-.dailyTipContainer{
-    width: 40%;
-    height: 26vh;
-    padding: 12px 32px;
-    border: var(--primary-10) 1px solid;
-    border-radius: 12px;
-    margin-top: 32px;
+.mealDistributionContainer {
+  width: 40%;
+  height: 26vh;
+  border: var(--primary-10) 1px solid;
+  border-radius: 12px;
+  margin-top: 32px;
+  padding: 12px 32px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 
-.dailyTipContainer ul{
-    padding-left: 1vw;
-    list-style: disc;
+.snacks {
+  width: 60%;
 }
-.dailyTipContainer li{
-    color: var(--textColor);
-    font-size: 16px;
+.dailyTipContainer {
+  width: 40%;
+  height: 26vh;
+  padding: 12px 32px;
+  border: var(--primary-10) 1px solid;
+  border-radius: 12px;
+  margin-top: 32px;
 }
-.dailyTipContainer li::marker{
-    color: var(--primary);
+
+.dailyTipContainer ul {
+  padding-left: 1vw;
+  list-style: disc;
+}
+.dailyTipContainer li {
+  color: var(--textColor);
+  font-size: 16px;
+}
+.dailyTipContainer li::marker {
+  color: var(--primary);
 }

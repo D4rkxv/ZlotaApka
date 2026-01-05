@@ -8,16 +8,16 @@ import React, {
 
 const DashboardContext = createContext();
 
-export class Meal{
-    constructor(name, grammage, calories, protein, fats, carbs){
-      this.name = name
-      this.grammage = grammage
-      this.calories = calories
-      this.protein = protein
-      this.fats = fats
-      this.carbs = carbs
-    }
+export class Meal {
+  constructor(name, grammage, calories, protein, fats, carbs) {
+    this.name = name;
+    this.grammage = grammage;
+    this.calories = calories;
+    this.protein = protein;
+    this.fats = fats;
+    this.carbs = carbs;
   }
+}
 
 export const DashboardProvider = ({ children }) => {
   const [selectedWidget, setSelectedWidget] = useState("dashboard");
@@ -125,6 +125,18 @@ export const DashboardProvider = ({ children }) => {
   //water Section
   const [hydrationGoal, setHydrationGoal] = useState(3.0);
   const [currentHydration, setCurrentHydration] = useState(0.5);
+
+  //sleep Section
+  const [inBedTime, setInBedTime] = useState("");
+  const [outOfBedTime, setOutOfBedTime] = useState("");
+  const [sleepQuality, setSleepQuality] = useState("");
+  const [score, setScore] = useState(0);
+  const [sleepGoal, setSleepGoal] = useState([8, 0]);
+  const [lastNightSleep, setLastNightSleep] = useState([0, 0]);
+  const [sleepHistory, setSleepHistory] = useState([]);
+  const [profileInBedTime, setProfileInBedTime] = useState("");
+  const [profileOutOfBedTime, setProfileOutOfBedTime] = useState("");
+  const [profileSleepQuality, setProfileSleepQuality] = useState(null);
 
   const saveWithWeeklyReset = useCallback(
     (key, value, serializer = JSON.stringify) => {
@@ -359,127 +371,221 @@ export const DashboardProvider = ({ children }) => {
   const workoutProgressWidth = ((workoutsDone / workoutGoal) * 100).toFixed(1);
   //food
   const getListFromStorage = (key) => {
-  try {
-    const data = localStorage.getItem(key)
-    return data ? JSON.parse(data) : []
-  } catch {
-    return []
-  }
-}
+    try {
+      const data = localStorage.getItem(key);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  };
 
-  const [breakfastList, setBreakfastList] = useState(() => getListFromStorage("breakfastList"))
-  const [lunchList, setLunchList] = useState(() => getListFromStorage("lunchList"))
-  const [snacksList, setSnacksList] = useState(() => getListFromStorage("snacksList"))
-  const [dinnerList, setDinnerList] = useState(() => getListFromStorage("dinnerList"))
-  const [caloriesCount, setCaloriesCount] = useState(0)
-  const [fatsCount, setFatsCount] = useState(0)
-  const [proteinCount, setProteinCount] = useState(0)
-  const [carbsCount, setCarbsCount] = useState(0)
-
-  useEffect(() => {
-    localStorage.setItem("breakfastList", JSON.stringify(breakfastList))
-  }, [breakfastList])
-
-  useEffect(() => {
-    localStorage.setItem("lunchList", JSON.stringify(lunchList))
-  }, [lunchList])
-
-  useEffect(() => {
-    localStorage.setItem("snacksList", JSON.stringify(snacksList))
-  }, [snacksList])
+  const [breakfastList, setBreakfastList] = useState(() =>
+    getListFromStorage("breakfastList")
+  );
+  const [lunchList, setLunchList] = useState(() =>
+    getListFromStorage("lunchList")
+  );
+  const [snacksList, setSnacksList] = useState(() =>
+    getListFromStorage("snacksList")
+  );
+  const [dinnerList, setDinnerList] = useState(() =>
+    getListFromStorage("dinnerList")
+  );
+  const [caloriesCount, setCaloriesCount] = useState(0);
+  const [fatsCount, setFatsCount] = useState(0);
+  const [proteinCount, setProteinCount] = useState(0);
+  const [carbsCount, setCarbsCount] = useState(0);
 
   useEffect(() => {
-    localStorage.setItem("dinnerList", JSON.stringify(dinnerList))
-  }, [dinnerList])
+    localStorage.setItem("breakfastList", JSON.stringify(breakfastList));
+  }, [breakfastList]);
 
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0]
-    const lastDate = localStorage.getItem("lastDate")
+    localStorage.setItem("lunchList", JSON.stringify(lunchList));
+  }, [lunchList]);
+
+  useEffect(() => {
+    localStorage.setItem("snacksList", JSON.stringify(snacksList));
+  }, [snacksList]);
+
+  useEffect(() => {
+    localStorage.setItem("dinnerList", JSON.stringify(dinnerList));
+  }, [dinnerList]);
+
+  useEffect(() => {
+    const today = new Date().toISOString().split("T")[0];
+    const lastDate = localStorage.getItem("lastDate");
 
     if (lastDate !== today) {
-      setBreakfastList([])
-      setLunchList([])
-      setSnacksList([])
-      setDinnerList([])
+      setBreakfastList([]);
+      setLunchList([]);
+      setSnacksList([]);
+      setDinnerList([]);
 
-      localStorage.setItem("lastDate", today)
+      localStorage.setItem("lastDate", today);
     }
-  }, [])
+  }, []);
 
-  const countCalories = (list) =>{
+  const countCalories = (list) => {
     let calories = 0;
-    list.map((meal) =>{
-      calories += meal.calories
-    })
-    return calories
-  }
-  const countAllCalories = () =>{
-    return countCalories(breakfastList) + countCalories(lunchList) + countCalories(dinnerList) + countCalories(snacksList)
-  }
-  const countAllProtein = () =>{
-    let protein = 0
-    breakfastList.map((meal) =>{
-      protein += meal.protein
-    })
-    lunchList.map((meal) =>{
-      protein += meal.protein    
-    })
-    snacksList.map((meal) =>{
-      protein += meal.protein
-    })
-    dinnerList.map((meal) =>{
-      protein += meal.protein
-    })
-    return protein
-  }
-  const countAllFats = () =>{
-    let fats = 0
-    breakfastList.map((meal) =>{
-      fats += meal.fats
-    })
-    lunchList.map((meal) =>{
-      fats += meal.fats
-    })
-    snacksList.map((meal) =>{
-      fats += meal.fats
-    })
-    dinnerList.map((meal) =>{
-      fats += meal.fats
-    })
-    return fats
-  }
-  const countAllCarbs = () =>{
-    let carbs = 0
-    breakfastList.map((meal) =>{
-      carbs += meal.carbs
-    })
-    lunchList.map((meal) =>{
-      carbs += meal.carbs
-    })
-    snacksList.map((meal) =>{
-      carbs += meal.carbs
-    })
-    dinnerList.map((meal) =>{
-      carbs += meal.carbs
-    })
-    return carbs
-  }
+    list.map((meal) => {
+      calories += meal.calories;
+    });
+    return calories;
+  };
+  const countAllCalories = () => {
+    return (
+      countCalories(breakfastList) +
+      countCalories(lunchList) +
+      countCalories(dinnerList) +
+      countCalories(snacksList)
+    );
+  };
+  const countAllProtein = () => {
+    let protein = 0;
+    breakfastList.map((meal) => {
+      protein += meal.protein;
+    });
+    lunchList.map((meal) => {
+      protein += meal.protein;
+    });
+    snacksList.map((meal) => {
+      protein += meal.protein;
+    });
+    dinnerList.map((meal) => {
+      protein += meal.protein;
+    });
+    return protein;
+  };
+  const countAllFats = () => {
+    let fats = 0;
+    breakfastList.map((meal) => {
+      fats += meal.fats;
+    });
+    lunchList.map((meal) => {
+      fats += meal.fats;
+    });
+    snacksList.map((meal) => {
+      fats += meal.fats;
+    });
+    dinnerList.map((meal) => {
+      fats += meal.fats;
+    });
+    return fats;
+  };
+  const countAllCarbs = () => {
+    let carbs = 0;
+    breakfastList.map((meal) => {
+      carbs += meal.carbs;
+    });
+    lunchList.map((meal) => {
+      carbs += meal.carbs;
+    });
+    snacksList.map((meal) => {
+      carbs += meal.carbs;
+    });
+    dinnerList.map((meal) => {
+      carbs += meal.carbs;
+    });
+    return carbs;
+  };
+  useEffect(() => {
+    setCaloriesCount(countAllCalories);
+    setFatsCount(countAllFats);
+    setProteinCount(countAllProtein);
+    setCarbsCount(countAllCarbs);
+  }, [breakfastList, lunchList, dinnerList, snacksList]);
+
+  const addMealsToList = (setList, meal) => {
+    setList((prev) => [...prev, meal]);
+  };
+  //sleep
+
+  const timeToMinutes = (timeStr) => {
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const logSleep = useCallback(() => {
+    const bedMinutes = timeToMinutes(inBedTime);
+    const outMinutes = timeToMinutes(outOfBedTime);
+
+    let sleepMinutes;
+    if (outMinutes > bedMinutes) {
+      sleepMinutes = outMinutes - bedMinutes;
+    } else {
+      sleepMinutes = outMinutes + 24 * 60 - bedMinutes;
+    }
+    const sleepHours = Math.floor(sleepMinutes / 60);
+    const sleepMins = sleepMinutes % 60;
+    setLastNightSleep([sleepHours, sleepMins]);
+    const goalHours = sleepGoal[0] + sleepGoal[1] / 60;
+    const durationPct = Math.min(
+      ((sleepHours + sleepMins / 60) / goalHours) * 100,
+      100
+    );
+    const qualityNum =
+      sleepQuality === "poor"
+        ? 1
+        : sleepQuality === "average"
+        ? 2
+        : sleepQuality === "good"
+        ? 3
+        : sleepQuality === "excellent"
+        ? 4
+        : 2;
+    const qualityPct = ((qualityNum - 1) / 3) * 100;
+    const sleepScore = Math.round(0.7 * durationPct + 0.3 * qualityPct);
+    console.log(sleepScore);
+
+    const sleepData = {
+      inBedTime,
+      outOfBedTime,
+      sleepQuality,
+      date: new Date().toISOString().split("T")[0],
+      sleepHours,
+      sleepMins,
+      score: sleepScore,
+    };
+    setProfileInBedTime(inBedTime);
+    setProfileOutOfBedTime(outOfBedTime);
+    setScore(sleepScore);
+    setSleepHistory((prev) => {
+      const updated = [sleepData, ...prev.slice(0)];
+      try {
+        localStorage.setItem("sleepHistory", JSON.stringify(updated));
+        console.log(`Saved SLEEP:`, updated);
+      } catch (e) {
+        console.log("SAVE ERROR:", e);
+      }
+      setInBedTime("");
+      setOutOfBedTime("");
+      setSleepQuality("");
+      return updated;
+    });
+  }, [inBedTime, outOfBedTime, sleepQuality, sleepGoal]);
 
   useEffect(() => {
-    setCaloriesCount(countAllCalories)
-    setFatsCount(countAllFats)
-    setProteinCount(countAllProtein)
-    setCarbsCount(countAllCarbs)
-  }, [breakfastList, lunchList, dinnerList, snacksList])
+    try {
+      const history = localStorage.getItem("sleepHistory");
+      if (history) {
+        const parsed = JSON.parse(history);
+        setSleepHistory(parsed);
 
-  const addMealsToList = (setList, meal) =>{
-    setList(prev => [...prev, meal]);
-  }
-
-
-   
-
-
+        const today = new Date().toISOString().split("T")[0];
+        const todayEntry = parsed.find((entry) => entry.date === today);
+        if (todayEntry) {
+          setProfileInBedTime(todayEntry.inBedTime);
+          setProfileOutOfBedTime(todayEntry.outOfBedTime);
+          setProfileSleepQuality(todayEntry.sleepQuality);
+          setLastNightSleep([todayEntry.sleepHours, todayEntry.sleepMins]);
+          setScore(todayEntry.score);
+        }
+      }
+    } catch (e) {
+      console.log("LOAD ERROR:", e);
+    }
+  }, []);
 
   return (
     <DashboardContext.Provider
@@ -548,7 +654,27 @@ export const DashboardProvider = ({ children }) => {
         fatsCount,
         proteinCount,
         carbsCount,
-        countCalories
+        countCalories,
+        //sleep
+        inBedTime,
+        setInBedTime,
+        outOfBedTime,
+        setOutOfBedTime,
+        score,
+        setScore,
+        sleepQuality,
+        setSleepQuality,
+        sleepGoal,
+        setSleepGoal,
+        lastNightSleep,
+        setLastNightSleep,
+        logSleep,
+        setProfileInBedTime,
+        profileInBedTime,
+        profileOutOfBedTime,
+        setProfileOutOfBedTime,
+        profileSleepQuality,
+        setProfileSleepQuality,
       }}
     >
       {children}
