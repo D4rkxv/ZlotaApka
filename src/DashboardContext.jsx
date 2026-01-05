@@ -21,6 +21,15 @@ export class Meal {
 
 export const DashboardProvider = ({ children }) => {
   const [selectedWidget, setSelectedWidget] = useState("dashboard");
+  const getListFromStorage = (key) => {
+    try {
+      const data = localStorage.getItem(key);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  };
+  
 
   //workout Section
   const [completedWorkouts, setCompletedWorkouts] = useState([]);
@@ -125,6 +134,12 @@ export const DashboardProvider = ({ children }) => {
   //water Section
   const [hydrationGoal, setHydrationGoal] = useState(3.0);
   const [currentHydration, setCurrentHydration] = useState(0.5);
+  const [waterLog, setWaterLog] = useState(() =>
+    getListFromStorage("waterLog")
+  );
+  useEffect(() => {
+    localStorage.setItem("waterLog", JSON.stringify(waterLog));
+  }, [waterLog]);
 
   //sleep Section
   const [inBedTime, setInBedTime] = useState("");
@@ -370,14 +385,7 @@ export const DashboardProvider = ({ children }) => {
   );
   const workoutProgressWidth = ((workoutsDone / workoutGoal) * 100).toFixed(1);
   //food
-  const getListFromStorage = (key) => {
-    try {
-      const data = localStorage.getItem(key);
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
-  };
+  
 
   const [breakfastList, setBreakfastList] = useState(() =>
     getListFromStorage("breakfastList")
@@ -421,6 +429,7 @@ export const DashboardProvider = ({ children }) => {
       setLunchList([]);
       setSnacksList([]);
       setDinnerList([]);
+      setWaterLog([])
 
       localStorage.setItem("lastDate", today);
     }
@@ -639,6 +648,8 @@ export const DashboardProvider = ({ children }) => {
         setHydrationGoal,
         waterProgressWidth,
         workoutProgressWidth,
+        waterLog,
+        setWaterLog,
         //food
         breakfastList,
         setBreakfastList,

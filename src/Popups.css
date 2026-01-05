@@ -25,18 +25,21 @@
   display: flex;
   justify-content: center;
   align-content: center;
+  align-items: center;
 }
 .popupContainer{
   background-color: var(--pureWhite);
   border-radius: 12px;
   padding: 24px 16px;
-  width: 50%;
-  height: 90%;
   margin: 20px;
   color: var(--textColor);
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+.welcomePopup {
+    width: 50%;
+    height: 80%;
 }
 .popupContainer::-webkit-scrollbar{
     display: none;
@@ -56,7 +59,7 @@
 .popupSectionTitle{
     font-size: 20px;
 }
-.welcomePopup input[type="text"], .popupContainer input[type="date"], .popupContainer input[type="number"]{
+.welcomePopup input[type="text"], .mealPopup input[type="text"], .popupContainer input[type="date"], .welcomePopup input[type="number"], .mealPopup input[type="number"], .waterPopup input{
     width: 100%;
     border: none;
     border-bottom: var(--textColor) 1px solid;
@@ -100,6 +103,7 @@
     display: flex;
     flex-direction: row;
     justify-content: right;
+    margin-top: 30px;
 }
 .popupButtonContainer button{
     font-size: 16px;
@@ -120,6 +124,7 @@
 
 .workoutPopup{
     width: 30%;
+    height: 65%;
     padding: 12px 32px;
 }
 .workoutPopup input{
@@ -154,9 +159,38 @@
     border-radius: 12px;
     padding: 4px;
 }
-.workoutPopup .popupButtonContainer{
-    margin-top: 25vh;
-}
+
 .popupButtonContainer button{
     margin-left: 16px;
+}
+
+.mealPopup{
+    width: 20%;
+    height: 48%;
+}
+.mealPopup .coloredBtn, .workoutPopup .coloredBtn, .waterPopup .coloredBtn{
+    background-color: var(--primary);
+    color: var(--pureWhite);
+    transition: all 0.3s ease-in;
+}
+.mealPopup .coloredBtn:hover, .workoutPopup .coloredBtn:hover, .waterPopup .coloredBtn:hover{
+    background-color: transparent;
+    color: var(--primary);
+}
+.inputContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+.inputContainer label{
+    width: 50%;
+}
+.inputContainer input{
+    width: 50%;
+}
+
+.waterPopup{
+    height: 20%;
 }

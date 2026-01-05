@@ -171,7 +171,7 @@ const FoodDiary = () => {
     labels: ["B", "L", "D", "S"],
     datasets: [
       {
-        data: [countCalories(breakfastList), countCalories(lunchList), countCalories(dinnerList), countCalories(snacksList)],
+        data: [Math.min(((countCalories(breakfastList) / caloriesCount) * 100).toFixed(2), 100), Math.min(((countCalories(lunchList) / caloriesCount) * 100).toFixed(2), 100), Math.min(((countCalories(dinnerList) / caloriesCount) * 100).toFixed(2), 100), Math.min(((countCalories(snacksList) / caloriesCount) * 100).toFixed(2), 100)],
         backgroundColor: "#14A3E3",
         borderRadius: 12,
         barThickness: 14,
@@ -275,7 +275,7 @@ const FoodDiary = () => {
                   return(
                     <div className="mealItem">
                       <p className="mealName">{meal.name}</p>
-                      <p className="mealDescription">{meal.grammage} • {meal.calories}kcal</p>
+                      <p className="mealDescription">{meal.grammage}g • {meal.calories}kcal</p>
                     </div>
                   )
                 })}
@@ -294,7 +294,7 @@ const FoodDiary = () => {
                   return(
                     <div className="mealItem">
                       <p className="mealName">{meal.name}</p>
-                      <p className="mealDescription">{meal.grammage} • {meal.calories}kcal</p>
+                      <p className="mealDescription">{meal.grammage}g • {meal.calories}kcal</p>
                     </div>
                   )
                 })}
@@ -327,7 +327,7 @@ const FoodDiary = () => {
                   return(
                     <div className="mealItem">
                       <p className="mealName">{meal.name}</p>
-                      <p className="mealDescription">{meal.grammage} • {meal.calories}kcal</p>
+                      <p className="mealDescription">{meal.grammage}g • {meal.calories}kcal</p>
                     </div>
                   )
                 })}
@@ -357,7 +357,7 @@ const FoodDiary = () => {
                   return(
                     <div className="mealItem">
                       <p className="mealName">{meal.name}</p>
-                      <p className="mealDescription">{meal.grammage} • {meal.calories}kcal</p>
+                      <p className="mealDescription">{meal.grammage}g • {meal.calories}kcal</p>
                     </div>
                   )
                 })}

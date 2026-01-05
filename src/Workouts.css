@@ -149,6 +149,9 @@
   color: var(--primary);
   cursor: pointer;
 }
+.addActivity:hover{
+  text-decoration: underline;
+}
 .workoutList {
   color: var(--textColor);
   max-height: 60vh;
@@ -196,6 +199,11 @@
   color: var(--primary);
   background: none;
   border-radius: 24px;
+  transition: all 0.3s ease-in;
+}
+.workoutBtn1:hover{
+  background-color: var(--primary);
+  color: var(--pureWhite);
 }
 .workoutBtn2 {
   font-size: 16px;

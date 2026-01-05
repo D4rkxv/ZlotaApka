@@ -6,6 +6,7 @@ import WaterGlass from "./assets/WaterGlass.svg";
 import { Bar } from "react-chartjs-2";
 import Sidebar from "./Sidebar";
 import { useDashboard } from "./DashboardContext";
+import WaterPopup from "./WaterPopup";
 
 const WaterManagement = () => {
   const {
@@ -13,9 +14,10 @@ const WaterManagement = () => {
     setCurrentHydration,
     hydrationGoal,
     setHydrationGoal,
+    waterLog,
+    setWaterLog
   } = useDashboard();
-  // const [hydrationGoal, setHydrationGoal] = useState(3.0);
-  // const [currentHydration, setCurrentHydration] = useState(1.7);
+  const [showCustomAdd, setShowCustomAdd] = useState(false)
   const [tips, setTips] = useState([
     "Drink a glass of water first thing in the morning to rehydrate your body.",
     "Carry a reusable water bottle to remind yourself to drink throughout the day.",
@@ -102,8 +104,18 @@ const WaterManagement = () => {
   };
 
   const handleHydrationChange = (amount) => {
-    setCurrentHydration((prev) => Math.max(0, prev + amount));
-  };
+  setCurrentHydration(prev => Math.max(0, prev + amount));
+  setWaterLog(prev => [
+    {
+      amount: amount * 1000,
+      time: new Date().toLocaleTimeString("pl-PL", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    }, ...prev
+  ]);
+};
+
 
   useEffect(() => {
     setSelectedTips([]);
@@ -115,7 +127,13 @@ const WaterManagement = () => {
     }
   }, []);
 
+  const addCustomAmountOfWater = (amount) =>{
+    handleHydrationChange(amount / 1000)
+  }
+
   return (
+    <>
+    {showCustomAdd ? <WaterPopup setShowWaterCustomAddPopup={setShowCustomAdd} addCustomAmount={addCustomAmountOfWater}/>: null}
     <div className="waterManagementContainer siteContainer">
       <Sidebar />
       <div className="widgetContainer">
@@ -152,7 +170,7 @@ const WaterManagement = () => {
                   >
                     +100ml
                   </button>
-                  <button className="boxBtn coloredBtn">
+                  <button className="boxBtn coloredBtn" onClick={() => setShowCustomAdd(true)}>
                     <img src={Edit} alt="customAmount" />
                   </button>
                 </div>
@@ -177,26 +195,14 @@ const WaterManagement = () => {
               <div className="waterLogContainer">
                 <p className="sectionTitle">Water log</p>
                 <div className="waterLog">
-                  <div className="logEntry">
-                    <img src={WaterGlass} alt="Glass of water" />
-                    <p>8:20 - 300ml</p>
-                  </div>
-                  <div className="logEntry">
-                    <img src={WaterGlass} alt="Glass of water" />
-                    <p>8:20 - 300ml</p>
-                  </div>
-                  <div className="logEntry">
-                    <img src={WaterGlass} alt="Glass of water" />
-                    <p>8:20 - 300ml</p>
-                  </div>
-                  <div className="logEntry">
-                    <img src={WaterGlass} alt="Glass of water" />
-                    <p>8:20 - 300ml</p>
-                  </div>
-                  <div className="logEntry">
-                    <img src={WaterGlass} alt="Glass of water" />
-                    <p>8:20 - 300ml</p>
-                  </div>
+                  {waterLog.map((entry, index) =>{
+                    return (
+                    <div className="logEntry" key={index}>
+                      <img src={WaterGlass} alt="Glass of water" />
+                      <p> {entry.time} • {entry.amount}ml</p>
+                    </div>
+                  )
+                  })}
                 </div>
               </div>
               <div className="usefulTipsContainer">
@@ -212,6 +218,7 @@ const WaterManagement = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
