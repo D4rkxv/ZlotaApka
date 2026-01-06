@@ -130,7 +130,40 @@
 .logEntry {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  justify-content: space-between;
+  align-content: center;
   font-size: 16px;
   margin: 0px;
+  width: 90%;
+}
+.entryDescription, .entryOptions{
+  display: flex;
+  flex-direction: row;
+}
+.waterLog .entryDescription, .waterLog .entryOptions{
+  align-items: center;
+}
+.waterLog .entryDescription{
+  width: 60%;
+  margin-right: 80px;
+  justify-content: space-evenly;
+}
+.waterLog .entryDescription p{
+  margin-left: 8px;
+}
+.waterLog .entryOptions{
+  width: 20%;
+  justify-content: left;
+}
+.entryOptions button{
+  background-color: var(--pureWhite);
+  border: var(--primary) 1px solid;
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease-in;
+}
+.entryOptions button:hover{
+  background-color: var(--primary);
 }

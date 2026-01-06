@@ -16,6 +16,9 @@ import {
 import { Doughnut } from "react-chartjs-2";
 import { useDashboard } from "./DashboardContext.jsx";
 import MealPopup from "./MealPopup.jsx";
+import EditBlack from "./assets/Edit_Pencil_02.svg"
+import Trashcan from "./assets/Trash_Full.svg"
+import MealDescriptionPopup from "./MealDescriptionPopup.jsx";
 
 ChartJS.register(
   CategoryScale,
@@ -83,6 +86,8 @@ const FoodDiary = () => {
   ]);
   const [selectedTip, setSelectedTip] = useState("");
   const [popupMealType, setPopupMealType] = useState("");
+  const [showEntryViewPopup, setShowEntryViewPopup] = useState(false)
+  const [shownMeal, setShownMeal] = useState(null)
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * tips.length);
@@ -280,8 +285,21 @@ const FoodDiary = () => {
     }
   };
 
+  const deleteFoodEntry = (key, list, setList) =>{
+    let newList = list.filter((meal, index)=>{
+      return index != key
+    })
+    setList(newList)
+  }
+
+  const selectMeal = (meal) => {
+    console.log(meal);
+    setShownMeal(meal)
+    setShowEntryViewPopup(true)
+  }
   return (
     <>
+      {shownMeal&&showEntryViewPopup ? <MealDescriptionPopup meal={shownMeal} setPopupVisibility={setShowEntryViewPopup}/>:null}
       {renderMealPopup()}
       <div className="foodContainer siteContainer">
         <Sidebar />
@@ -327,13 +345,19 @@ const FoodDiary = () => {
                   </p>
                 </div>
                 <div className="mealList">
-                  {breakfastList.map((meal) => {
+                  {breakfastList.map((meal, index) => {
                     return (
-                      <div className="mealItem">
-                        <p className="mealName">{meal.name}</p>
-                        <p className="mealDescription">
-                          {meal.grammage}g • {meal.calories}kcal
-                        </p>
+                      <div className="mealItem" key={index}>
+                        <div className="entryDescription">
+                          <p className="mealName">{meal.name}</p>
+                          <p className="mealDescription">
+                            {meal.grammage}g • {meal.calories}kcal
+                          </p>
+                        </div>
+                        <div className="entryOptions">
+                          <button onClick={() => selectMeal(meal)} ><img src={EditBlack} alt="Show entry" /></button>
+                          <button onClick={() => deleteFoodEntry(index, breakfastList, setBreakfastList)} ><img src={Trashcan} alt="Delete entry" /></button>
+                        </div>
                       </div>
                     );
                   })}
@@ -355,11 +379,17 @@ const FoodDiary = () => {
                 <div className="mealList">
                   {dinnerList.map((meal) => {
                     return (
-                      <div className="mealItem">
-                        <p className="mealName">{meal.name}</p>
-                        <p className="mealDescription">
-                          {meal.grammage}g • {meal.calories}kcal
-                        </p>
+                      <div className="mealItem" key={index}>
+                        <div className="entryDescription">
+                          <p className="mealName">{meal.name}</p>
+                          <p className="mealDescription">
+                            {meal.grammage}g • {meal.calories}kcal
+                          </p>
+                        </div>
+                        <div className="entryOptions">
+                          <button onClick={() => (selectMeal(meal))} ><img src={EditBlack} alt="Show entry" /></button>
+                          <button onClick={() => deleteFoodEntry(index, dinnerList, setDinnerList)} ><img src={Trashcan} alt="Delete entry" /></button>
+                        </div>
                       </div>
                     );
                   })}
@@ -395,12 +425,18 @@ const FoodDiary = () => {
                   <div className="mealList">
                     {lunchList.map((meal) => {
                       return (
-                        <div className="mealItem">
+                        <div className="mealItem" key={index}>
+                        <div className="entryDescription">
                           <p className="mealName">{meal.name}</p>
                           <p className="mealDescription">
                             {meal.grammage}g • {meal.calories}kcal
                           </p>
                         </div>
+                        <div className="entryOptions">
+                          <button onClick={() => selectMeal(meal)} ><img src={EditBlack} alt="Show entry" /></button>
+                          <button onClick={() => deleteFoodEntry(index, lunchList, setLunchList)} ><img src={Trashcan} alt="Delete entry" /></button>
+                        </div>
+                      </div>
                       );
                     })}
                   </div>
@@ -432,12 +468,18 @@ const FoodDiary = () => {
                   <div className="mealList">
                     {snacksList.map((meal) => {
                       return (
-                        <div className="mealItem">
+                        <div className="mealItem" key={index}>
+                        <div className="entryDescription">
                           <p className="mealName">{meal.name}</p>
                           <p className="mealDescription">
                             {meal.grammage}g • {meal.calories}kcal
                           </p>
                         </div>
+                        <div className="entryOptions">
+                          <button onClick={() => selectMeal(meal)} ><img src={EditBlack} alt="Show entry" /></button>
+                          <button onClick={() => deleteFoodEntry(index, snacksList, setSnacksList)} ><img src={Trashcan} alt="Delete entry" /></button>
+                        </div>
+                      </div>
                       );
                     })}
                   </div>

@@ -2,11 +2,13 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import DonutChart from "./DonutChart";
 import "./WaterManagement.css";
 import Edit from "./assets/Edit.svg";
+import Trashcan from "./assets/Trash_Full.svg"
 import WaterGlass from "./assets/WaterGlass.svg";
 import { Bar } from "react-chartjs-2";
 import Sidebar from "./Sidebar";
 import { useDashboard } from "./DashboardContext";
 import WaterPopup from "./WaterPopup";
+
 
 const WaterManagement = () => {
   const {
@@ -131,6 +133,14 @@ const WaterManagement = () => {
     handleHydrationChange(amount / 1000)
   }
 
+  const deleteWaterLogEntry = (amount, key) =>{
+    let newWaterLog = waterLog.filter((entry, index) =>{
+      return index != key;
+    })
+    setWaterLog(newWaterLog)
+    setCurrentHydration(prev => Math.max(0, prev - (amount/1000)));
+  }
+
   return (
     <>
     {showCustomAdd ? <WaterPopup setShowWaterCustomAddPopup={setShowCustomAdd} addCustomAmount={addCustomAmountOfWater}/>: null}
@@ -198,8 +208,13 @@ const WaterManagement = () => {
                   {waterLog.map((entry, index) =>{
                     return (
                     <div className="logEntry" key={index}>
-                      <img src={WaterGlass} alt="Glass of water" />
-                      <p> {entry.time} • {entry.amount}ml</p>
+                      <div className="entryDescription">
+                        <img src={WaterGlass} alt="Glass of water" />
+                        <p> {entry.time} • {entry.amount}ml</p>
+                      </div>
+                      <div className="entryOptions">
+                        <button onClick={() => deleteWaterLogEntry(entry.amount, index)} ><img src={Trashcan} alt="Delete entry" /></button>
+                      </div>
                     </div>
                   )
                   })}

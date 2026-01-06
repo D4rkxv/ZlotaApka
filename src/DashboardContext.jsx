@@ -149,13 +149,26 @@ export const DashboardProvider = ({ children }) => {
 
   //water Section
   const [hydrationGoal, setHydrationGoal] = useState(3.0);
-  const [currentHydration, setCurrentHydration] = useState(0);
+  const [currentHydration, setCurrentHydration] = useState(()=>{
+    try{
+      let data = localStorage.getItem("currentHydration")
+      return data ? parseFloat(data) : 0.0
+    }
+    catch{
+      return 0.0;
+    }
+  });
   const [waterLog, setWaterLog] = useState(() =>
     getListFromStorage("waterLog")
   );
   useEffect(() => {
     localStorage.setItem("waterLog", JSON.stringify(waterLog));
   }, [waterLog]);
+
+  useEffect(() => {
+    localStorage.setItem("currentHydration", currentHydration);
+  }, [currentHydration]);
+
   const waterProgressWidth = ((currentHydration / hydrationGoal) * 100).toFixed(
     1
   );

@@ -194,3 +194,11 @@
 .waterPopup{
     height: 20%;
 }
+
+.mealDescription .popupSection{
+    text-align: center;
+}
+.mealDescription .popupButtonContainer{
+    justify-content: center;
+    align-content: center;
+}
