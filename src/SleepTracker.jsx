@@ -47,7 +47,7 @@ function SleepTracker() {
     "Focus on sleep consistency rather than perfection.",
   ]);
   const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const sleepValues = [7.5, 6.5, 7, 7.8, 5.5, 8.2, 6.0];
+
   const {
     inBedTime,
     setInBedTime,
@@ -67,8 +67,9 @@ function SleepTracker() {
     profileInBedTime,
     profileOutOfBedTime,
     setProfileOutOfBedTime,
+    sleepWeekMinutes,
+    setSleepWeekMinutes,
   } = useDashboard();
-
   const [selectedTip, setSelectedTip] = useState("");
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * tips.length);
@@ -118,8 +119,8 @@ function SleepTracker() {
     datasets: [
       {
         label: "Sleep This Week",
-        data: sleepValues,
-        backgroundColor: sleepValues.map((v) =>
+        data: sleepWeekMinutes,
+        backgroundColor: sleepWeekMinutes.map((v) =>
           v >= 7 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)"
         ),
         borderRadius: 6,
@@ -149,7 +150,8 @@ function SleepTracker() {
       y: {
         display: false,
         min: 0,
-        max: 10,
+        beginAtZero: true,
+        suggestedMax: 10,
       },
     },
     datasets: {

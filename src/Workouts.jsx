@@ -80,8 +80,6 @@ function Workouts() {
     setIsDisabled,
     allSeconds,
     setAllSeconds,
-    dailyWorkoutMinutes,
-    setDailyWorkoutMinutes,
     quickActivities,
     allCalories,
     addCalories,
@@ -89,6 +87,8 @@ function Workouts() {
     currentWorkout,
     todayKey,
     allWorkouts,
+    weekMinutes,
+    addWorkoutMinutes,
   } = useDashboard();
 
   const [showWorkoutPopup, setShowWorkoutPopup] = useState(false);
@@ -100,6 +100,8 @@ function Workouts() {
   const checkIfCompleted = () => {
     if (exerciseDone == 5) {
       setWorkoutStatus("final");
+    } else {
+      setWorkoutStatus("running");
     }
   };
   const handleExersiceClick = (index) => {
@@ -144,22 +146,26 @@ function Workouts() {
     setWorkoutStatus("idle");
     setIsChecked(Array(6).fill(false));
     setIsDisabled(true);
+
+    const workoutMins = Math.floor(seconds / 60);
+    if (workoutMins > 0) {
+      addWorkoutMinutes(workoutMins);
+    }
+
     setSeconds(0);
     setIsActive(false);
     setExerciseDone(0);
     setWorkoutsDone((prev) => prev + 1);
-    const today = new Date().toISOString().split("T")[0];
-    const workoutMins = Math.floor(seconds / 60);
     setAllSeconds((prev) => prev + seconds);
-    setDailyWorkoutMinutes((prev) => ({
-      ...prev,
-      [today]: (prev[today] || 0) + workoutMins,
-    }));
   };
   const handleWorkoutItemClick = (quickItem) => {
     logWorkout(quickItem);
     addCalories(quickItem.calories);
     addTime(quickItem.time);
+
+    if (quickItem.time) {
+      addWorkoutMinutes(Number(quickItem.time));
+    }
   };
 
   useEffect(() => {
@@ -171,28 +177,13 @@ function Workouts() {
     }
     return () => clearInterval(interval);
   }, [isActive]);
-
-  const getWeekMinutes = () => {
-    const today = new Date();
-    const week = [];
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - (6 - i));
-      const dateStr = date.toISOString().split("T")[0];
-      week.push(dailyWorkoutMinutes[dateStr] || 0);
-    }
-    const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
-    week[todayIndex] += allSeconds / 60;
-    return week;
-  };
-
   const workoutData = {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     datasets: [
       {
         label: "Workout",
-        data: getWeekMinutes().map((val) => val),
-        backgroundColor: getWeekMinutes().map((val) =>
+        data: weekMinutes,
+        backgroundColor: weekMinutes.map((val) =>
           val > 40 ? "#00A8FF" : "rgba(0,168,255,0.25)"
         ),
         borderRadius: 6,
@@ -222,7 +213,8 @@ function Workouts() {
       y: {
         display: false,
         min: 0,
-        max: 120,
+        beginAtZero: true,
+        suggestedMax: 60,
       },
     },
     datasets: {

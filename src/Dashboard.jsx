@@ -34,23 +34,55 @@ import WelcomePopup from "./WelcomePopup.jsx";
 const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const weightValues = [84, 79.8, 79.5, 76.2, 79, 78.9, 75.7];
-const activityValues = [0, 10, 50, 25, 57, 43, 12];
 
 const deficit = [0, -50, 120, 80, 0, -30, -100];
-const sleepValues = [7.5, 6.5, 7, 7.8, 5.5, 8.2, 6.0];
 
 export function Dashboard() {
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
   const [caloriesGoal, setCaloriesGoal] = useState(3200);
   const {
     currentHydration,
-    setCurrentHydration,
     hydrationGoal,
-    setHydrationGoal,
     waterProgressWidth,
     caloriesCount,
     lastNightSleep,
+    weekMinutes,
+    sleepWeekMinutes,
+    getSleepComparison,
+    weekFood,
   } = useDashboard();
+  const sleepComparison = getSleepComparison();
+  const sleepValues = sleepWeekMinutes;
+  const activityValues = weekMinutes;
+  const activityOptions = {
+    responsive: false,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: true },
+    },
+    scales: {
+      x: {
+        offset: true,
+        grid: { display: false },
+        ticks: {
+          color: "#9ca3af",
+          font: { size: 12, family: "Poppins" },
+        },
+      },
+      y: {
+        display: false,
+        beginAtZero: true,
+      },
+    },
+    datasets: {
+      bar: {
+        categoryPercentage: 0.3,
+        barPercentage: 0.3,
+      },
+    },
+  };
+
   const { goToDashboard, goToWater, goToFood, goToWorkouts, goToSleep } =
     useDashboard();
   const caloriesData = {
@@ -58,7 +90,7 @@ export function Dashboard() {
     datasets: [
       {
         label: "Calories vs Goal",
-        data: deficit.map((d) => 1000 - d),
+        data: weekFood,
         backgroundColor: deficit.map((d) =>
           d <= 0 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)"
         ),
@@ -88,8 +120,9 @@ export function Dashboard() {
       },
       y: {
         display: false,
-        min: 800,
-        max: 1200,
+        min: 0,
+        beginAtZero: true,
+        suggestedMax: 3200,
       },
     },
     datasets: {
@@ -136,7 +169,8 @@ export function Dashboard() {
       y: {
         display: false,
         min: 0,
-        max: 10,
+        beginAtZero: true,
+        suggestedMax: 10,
       },
     },
     datasets: {
@@ -154,6 +188,7 @@ export function Dashboard() {
       ) : null}
       <div className="dashboardContainer siteContainer">
         <Sidebar />
+
         <div className="widgetContainer">
           <p className="siteTitle">Dashboard</p>
 
@@ -214,10 +249,20 @@ export function Dashboard() {
                     ? "No sleep "
                     : ""}
                 </p>
-                <img src={TrendDown} alt="trend down" />
-                <p className="smallWidgetDesc2">5%</p>
+                <img
+                  src={sleepComparison?.percentChange > 0 ? TrendUp : TrendDown}
+                  alt="trend down"
+                />
+                <p className="smallWidgetDesc2">
+                  {sleepComparison?.percentChange ?? 0}%
+                </p>
               </div>
-              <p className="smallWidgetGrayDesc">Last: 9h 50min</p>
+              <p className="smallWidgetGrayDesc">
+                Last:{" "}
+                {sleepComparison?.yesterdayMinutes > 0
+                  ? `${Math.floor(sleepComparison?.yesterdayMinutes / 60)}h`
+                  : `No sleep before`}
+              </p>
             </div>
           </div>
 
@@ -323,8 +368,8 @@ export function Dashboard() {
               <LineChart
                 title="Activity Minutes"
                 values={activityValues}
+                options={activityOptions}
                 min={0}
-                max={60}
               />
             </div>
           </div>

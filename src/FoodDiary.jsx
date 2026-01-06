@@ -28,24 +28,24 @@ ChartJS.register(
   Filler
 );
 
-
 const FoodDiary = () => {
   const {
     breakfastList,
-        setBreakfastList,
-        lunchList,
-        setLunchList,
-        snacksList,
-        setSnacksList,
-        dinnerList,
-        setDinnerList,
-        addMealsToList,
-        countAllCalories,
-        caloriesCount,
-        fatsCount,
-        proteinCount,
-        carbsCount,
-        countCalories
+    setBreakfastList,
+    lunchList,
+    setLunchList,
+    snacksList,
+    setSnacksList,
+    dinnerList,
+    setDinnerList,
+    addMealsToList,
+    countAllCalories,
+    caloriesCount,
+    fatsCount,
+    proteinCount,
+    carbsCount,
+    countCalories,
+    weekFood,
   } = useDashboard();
 
   const [caloriesGoal, setCaloriesGoal] = useState(3200);
@@ -82,15 +82,12 @@ const FoodDiary = () => {
     "Enjoy your food without guilt and appreciate each meal.",
   ]);
   const [selectedTip, setSelectedTip] = useState("");
-  const [popupMealType, setPopupMealType] = useState("")
+  const [popupMealType, setPopupMealType] = useState("");
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * tips.length);
     setSelectedTip(tips[randomIndex]);
   }, []);
-
-  const deficit = [0, -50, 120, 80, 0, -30, -100];
-
   const macrosData = {
     labels: ["Protein", "Fat", "Carbs"],
     datasets: [
@@ -125,9 +122,9 @@ const FoodDiary = () => {
     datasets: [
       {
         label: "",
-        data: deficit.map((d) => 1000 - d),
-        backgroundColor: deficit.map((d) =>
-          d <= 0 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)"
+        data: weekFood,
+        backgroundColor: weekFood.map((val) =>
+          val > 3200 ? "#00A8FF" : "rgba(0,168,255,0.25)"
         ),
         borderRadius: 6,
         borderSkipped: false,
@@ -156,7 +153,8 @@ const FoodDiary = () => {
       y: {
         display: false,
         min: 0,
-        max: 1000,
+        beginAtZero: true,
+        suggestedMax: 3200,
       },
     },
     datasets: {
@@ -171,7 +169,24 @@ const FoodDiary = () => {
     labels: ["B", "L", "D", "S"],
     datasets: [
       {
-        data: [Math.min(((countCalories(breakfastList) / caloriesCount) * 100).toFixed(2), 100), Math.min(((countCalories(lunchList) / caloriesCount) * 100).toFixed(2), 100), Math.min(((countCalories(dinnerList) / caloriesCount) * 100).toFixed(2), 100), Math.min(((countCalories(snacksList) / caloriesCount) * 100).toFixed(2), 100)],
+        data: [
+          Math.min(
+            ((countCalories(breakfastList) / caloriesCount) * 100).toFixed(2),
+            100
+          ),
+          Math.min(
+            ((countCalories(lunchList) / caloriesCount) * 100).toFixed(2),
+            100
+          ),
+          Math.min(
+            ((countCalories(dinnerList) / caloriesCount) * 100).toFixed(2),
+            100
+          ),
+          Math.min(
+            ((countCalories(snacksList) / caloriesCount) * 100).toFixed(2),
+            100
+          ),
+        ],
         backgroundColor: "#14A3E3",
         borderRadius: 12,
         barThickness: 14,
@@ -226,154 +241,218 @@ const FoodDiary = () => {
     maintainAspectRatio: false,
   };
 
-  const renderMealPopup = () =>{
-    switch(popupMealType){
+  const renderMealPopup = () => {
+    switch (popupMealType) {
       case "breakfast":
-        return <MealPopup setPopupMealType={setPopupMealType} addMeal={addMealsToList} setList={setBreakfastList} />;
+        return (
+          <MealPopup
+            setPopupMealType={setPopupMealType}
+            addMeal={addMealsToList}
+            setList={setBreakfastList}
+          />
+        );
       case "lunch":
-        return <MealPopup setPopupMealType={setPopupMealType} addMeal={addMealsToList} setList={setLunchList} />;
+        return (
+          <MealPopup
+            setPopupMealType={setPopupMealType}
+            addMeal={addMealsToList}
+            setList={setLunchList}
+          />
+        );
       case "dinner":
-        return <MealPopup setPopupMealType={setPopupMealType} addMeal={addMealsToList} setList={setDinnerList} />;
+        return (
+          <MealPopup
+            setPopupMealType={setPopupMealType}
+            addMeal={addMealsToList}
+            setList={setDinnerList}
+          />
+        );
       case "snacks":
-        return <MealPopup setPopupMealType={setPopupMealType} addMeal={addMealsToList} setList={setSnacksList} />;
+        return (
+          <MealPopup
+            setPopupMealType={setPopupMealType}
+            addMeal={addMealsToList}
+            setList={setSnacksList}
+          />
+        );
       default:
         return null;
     }
-  }
+  };
 
   return (
     <>
-    {renderMealPopup()}
-    <div className="foodContainer siteContainer">
-      <Sidebar />
-      <div className="widgetContainer">
-        <p className="siteTitle">Food Diary</p>
-        <div className="divider">
-          <div className="leftSide">
-            <div className="caloriesGoalContainer">
-              <p className="sectionTitle">Calories left</p>
-              <p className="caloriesCompletion">
-                {caloriesCount} / {caloriesGoal} kcal
-              </p>
-              <p className="caloriesLeft">
-                {caloriesGoal - caloriesCount > 0 ? `${caloriesGoal - caloriesCount} kcal left` : `${-1*(caloriesGoal-caloriesCount)} kcal more than your goal`} 
-              </p>
-              <div className="progressTrack">
-                <div className="progressFill"  style={{ width: `${Math.min(((caloriesCount / caloriesGoal) * 100).toFixed(0), 100)}%` }}/>
-              </div>
-            </div>
-            <div className="mealManagerContainer breakfast">
-              <div className="mealManagerTop">
-                <div className="mealTitleContainer">
-                  <p className="mealTitle">Breakfast•</p>
-                  <p className="mealCaloriesGoal">450 kcal</p>
-                </div>
-                <p className="addMeal" onClick={() => setPopupMealType("breakfast")}>Add meal</p>
-              </div>
-              <div className="mealList">
-                {breakfastList.map((meal) =>{
-                  return(
-                    <div className="mealItem">
-                      <p className="mealName">{meal.name}</p>
-                      <p className="mealDescription">{meal.grammage}g • {meal.calories}kcal</p>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-            <div className="mealManagerContainer dinner">
-              <div className="mealManagerTop">
-                <div className="mealTitleContainer">
-                  <p className="mealTitle">Dinner•</p>
-                  <p className="mealCaloriesGoal">1150 kcal</p>
-                </div>
-                <p className="addMeal" onClick={() => setPopupMealType("dinner")}>Add meal</p>
-              </div>
-              <div className="mealList">
-                {dinnerList.map((meal) =>{
-                  return(
-                    <div className="mealItem">
-                      <p className="mealName">{meal.name}</p>
-                      <p className="mealDescription">{meal.grammage}g • {meal.calories}kcal</p>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-          <div className="rightSide">
-            <div className="divider">
-              <div className="macrosContainer">
-                <p className="sectionTitle">Macros</p>
-                <div className="chartContainer">
-                  <Doughnut data={macrosData} options={macrosOptions} />
-                </div>
-              </div>
-              <div className="coloriesGoalStreakContainer">
-                <Bar data={caloriesData} options={caloriesOptions} />
-              </div>
-            </div>
-            <div className="divider">
-              <div className="mealManagerContainer lunch">
-                <div className="mealManagerTop">
-                  <div className="mealTitleContainer">
-                    <p className="mealTitle">Lunch•</p>
-                    <p className="mealCaloriesGoal">750 kcal</p>
-                  </div>
-                  <p className="addMeal" onClick={() => setPopupMealType("lunch")}>Add meal</p>
-                </div>
-                <div className="mealList">
-                  {lunchList.map((meal) =>{
-                  return(
-                    <div className="mealItem">
-                      <p className="mealName">{meal.name}</p>
-                      <p className="mealDescription">{meal.grammage}g • {meal.calories}kcal</p>
-                    </div>
-                  )
-                })}
-                </div>
-              </div>
-              <div className="mealDistributionContainer">
-                <p className="sectionTitle">Meal Distribution</p>
-                <div className="chartContainer">
-                  <Bar
-                    data={mealDistributionData}
-                    options={mealDistributionOptions}
+      {renderMealPopup()}
+      <div className="foodContainer siteContainer">
+        <Sidebar />
+        <div className="widgetContainer">
+          <p className="siteTitle">Food Diary</p>
+          <div className="divider">
+            <div className="leftSide">
+              <div className="caloriesGoalContainer">
+                <p className="sectionTitle">Calories left</p>
+                <p className="caloriesCompletion">
+                  {caloriesCount} / {caloriesGoal} kcal
+                </p>
+                <p className="caloriesLeft">
+                  {caloriesGoal - caloriesCount > 0
+                    ? `${caloriesGoal - caloriesCount} kcal left`
+                    : `${
+                        -1 * (caloriesGoal - caloriesCount)
+                      } kcal more than your goal`}
+                </p>
+                <div className="progressTrack">
+                  <div
+                    className="progressFill"
+                    style={{
+                      width: `${Math.min(
+                        ((caloriesCount / caloriesGoal) * 100).toFixed(0),
+                        100
+                      )}%`,
+                    }}
                   />
                 </div>
               </div>
-            </div>
-            <div className="divider">
-              <div className="mealManagerContainer snacks">
+              <div className="mealManagerContainer breakfast">
                 <div className="mealManagerTop">
                   <div className="mealTitleContainer">
-                    <p className="mealTitle">Snacks•</p>
-                    <p className="mealCaloriesGoal">750 kcal</p>
+                    <p className="mealTitle">Breakfast•</p>
+                    <p className="mealCaloriesGoal">450 kcal</p>
                   </div>
-                  <p className="addMeal" onClick={() => setPopupMealType("snacks")}>Add meal</p>
+                  <p
+                    className="addMeal"
+                    onClick={() => setPopupMealType("breakfast")}
+                  >
+                    Add meal
+                  </p>
                 </div>
                 <div className="mealList">
-                  {snacksList.map((meal) =>{
-                  return(
-                    <div className="mealItem">
-                      <p className="mealName">{meal.name}</p>
-                      <p className="mealDescription">{meal.grammage}g • {meal.calories}kcal</p>
-                    </div>
-                  )
-                })}
+                  {breakfastList.map((meal) => {
+                    return (
+                      <div className="mealItem">
+                        <p className="mealName">{meal.name}</p>
+                        <p className="mealDescription">
+                          {meal.grammage}g • {meal.calories}kcal
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-              <div className="dailyTipContainer">
-                <p className="sectionTitle">Daily tip</p>
-                <ul>
-                  <li>{selectedTip}</li>
-                </ul>
+              <div className="mealManagerContainer dinner">
+                <div className="mealManagerTop">
+                  <div className="mealTitleContainer">
+                    <p className="mealTitle">Dinner•</p>
+                    <p className="mealCaloriesGoal">1150 kcal</p>
+                  </div>
+                  <p
+                    className="addMeal"
+                    onClick={() => setPopupMealType("dinner")}
+                  >
+                    Add meal
+                  </p>
+                </div>
+                <div className="mealList">
+                  {dinnerList.map((meal) => {
+                    return (
+                      <div className="mealItem">
+                        <p className="mealName">{meal.name}</p>
+                        <p className="mealDescription">
+                          {meal.grammage}g • {meal.calories}kcal
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className="rightSide">
+              <div className="divider">
+                <div className="macrosContainer">
+                  <p className="sectionTitle">Macros</p>
+                  <div className="chartContainer">
+                    <Doughnut data={macrosData} options={macrosOptions} />
+                  </div>
+                </div>
+                <div className="coloriesGoalStreakContainer">
+                  <Bar data={caloriesData} options={caloriesOptions} />
+                </div>
+              </div>
+              <div className="divider">
+                <div className="mealManagerContainer lunch">
+                  <div className="mealManagerTop">
+                    <div className="mealTitleContainer">
+                      <p className="mealTitle">Lunch•</p>
+                      <p className="mealCaloriesGoal">750 kcal</p>
+                    </div>
+                    <p
+                      className="addMeal"
+                      onClick={() => setPopupMealType("lunch")}
+                    >
+                      Add meal
+                    </p>
+                  </div>
+                  <div className="mealList">
+                    {lunchList.map((meal) => {
+                      return (
+                        <div className="mealItem">
+                          <p className="mealName">{meal.name}</p>
+                          <p className="mealDescription">
+                            {meal.grammage}g • {meal.calories}kcal
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="mealDistributionContainer">
+                  <p className="sectionTitle">Meal Distribution</p>
+                  <div className="chartContainer">
+                    <Bar
+                      data={mealDistributionData}
+                      options={mealDistributionOptions}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="divider">
+                <div className="mealManagerContainer snacks">
+                  <div className="mealManagerTop">
+                    <div className="mealTitleContainer">
+                      <p className="mealTitle">Snacks•</p>
+                      <p className="mealCaloriesGoal">750 kcal</p>
+                    </div>
+                    <p
+                      className="addMeal"
+                      onClick={() => setPopupMealType("snacks")}
+                    >
+                      Add meal
+                    </p>
+                  </div>
+                  <div className="mealList">
+                    {snacksList.map((meal) => {
+                      return (
+                        <div className="mealItem">
+                          <p className="mealName">{meal.name}</p>
+                          <p className="mealDescription">
+                            {meal.grammage}g • {meal.calories}kcal
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="dailyTipContainer">
+                  <p className="sectionTitle">Daily tip</p>
+                  <ul>
+                    <li>{selectedTip}</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 };

@@ -20,7 +20,20 @@ export class Meal {
 }
 
 export const DashboardProvider = ({ children }) => {
+  //page Switching
   const [selectedWidget, setSelectedWidget] = useState("dashboard");
+  const switchWidget = (widget) => {
+    setSelectedWidget(widget);
+  };
+
+  const goToDashboard = useCallback(() => setSelectedWidget("dashboard"), []);
+  const goToWater = useCallback(() => setSelectedWidget("water"), []);
+  const goToFood = useCallback(() => setSelectedWidget("food"), []);
+  const goToWorkouts = useCallback(() => setSelectedWidget("workouts"), []);
+  const goToSleep = useCallback(() => setSelectedWidget("sleep"), []);
+  const goToProfile = useCallback(() => setSelectedWidget("profile"), []);
+  const goToSettings = useCallback(() => setSelectedWidget("settings"), []);
+
   const getListFromStorage = (key) => {
     try {
       const data = localStorage.getItem(key);
@@ -29,10 +42,12 @@ export const DashboardProvider = ({ children }) => {
       return [];
     }
   };
-  
+
+  //temp food
+  const EMPTYFOODWEEK = [0, 0, 0, 0, 0, 0, 0];
+  const [weekFood, setWeekFood] = useState(EMPTYFOODWEEK);
 
   //workout Section
-  const [completedWorkouts, setCompletedWorkouts] = useState([]);
   const [activityHistory, setActivityHistory] = useState([]);
   const [workoutsDone, setWorkoutsDone] = useState(null);
   const [workoutGoal, setWorkoutGoal] = useState(5);
@@ -42,11 +57,12 @@ export const DashboardProvider = ({ children }) => {
   const [workoutStatus, setWorkoutStatus] = useState("idle");
   const [isDisabled, setIsDisabled] = useState(true);
   const [isChecked, setIsChecked] = useState(Array(6).fill(false));
-  const [dailyWorkoutMinutes, setDailyWorkoutMinutes] = useState({});
   const [quickActivities, setQuickActivities] = useState([]);
   const [allCalories, setAllCalories] = useState(null);
   const [currentWorkout, setCurrentWorkout] = useState(null);
   const [todayKey, setTodayKey] = useState("");
+  const EMPTYWORKOUTWEEK = [0, 0, 0, 0, 0, 0, 0];
+  const [weekMinutes, setWeekMinutes] = useState(EMPTYWORKOUTWEEK);
 
   const allWorkouts = [
     [
@@ -84,7 +100,7 @@ export const DashboardProvider = ({ children }) => {
     [
       { id: "w5-1", name: "Reverse lunges - 3x12/leg" },
       { id: "w5-2", name: "Wide push-ups - 3x10" },
-      { id: "w5-3", name: "Dumbbell rows both arms - 3x10" },
+      { id: "w5-3", name: "Dumbbell rows - 3x10" },
       { id: "w5-4", name: "Chair dips - 3x12" },
       { id: "w5-5", name: "Leg raises - 3x12" },
       { id: "w5-6", name: "Plank shoulder taps - 3x20" },
@@ -133,13 +149,16 @@ export const DashboardProvider = ({ children }) => {
 
   //water Section
   const [hydrationGoal, setHydrationGoal] = useState(3.0);
-  const [currentHydration, setCurrentHydration] = useState(0.5);
+  const [currentHydration, setCurrentHydration] = useState(0);
   const [waterLog, setWaterLog] = useState(() =>
     getListFromStorage("waterLog")
   );
   useEffect(() => {
     localStorage.setItem("waterLog", JSON.stringify(waterLog));
   }, [waterLog]);
+  const waterProgressWidth = ((currentHydration / hydrationGoal) * 100).toFixed(
+    1
+  );
 
   //sleep Section
   const [inBedTime, setInBedTime] = useState("");
@@ -152,6 +171,8 @@ export const DashboardProvider = ({ children }) => {
   const [profileInBedTime, setProfileInBedTime] = useState("");
   const [profileOutOfBedTime, setProfileOutOfBedTime] = useState("");
   const [profileSleepQuality, setProfileSleepQuality] = useState(null);
+  const EMPTYSLEEPWEEK = [0, 0, 0, 0, 0, 0, 0];
+  const [sleepWeekMinutes, setSleepWeekMinutes] = useState(EMPTYSLEEPWEEK);
 
   const saveWithWeeklyReset = useCallback(
     (key, value, serializer = JSON.stringify) => {
@@ -182,18 +203,17 @@ export const DashboardProvider = ({ children }) => {
     []
   );
 
-  const switchWidget = (widget) => {
-    setSelectedWidget(widget);
-  };
+  const addWorkoutMinutes = useCallback((minutes) => {
+    setWeekMinutes((prev) => {
+      const now = new Date();
+      let dayIndex = now.getDay();
+      dayIndex = (dayIndex + 6) % 7;
 
-  //page Switching
-  const goToDashboard = useCallback(() => setSelectedWidget("dashboard"), []);
-  const goToWater = useCallback(() => setSelectedWidget("water"), []);
-  const goToFood = useCallback(() => setSelectedWidget("food"), []);
-  const goToWorkouts = useCallback(() => setSelectedWidget("workouts"), []);
-  const goToSleep = useCallback(() => setSelectedWidget("sleep"), []);
-  const goToProfile = useCallback(() => setSelectedWidget("profile"), []);
-  const goToSettings = useCallback(() => setSelectedWidget("settings"), []);
+      const copy = [...prev];
+      copy[dayIndex] += Number(minutes);
+      return copy;
+    });
+  }, []);
 
   //workout Logging
   const logWorkout = useCallback(({ name, time, calories, icon }) => {
@@ -236,17 +256,30 @@ export const DashboardProvider = ({ children }) => {
     });
   }, []);
 
-  const logCustomActivity = useCallback((data) => {
-    const newQuick = { id: Date.now(), ...data };
-    setQuickActivities((prev) => {
-      const updated = [
-        newQuick,
-        ...prev.filter((q) => q.name !== data.name),
-      ].slice(0, 5);
-      localStorage.setItem("quickActivities", JSON.stringify(updated));
-      return updated;
-    });
-  }, []);
+  const logCustomActivity = useCallback(
+    (data) => {
+      const durationVal = data.duration || data.time || 0;
+
+      const newQuick = {
+        id: Date.now(),
+        ...data,
+        time: durationVal,
+        duration: durationVal,
+      };
+      if (durationVal > 0) {
+        addWorkoutMinutes(durationVal);
+      }
+      setQuickActivities((prev) => {
+        const updated = [
+          newQuick,
+          ...prev.filter((q) => q.name !== data.name),
+        ].slice(0, 5);
+        localStorage.setItem("quickActivities", JSON.stringify(updated));
+        return updated;
+      });
+    },
+    [addWorkoutMinutes]
+  );
 
   useEffect(() => {
     const loadWithWeeklyReset = (key, setter, parser, defaultValue = null) => {
@@ -289,17 +322,31 @@ export const DashboardProvider = ({ children }) => {
       0
     );
     loadWithWeeklyReset(
-      "dailyWorkoutMinutes",
-      setDailyWorkoutMinutes,
-      JSON.parse,
-      {}
-    );
-
-    loadWithWeeklyReset(
       "quickActivities",
       setQuickActivities,
       (data) => (Array.isArray(data?.value) ? data.value : []),
       []
+    );
+
+    loadWithWeeklyReset(
+      "weekMinutes",
+      setWeekMinutes,
+      (v) => (Array.isArray(v) ? v : EMPTYWORKOUTWEEK),
+      EMPTYWORKOUTWEEK
+    );
+
+    loadWithWeeklyReset(
+      "weekSleepMinutes",
+      setSleepWeekMinutes,
+      (v) => (Array.isArray(v) ? v : EMPTYSLEEPWEEK),
+      EMPTYSLEEPWEEK
+    );
+
+    loadWithWeeklyReset(
+      "weekFood",
+      setWeekFood,
+      (v) => (Array.isArray(v) ? v : EMPTYFOODWEEK),
+      EMPTYFOODWEEK
     );
 
     const savedHistory = localStorage.getItem("fitnessWorkouts");
@@ -323,8 +370,12 @@ export const DashboardProvider = ({ children }) => {
   }, [allSeconds, saveWithWeeklyReset]);
 
   useEffect(() => {
-    saveWithWeeklyReset("dailyWorkoutMinutes", dailyWorkoutMinutes);
-  }, [dailyWorkoutMinutes, saveWithWeeklyReset]);
+    saveWithWeeklyReset("weekMinutes", weekMinutes);
+  }, [weekMinutes, saveWithWeeklyReset]);
+
+  useEffect(() => {
+    saveWithWeeklyReset("weekFood", weekFood);
+  }, [weekFood, saveWithWeeklyReset]);
 
   useEffect(() => {
     const loadDailyWorkout = () => {
@@ -366,26 +417,20 @@ export const DashboardProvider = ({ children }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("dailyWorkoutMinutes");
-      console.log("LOAD RAW dailyWorkoutMinutes:", saved);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        console.log("LOAD PARSED dailyWorkoutMinutes:", parsed);
-        setDailyWorkoutMinutes(parsed);
-      }
-    } catch (e) {
-      console.log("LOAD dailyWorkoutMinutes error:", e);
-    }
-  }, []);
-
-  const waterProgressWidth = ((currentHydration / hydrationGoal) * 100).toFixed(
-    1
-  );
   const workoutProgressWidth = ((workoutsDone / workoutGoal) * 100).toFixed(1);
+
   //food
-  
+  const addFood = useCallback((calories) => {
+    setWeekFood((prev) => {
+      const now = new Date();
+      let dayIndex = now.getDay();
+      dayIndex = (dayIndex + 6) % 7;
+
+      const copy = [...prev];
+      copy[dayIndex] += Number(calories);
+      return copy;
+    });
+  }, []);
 
   const [breakfastList, setBreakfastList] = useState(() =>
     getListFromStorage("breakfastList")
@@ -429,7 +474,7 @@ export const DashboardProvider = ({ children }) => {
       setLunchList([]);
       setSnacksList([]);
       setDinnerList([]);
-      setWaterLog([])
+      setWaterLog([]);
 
       localStorage.setItem("lastDate", today);
     }
@@ -506,10 +551,25 @@ export const DashboardProvider = ({ children }) => {
   }, [breakfastList, lunchList, dinnerList, snacksList]);
 
   const addMealsToList = (setList, meal) => {
+    addFood(meal.calories);
     setList((prev) => [...prev, meal]);
   };
-  //sleep
 
+  //sleep
+  const addSleepMinutes = useCallback((minutes) => {
+    setSleepWeekMinutes((prev) => {
+      const now = new Date();
+      let dayIndex = now.getDay();
+      dayIndex = (dayIndex + 6) % 7;
+
+      const copy = [...prev];
+      copy[dayIndex] = Number(minutes);
+      return copy;
+    });
+  }, []);
+  useEffect(() => {
+    saveWithWeeklyReset("weekSleepMinutes", sleepWeekMinutes);
+  }, [sleepWeekMinutes, saveWithWeeklyReset]);
   const timeToMinutes = (timeStr) => {
     const [hours, minutes] = timeStr.split(":").map(Number);
     return hours * 60 + minutes;
@@ -547,6 +607,7 @@ export const DashboardProvider = ({ children }) => {
     const sleepScore = Math.round(0.7 * durationPct + 0.3 * qualityPct);
     console.log(sleepScore);
 
+    addSleepMinutes(sleepMinutes);
     const sleepData = {
       inBedTime,
       outOfBedTime,
@@ -572,7 +633,7 @@ export const DashboardProvider = ({ children }) => {
       setSleepQuality("");
       return updated;
     });
-  }, [inBedTime, outOfBedTime, sleepQuality, sleepGoal]);
+  }, [inBedTime, outOfBedTime, sleepQuality, sleepGoal, addSleepMinutes]);
 
   useEffect(() => {
     try {
@@ -596,6 +657,34 @@ export const DashboardProvider = ({ children }) => {
     }
   }, []);
 
+  const getSleepComparison = useCallback(() => {
+    if (sleepHistory.length < 2) {
+      return null;
+    }
+    const sorted = [...sleepHistory].sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+    const today = sorted[0];
+    const yesterday = sorted[1];
+
+    const todayMinutes = today.sleepHours * 60 + today.sleepMins;
+    const yesterdayMinutes = yesterday.sleepHours * 60 + yesterday.sleepMins;
+
+    const diffMinutes = todayMinutes - yesterdayMinutes;
+
+    const percentChange =
+      yesterdayMinutes > 0
+        ? ((diffMinutes / yesterdayMinutes) * 100).toFixed(1)
+        : 0;
+    return {
+      todayMinutes,
+      yesterdayMinutes,
+      diffMinutes,
+      percentChange: parseFloat(percentChange),
+      isIncrease: diffMinutes > 0,
+    };
+  }, [sleepHistory]);
+
   return (
     <DashboardContext.Provider
       value={{
@@ -611,7 +700,6 @@ export const DashboardProvider = ({ children }) => {
         goToSettings,
         //workout
         logWorkout,
-        completedWorkouts,
         activityHistory,
         setActivityHistory,
         workoutGoal,
@@ -630,8 +718,9 @@ export const DashboardProvider = ({ children }) => {
         setIsDisabled,
         allSeconds,
         setAllSeconds,
-        dailyWorkoutMinutes,
-        setDailyWorkoutMinutes,
+        weekMinutes,
+        setWeekMinutes,
+        addWorkoutMinutes,
         quickActivities,
         setQuickActivities,
         logCustomActivity,
@@ -666,6 +755,8 @@ export const DashboardProvider = ({ children }) => {
         proteinCount,
         carbsCount,
         countCalories,
+        weekFood,
+        setWeekFood,
         //sleep
         inBedTime,
         setInBedTime,
@@ -686,6 +777,10 @@ export const DashboardProvider = ({ children }) => {
         setProfileOutOfBedTime,
         profileSleepQuality,
         setProfileSleepQuality,
+        sleepWeekMinutes,
+        setSleepWeekMinutes,
+        addSleepMinutes,
+        getSleepComparison,
       }}
     >
       {children}
