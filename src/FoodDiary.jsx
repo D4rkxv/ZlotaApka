@@ -16,8 +16,8 @@ import {
 import { Doughnut } from "react-chartjs-2";
 import { Meal, useDashboard } from "./DashboardContext.jsx";
 import MealPopup from "./MealPopup.jsx";
-import EditBlack from "./assets/Edit_Pencil_02.svg"
-import Trashcan from "./assets/Trash_Full.svg"
+import EditBlack from "./assets/Edit_Pencil_02.svg";
+import Trashcan from "./assets/Trash_Full.svg";
 import MealDescriptionPopup from "./MealDescriptionPopup.jsx";
 import EditMealPopup from "./EditMealPopup.jsx";
 
@@ -50,9 +50,9 @@ const FoodDiary = () => {
     carbsCount,
     countCalories,
     weekFood,
+    caloriesGoal,
   } = useDashboard();
 
-  const [caloriesGoal, setCaloriesGoal] = useState(3200);
   const [tips, setTips] = useState([
     "Eat regular meals to keep your energy levels stable throughout the day.",
     "Include vegetables or fruit in every meal for essential vitamins and fiber.",
@@ -289,12 +289,12 @@ const FoodDiary = () => {
     }
   };
 
-  const deleteFoodEntry = (key, list, setList) =>{
-    let newList = list.filter((meal, index)=>{
-      return index != key
-    })
-    setList(newList)
-  }
+  const deleteFoodEntry = (key, list, setList) => {
+    let newList = list.filter((meal, index) => {
+      return index != key;
+    });
+    setList(newList);
+  };
 
   const selectMeal = (meal) => {
     console.log(meal);
@@ -472,7 +472,6 @@ const FoodDiary = () => {
                           <button onClick={() => selectMealToEdit(meal, index, "lunch")} ><img src={EditBlack} alt="Edit food" /></button>
                           <button onClick={() => deleteFoodEntry(index, lunchList, setLunchList)} ><img src={Trashcan} alt="Delete entry" /></button>
                         </div>
-                      </div>
                       );
                     })}
                   </div>
@@ -515,7 +514,6 @@ const FoodDiary = () => {
                           <button onClick={() => selectMealToEdit(meal, index, "snacks")} ><img src={EditBlack} alt="Edit food" /></button>
                           <button onClick={() => deleteFoodEntry(index, snacksList, setSnacksList)} ><img src={Trashcan} alt="Delete entry" /></button>
                         </div>
-                      </div>
                       );
                     })}
                   </div>

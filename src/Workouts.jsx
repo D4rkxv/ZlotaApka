@@ -64,9 +64,7 @@ function Workouts() {
     logWorkout,
     activityHistory = [],
     workoutsDone,
-    workoutGoal,
     setWorkoutsDone,
-    setWorkoutGoal,
     workoutProgressWidth,
     isActive,
     setIsActive,
@@ -85,10 +83,26 @@ function Workouts() {
     addCalories,
     addTime,
     currentWorkout,
-    todayKey,
-    allWorkouts,
     weekMinutes,
     addWorkoutMinutes,
+    sleepTimeInput,
+    setSleepTimeInput,
+    sleepTime,
+    setSleepTime,
+    caloriesGoal,
+    setCaloriesGoal,
+    dailyActivity,
+    setDailyActivity,
+    weeklyWorkouts,
+    setWeeklyWorkouts,
+    currentWeight,
+    setCurrentWeight,
+    goalWeight,
+    setGoalWeight,
+    gender,
+    setGender,
+    showWelcomePopup,
+    setShowWelcomePopup,
   } = useDashboard();
 
   const [showWorkoutPopup, setShowWorkoutPopup] = useState(false);
@@ -240,7 +254,7 @@ function Workouts() {
                 <div className="caloriesGoalContainer">
                   <p className="sectionTitle">Workout Summary</p>
                   <p className="caloriesCompletion">
-                    {workoutsDone > 0 ? workoutsDone : "0"} / {workoutGoal}{" "}
+                    {workoutsDone > 0 ? workoutsDone : "0"} / {weeklyWorkouts}{" "}
                     workouts this week
                   </p>
                   <p className="caloriesLeft">
