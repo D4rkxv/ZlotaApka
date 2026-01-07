@@ -103,6 +103,7 @@
   flex-direction: column;
   align-content: start;
   width: 70%;
+  cursor: pointer;
 }
 .mealItem .entryOptions{
   display: flex;

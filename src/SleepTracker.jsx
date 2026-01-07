@@ -131,7 +131,7 @@ function SleepTracker() {
   };
 
   const sleepThisWeekOptions = {
-    responsive: false,
+    responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
