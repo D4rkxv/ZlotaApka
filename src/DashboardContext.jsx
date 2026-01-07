@@ -20,6 +20,88 @@ export class Meal {
 }
 
 export const DashboardProvider = ({ children }) => {
+  //Welcome popup
+  const [showWelcomePopup, setShowWelcomePopup] = useState(() => {
+    const saved = localStorage.getItem("showWelcomePopup");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  const [sleepTimeInput, setSleepTimeInput] = useState(() => {
+    const saved = localStorage.getItem("sleepTimeInput");
+    return saved !== null ? JSON.parse(saved) : 240;
+  });
+
+  const [sleepTime, setSleepTime] = useState(() => {
+    const saved = localStorage.getItem("sleepTime");
+    return saved !== null ? JSON.parse(saved) : [0, 0];
+  });
+
+  const [caloriesGoal, setCaloriesGoal] = useState(() => {
+    const saved = localStorage.getItem("caloriesGoal");
+    return saved !== null ? JSON.parse(saved) : 1000;
+  });
+
+  const [dailyActivity, setDailyActivity] = useState(() => {
+    const saved = localStorage.getItem("dailyActivity");
+    return saved !== null ? JSON.parse(saved) : 10;
+  });
+
+  const [weeklyWorkouts, setWeeklyWorkouts] = useState(() => {
+    const saved = localStorage.getItem("weeklyWorkouts");
+    return saved !== null ? JSON.parse(saved) : 1;
+  });
+
+  const [currentWeight, setCurrentWeight] = useState(() => {
+    const saved = localStorage.getItem("currentWeight");
+    return saved !== null ? JSON.parse(saved) : null;
+  });
+
+  const [goalWeight, setGoalWeight] = useState(() => {
+    const saved = localStorage.getItem("goalWeight");
+    return saved !== null ? JSON.parse(saved) : null;
+  });
+  const [gender, setGender] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("showWelcomePopup", JSON.stringify(showWelcomePopup));
+  }, [showWelcomePopup]);
+
+  useEffect(() => {
+    localStorage.setItem("sleepTimeInput", JSON.stringify(sleepTimeInput));
+  }, [sleepTimeInput]);
+
+  useEffect(() => {
+    localStorage.setItem("sleepTime", JSON.stringify(sleepTime));
+  }, [sleepTime]);
+
+  useEffect(() => {
+    localStorage.setItem("caloriesGoal", JSON.stringify(caloriesGoal));
+  }, [caloriesGoal]);
+
+  useEffect(() => {
+    localStorage.setItem("dailyActivity", JSON.stringify(dailyActivity));
+  }, [dailyActivity]);
+
+  useEffect(() => {
+    localStorage.setItem("weeklyWorkouts", JSON.stringify(weeklyWorkouts));
+  }, [weeklyWorkouts]);
+
+  useEffect(() => {
+    localStorage.setItem("currentWeight", JSON.stringify(currentWeight));
+  }, [currentWeight]);
+
+  useEffect(() => {
+    localStorage.setItem("goalWeight", JSON.stringify(goalWeight));
+  }, [goalWeight]);
+
+  useEffect(() => {
+    if (currentWeight !== null) {
+      setShowWelcomePopup(false);
+    } else {
+      setShowWelcomePopup(true);
+    }
+  }, []);
+
   //page Switching
   const [selectedWidget, setSelectedWidget] = useState("dashboard");
   const switchWidget = (widget) => {
@@ -43,14 +125,12 @@ export const DashboardProvider = ({ children }) => {
     }
   };
 
-  //temp food
+  //food
   const EMPTYFOODWEEK = [0, 0, 0, 0, 0, 0, 0];
   const [weekFood, setWeekFood] = useState(EMPTYFOODWEEK);
-
   //workout Section
   const [activityHistory, setActivityHistory] = useState([]);
   const [workoutsDone, setWorkoutsDone] = useState(null);
-  const [workoutGoal, setWorkoutGoal] = useState(5);
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(null);
   const [allSeconds, setAllSeconds] = useState(null);
@@ -149,12 +229,11 @@ export const DashboardProvider = ({ children }) => {
 
   //water Section
   const [hydrationGoal, setHydrationGoal] = useState(3.0);
-  const [currentHydration, setCurrentHydration] = useState(()=>{
-    try{
-      let data = localStorage.getItem("currentHydration")
-      return data ? parseFloat(data) : 0.0
-    }
-    catch{
+  const [currentHydration, setCurrentHydration] = useState(() => {
+    try {
+      let data = localStorage.getItem("currentHydration");
+      return data ? parseFloat(data) : 0.0;
+    } catch {
       return 0.0;
     }
   });
@@ -430,7 +509,9 @@ export const DashboardProvider = ({ children }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const workoutProgressWidth = ((workoutsDone / workoutGoal) * 100).toFixed(1);
+  const workoutProgressWidth = ((workoutsDone / weeklyWorkouts) * 100).toFixed(
+    1
+  );
 
   //food
   const addFood = useCallback((calories) => {
@@ -701,6 +782,23 @@ export const DashboardProvider = ({ children }) => {
   return (
     <DashboardContext.Provider
       value={{
+        //Welcome popup
+        sleepTimeInput,
+        setSleepTimeInput,
+        sleepTime,
+        setSleepTime,
+        caloriesGoal,
+        setCaloriesGoal,
+        dailyActivity,
+        setDailyActivity,
+        weeklyWorkouts,
+        setWeeklyWorkouts,
+        currentWeight,
+        setCurrentWeight,
+        goalWeight,
+        setGoalWeight,
+        gender,
+        setGender,
         //switching
         selectedWidget,
         switchWidget: switchWidget,
@@ -715,8 +813,6 @@ export const DashboardProvider = ({ children }) => {
         logWorkout,
         activityHistory,
         setActivityHistory,
-        workoutGoal,
-        setWorkoutGoal,
         workoutsDone,
         setWorkoutsDone,
         isActive,
@@ -794,6 +890,8 @@ export const DashboardProvider = ({ children }) => {
         setSleepWeekMinutes,
         addSleepMinutes,
         getSleepComparison,
+        showWelcomePopup,
+        setShowWelcomePopup,
       }}
     >
       {children}

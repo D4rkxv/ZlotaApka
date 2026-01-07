@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useDashboard } from "./DashboardContext.jsx";
 import {
@@ -38,8 +38,6 @@ const weightValues = [84, 79.8, 79.5, 76.2, 79, 78.9, 75.7];
 const deficit = [0, -50, 120, 80, 0, -30, -100];
 
 export function Dashboard() {
-  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
-  const [caloriesGoal, setCaloriesGoal] = useState(3200);
   const {
     currentHydration,
     hydrationGoal,
@@ -50,7 +48,13 @@ export function Dashboard() {
     sleepWeekMinutes,
     getSleepComparison,
     weekFood,
+    caloriesGoal,
+    currentWeight,
+    goalWeight,
+    showWelcomePopup,
+    setShowWelcomePopup,
   } = useDashboard();
+
   const sleepComparison = getSleepComparison();
   const sleepValues = sleepWeekMinutes;
   const activityValues = weekMinutes;
@@ -232,11 +236,13 @@ export function Dashboard() {
             <div className="smallWidget">
               <p className="smallWidgetTitle">Weight</p>
               <div className="descLine">
-                <p className="smalWidgetDesc">80Kg</p>
+                <p className="smalWidgetDesc">{currentWeight}Kg</p>
                 <img src={TrendUp} alt="trend up" />
                 <p className="smallWidgetDesc2">0.2%</p>
               </div>
-              <p className="smallWidgetGrayDesc">Goal: 86 Kg ( +6 remaining)</p>
+              <p className="smallWidgetGrayDesc">
+                Goal: {goalWeight} Kg ( +6 remaining)
+              </p>
             </div>
 
             <div className="smallWidget" onClick={goToSleep}>

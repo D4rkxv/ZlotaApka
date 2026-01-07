@@ -12,8 +12,7 @@
   --textColor-50: rgba(15, 23, 42, 0.5);
   --pureWhite: #fefefe;
 }
-
-.popupBackground{
+.popupBackground {
   position: fixed;
   z-index: 1000;
   width: 100vw;
@@ -27,7 +26,8 @@
   align-content: center;
   align-items: center;
 }
-.popupContainer{
+.popupContainer {
+  scroll-behavior: smooth;
   background-color: var(--pureWhite);
   border-radius: 12px;
   padding: 24px 16px;
@@ -38,167 +38,177 @@
   -ms-overflow-style: none;
 }
 .welcomePopup {
-    width: 50%;
-    height: 80%;
+  width: 50%;
+  height: 80%;
 }
-.popupContainer::-webkit-scrollbar{
-    display: none;
+.popupContainer::-webkit-scrollbar {
+  display: none;
 }
-.popupTitle{
-    font-size: 24px;
-    margin: 0px;
+.popupTitle {
+  font-size: 24px;
+  margin: 0px;
 }
-.popupDescription{
-    color: var(--primary);
-    font-size: 16px;
-    margin-top: 0px;
+.popupDescription {
+  color: var(--primary);
+  font-size: 16px;
+  margin-top: 0px;
 }
-.popupSection{
-    margin: 24px 0px;
+.popupSection {
+  margin: 24px 0px;
 }
-.popupSectionTitle{
-    font-size: 20px;
+.popupSectionTitle {
+  font-size: 20px;
 }
-.welcomePopup input[type="text"], .mealPopup input[type="text"], .popupContainer input[type="date"], .welcomePopup input[type="number"], .mealPopup input[type="number"], .waterPopup input{
-    width: 100%;
-    border: none;
-    border-bottom: var(--textColor) 1px solid;
-    margin: 12px 0px;
-    font-size: 16px;
+.welcomePopup input[type="text"],
+.mealPopup input[type="text"],
+.popupContainer input[type="date"],
+.welcomePopup input[type="number"],
+.mealPopup input[type="number"],
+.waterPopup input {
+  width: 100%;
+  border: none;
+  border-bottom: var(--textColor) 1px solid;
+  margin: 12px 0px;
+  font-size: 16px;
 }
-.popupContainer input:focus{
-    outline: none;
-    border-color: var(--primary);
+.popupContainer input:focus {
+  outline: none;
+  border-color: var(--primary);
 }
-.popupContainer input::placeholder, .popupContainer input::-webkit-input-placeholder{
-    color: var(--textColor-50);
+.popupContainer input::placeholder,
+.popupContainer input::-webkit-input-placeholder {
+  color: var(--textColor-50);
 }
-.popupSubSection{
-    margin: 12px 0px;
+.popupSubSection {
+  margin: 12px 0px;
 }
-.radioButtonContainer{
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    justify-content: center;
-    text-align: center;
+.radioButtonContainer {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+  text-align: center;
 }
-.radioButtonContainer input{
-    border-color: var(--primary);
+.radioButtonContainer input {
+  border-color: var(--primary);
 }
-.sliderContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-content: center;
+.sliderContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
 }
-.sliderContainer input{
-    width: 80%;
-    accent-color: var(--primary);
+.sliderContainer input {
+  width: 80%;
+  accent-color: var(--primary);
 }
-.sliderContainer p{
-    text-align: center;
+.sliderContainer p {
+  text-align: center;
 }
-.popupButtonContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: right;
-    margin-top: 30px;
+.popupButtonContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  margin-top: 30px;
 }
-.popupButtonContainer button{
-    font-size: 16px;
-    padding: 6px 28px;
-    border-radius: 24px;
-    text-align: center;
-    background-color: transparent;
-    border: var(--primary) 1px solid;
-    color: var(--primary);
-    width: 10vw;
-    transition: all 0.3s ease;
+.popupButtonContainer button {
+  font-size: 16px;
+  padding: 6px 28px;
+  border-radius: 24px;
+  text-align: center;
+  background-color: transparent;
+  border: var(--primary) 1px solid;
+  color: var(--primary);
+  width: 10vw;
+  transition: all 0.3s ease;
 }
-.popupButtonContainer button:hover{
-    background-color: var(--primary);
-    color: var(--pureWhite);
-    cursor: pointer;
-}
-
-.workoutPopup{
-    width: 30%;
-    height: 65%;
-    padding: 12px 32px;
-}
-.workoutPopup input{
-    border: var(--primary-10) 1px solid;
-    border-radius: 24px;
-    padding: 8px 16px;
-    width: 94%;
-    margin-top: 24px;
-    font-size: 16px;
-}
-.workoutInputs{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
-}
-.iconSelection{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-content: center;
-    margin-top: 12px;
-}
-.iconSelection button{
-    background-color: var(--pureWhite);
-    border: none;
-    width: 3vw;
-    height: 3vw;
-}
-.iconSelection button.selected{
-    border: var(--primary) 1px solid;
-    border-radius: 12px;
-    padding: 4px;
+.popupButtonContainer button:hover {
+  background-color: var(--primary);
+  color: var(--pureWhite);
+  cursor: pointer;
 }
 
-.popupButtonContainer button{
-    margin-left: 16px;
+.workoutPopup {
+  width: 30%;
+  height: 65%;
+  padding: 12px 32px;
+}
+.workoutPopup input {
+  border: var(--primary-10) 1px solid;
+  border-radius: 24px;
+  padding: 8px 16px;
+  width: 94%;
+  margin-top: 24px;
+  font-size: 16px;
+}
+.workoutInputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+.iconSelection {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-content: center;
+  margin-top: 12px;
+}
+.iconSelection button {
+  background-color: var(--pureWhite);
+  border: none;
+  width: 3vw;
+  height: 3vw;
+}
+.iconSelection button.selected {
+  border: var(--primary) 1px solid;
+  border-radius: 12px;
+  padding: 4px;
 }
 
-.mealPopup{
-    width: 20%;
-    height: 48%;
-}
-.mealPopup .coloredBtn, .workoutPopup .coloredBtn, .waterPopup .coloredBtn{
-    background-color: var(--primary);
-    color: var(--pureWhite);
-    transition: all 0.3s ease-in;
-}
-.mealPopup .coloredBtn:hover, .workoutPopup .coloredBtn:hover, .waterPopup .coloredBtn:hover{
-    background-color: transparent;
-    color: var(--primary);
-}
-.inputContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-content: center;
-    align-items: center;
-}
-.inputContainer label{
-    width: 50%;
-}
-.inputContainer input{
-    width: 50%;
+.popupButtonContainer button {
+  margin-left: 16px;
 }
 
-.waterPopup{
-    height: 20%;
+.mealPopup {
+  width: 20%;
+  height: 48%;
+}
+.mealPopup .coloredBtn,
+.workoutPopup .coloredBtn,
+.waterPopup .coloredBtn {
+  background-color: var(--primary);
+  color: var(--pureWhite);
+  transition: all 0.3s ease-in;
+}
+.mealPopup .coloredBtn:hover,
+.workoutPopup .coloredBtn:hover,
+.waterPopup .coloredBtn:hover {
+  background-color: transparent;
+  color: var(--primary);
+}
+.inputContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+.inputContainer label {
+  width: 50%;
+}
+.inputContainer input {
+  width: 50%;
 }
 
-.mealDescription .popupSection{
-    text-align: center;
+.waterPopup {
+  height: 20%;
 }
-.mealDescription .popupButtonContainer{
-    justify-content: center;
-    align-content: center;
+
+.mealDescription .popupSection {
+  text-align: center;
+}
+.mealDescription .popupButtonContainer {
+  justify-content: center;
+  align-content: center;
 }

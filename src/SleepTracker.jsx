@@ -55,20 +55,13 @@ function SleepTracker() {
     setOutOfBedTime,
     sleepQuality,
     setSleepQuality,
-    sleepGoal,
-    setSleepGoal,
     lastNightSleep,
-    setLastNightSleep,
-    countScore,
     logSleep,
     score,
-    setScore,
-    setProfileInBedTime,
     profileInBedTime,
     profileOutOfBedTime,
-    setProfileOutOfBedTime,
     sleepWeekMinutes,
-    setSleepWeekMinutes,
+    sleepTime,
   } = useDashboard();
   const [selectedTip, setSelectedTip] = useState("");
   useEffect(() => {
@@ -179,15 +172,15 @@ function SleepTracker() {
               last night
             </p>
             <p className="sleepGoal">
-              Sleep goal: {sleepGoal[0] > 0 ? `${sleepGoal[0]}h` : ""}
-              {sleepGoal[1] > 0 ? `${sleepGoal[1]}min` : ""}
+              Sleep goal: {sleepTime[0] > 0 ? `${sleepTime[0]}h` : ""}
+              {sleepTime[1] > 0 ? `${sleepTime[1]}min` : ""}
             </p>
             <div className="progressTrack">
               <div
                 className="progressFill2"
                 style={{
                   width: `${Math.min(
-                    ((lastNightSleep[0] / sleepGoal[0]) * 100).toFixed(0),
+                    ((lastNightSleep[0] / sleepTime[0]) * 100).toFixed(0),
                     100
                   )}%`,
                 }}
