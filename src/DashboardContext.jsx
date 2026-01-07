@@ -569,6 +569,7 @@ export const DashboardProvider = ({ children }) => {
       setSnacksList([]);
       setDinnerList([]);
       setWaterLog([]);
+      setCurrentHydration(0)
 
       localStorage.setItem("lastDate", today);
     }
