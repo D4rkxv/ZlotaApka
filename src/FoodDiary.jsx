@@ -14,7 +14,7 @@ import {
   Filler,
 } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { Meal, useDashboard } from "./DashboardContext.jsx";
+import { useDashboard } from "./DashboardContext.jsx";
 import MealPopup from "./MealPopup.jsx";
 import EditBlack from "./assets/Edit_Pencil_02.svg";
 import Trashcan from "./assets/Trash_Full.svg";
@@ -65,7 +65,7 @@ const FoodDiary = () => {
     "Limit sugary snacks and opt for fruit, nuts, or yogurt instead.",
     "Plan your meals ahead to avoid unhealthy food choices.",
     "Choose whole grains instead of refined carbohydrates.",
-    "Listen to your body’s hunger signals instead of eating out of habit.",
+    "Listen to your body's hunger signals instead of eating out of habit.",
     "Keep healthy snacks available to avoid reaching for junk food.",
     "Include healthy fats like nuts, seeds, and olive oil in your diet.",
     "Avoid skipping meals, as it can lead to overeating later.",
@@ -87,16 +87,17 @@ const FoodDiary = () => {
   ]);
   const [selectedTip, setSelectedTip] = useState("");
   const [popupMealType, setPopupMealType] = useState("");
-  const [showEntryViewPopup, setShowEntryViewPopup] = useState(false)
-  const [shownMeal, setShownMeal] = useState(null)
-  const [modifiedMeal, setModifiedMeal] = useState(null)
-  const [editMealType, setEditMealType] = useState("")
-  const [editMealKey, setEditMealKey] = useState(0)
+  const [showEntryViewPopup, setShowEntryViewPopup] = useState(false);
+  const [shownMeal, setShownMeal] = useState(null);
+  const [modifiedMeal, setModifiedMeal] = useState(null);
+  const [editMealType, setEditMealType] = useState("");
+  const [editMealKey, setEditMealKey] = useState(0);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * tips.length);
     setSelectedTip(tips[randomIndex]);
   }, []);
+
   const macrosData = {
     labels: ["Protein", "Fat", "Carbs"],
     datasets: [
@@ -180,19 +181,29 @@ const FoodDiary = () => {
       {
         data: [
           Math.min(
-            ((countCalories(breakfastList) / caloriesCount) * 100).toFixed(2),
+            caloriesCount > 0
+              ? ((countCalories(breakfastList) / caloriesCount) * 100).toFixed(
+                  2
+                )
+              : 0,
             100
           ),
           Math.min(
-            ((countCalories(lunchList) / caloriesCount) * 100).toFixed(2),
+            caloriesCount > 0
+              ? ((countCalories(lunchList) / caloriesCount) * 100).toFixed(2)
+              : 0,
             100
           ),
           Math.min(
-            ((countCalories(dinnerList) / caloriesCount) * 100).toFixed(2),
+            caloriesCount > 0
+              ? ((countCalories(dinnerList) / caloriesCount) * 100).toFixed(2)
+              : 0,
             100
           ),
           Math.min(
-            ((countCalories(snacksList) / caloriesCount) * 100).toFixed(2),
+            caloriesCount > 0
+              ? ((countCalories(snacksList) / caloriesCount) * 100).toFixed(2)
+              : 0,
             100
           ),
         ],
@@ -291,51 +302,93 @@ const FoodDiary = () => {
 
   const deleteFoodEntry = (key, list, setList) => {
     let newList = list.filter((meal, index) => {
-      return index != key;
+      return index !== key;
     });
     setList(newList);
   };
 
   const selectMeal = (meal) => {
     console.log(meal);
-    setShownMeal(meal)
-    setShowEntryViewPopup(true)
-  }
+    setShownMeal(meal);
+    setShowEntryViewPopup(true);
+  };
 
-  const selectMealToEdit = (meal, key, mealType) =>{
-    setEditMealKey(key)
-    setEditMealType(mealType)
-    setModifiedMeal(meal)
-  }
+  const selectMealToEdit = (meal, key, mealType) => {
+    setEditMealKey(key);
+    setEditMealType(mealType);
+    setModifiedMeal(meal);
+  };
 
-  const modifyMeal = (newMeal, key, list, setList) =>{
-    let newList = list.map((entry, index) =>{
-      if(index !== key) return entry;
-      else{
-        return newMeal
+  const modifyMeal = (newMeal, key, list, setList) => {
+    let newList = list.map((entry, index) => {
+      if (index !== key) return entry;
+      else {
+        return newMeal;
       }
-    })
-    setList(newList)
-  }
+    });
+    setList(newList);
+  };
 
-  const renderEditMealPopup = () =>{
-    switch(editMealType){
+  const renderEditMealPopup = () => {
+    switch (editMealType) {
       case "breakfast":
-        return <EditMealPopup setPopupMealType={setEditMealType} modifyMeal={modifyMeal} meal={modifiedMeal} index={editMealKey} list={breakfastList} setList={setBreakfastList}/>
+        return (
+          <EditMealPopup
+            setPopupMealType={setEditMealType}
+            modifyMeal={modifyMeal}
+            meal={modifiedMeal}
+            index={editMealKey}
+            list={breakfastList}
+            setList={setBreakfastList}
+          />
+        );
       case "lunch":
-        return <EditMealPopup setPopupMealType={setEditMealType} modifyMeal={modifyMeal} meal={modifiedMeal} index={editMealKey} list={lunchList} setList={setLunchList}/>
+        return (
+          <EditMealPopup
+            setPopupMealType={setEditMealType}
+            modifyMeal={modifyMeal}
+            meal={modifiedMeal}
+            index={editMealKey}
+            list={lunchList}
+            setList={setLunchList}
+          />
+        );
       case "dinner":
-        return <EditMealPopup setPopupMealType={setEditMealType} modifyMeal={modifyMeal} meal={modifiedMeal} index={editMealKey} list={dinnerList} setList={setDinnerList}/>
+        return (
+          <EditMealPopup
+            setPopupMealType={setEditMealType}
+            modifyMeal={modifyMeal}
+            meal={modifiedMeal}
+            index={editMealKey}
+            list={dinnerList}
+            setList={setDinnerList}
+          />
+        );
       case "snacks":
-        return <EditMealPopup setPopupMealType={setEditMealType} modifyMeal={modifyMeal} meal={modifiedMeal} index={editMealKey} list={snacksList} setList={setSnacksList}/>
+        return (
+          <EditMealPopup
+            setPopupMealType={setEditMealType}
+            modifyMeal={modifyMeal}
+            meal={modifiedMeal}
+            index={editMealKey}
+            list={snacksList}
+            setList={setSnacksList}
+          />
+        );
       default:
         return null;
     }
-  }
+  };
+
   return (
     <>
       {renderEditMealPopup()}
-      {shownMeal&&showEntryViewPopup ? <MealDescriptionPopup meal={shownMeal} setPopupVisibility={setShowEntryViewPopup}/>:null}
+      {shownMeal && showEntryViewPopup ? (
+        <MealDescriptionPopup
+          meal={shownMeal}
+          setPopupVisibility={setShowEntryViewPopup}
+        />
+      ) : null}
       {renderMealPopup()}
       <div className="foodContainer siteContainer">
         <Sidebar />
@@ -371,7 +424,9 @@ const FoodDiary = () => {
                 <div className="mealManagerTop">
                   <div className="mealTitleContainer">
                     <p className="mealTitle">Breakfast•</p>
-                    <p className="mealCaloriesGoal">{countCalories(breakfastList)} kcal</p>
+                    <p className="mealCaloriesGoal">
+                      {countCalories(breakfastList)} kcal
+                    </p>
                   </div>
                   <p
                     className="addMeal"
@@ -384,15 +439,34 @@ const FoodDiary = () => {
                   {breakfastList.map((meal, index) => {
                     return (
                       <div className="mealItem" key={index}>
-                        <div className="entryDescription" onClick={()=>selectMeal(meal)}>
+                        <div
+                          className="entryDescription"
+                          onClick={() => selectMeal(meal)}
+                        >
                           <p className="mealName">{meal.name}</p>
                           <p className="mealDescription">
                             {meal.grammage}g • {meal.calories}kcal
                           </p>
                         </div>
                         <div className="entryOptions">
-                          <button onClick={() => selectMealToEdit(meal, index, "breakfast")} ><img src={EditBlack} alt="Edit food" /></button>
-                          <button onClick={() => deleteFoodEntry(index, breakfastList, setBreakfastList)} ><img src={Trashcan} alt="Delete entry" /></button>
+                          <button
+                            onClick={() =>
+                              selectMealToEdit(meal, index, "breakfast")
+                            }
+                          >
+                            <img src={EditBlack} alt="Edit food" />
+                          </button>
+                          <button
+                            onClick={() =>
+                              deleteFoodEntry(
+                                index,
+                                breakfastList,
+                                setBreakfastList
+                              )
+                            }
+                          >
+                            <img src={Trashcan} alt="Delete entry" />
+                          </button>
                         </div>
                       </div>
                     );
@@ -403,7 +477,9 @@ const FoodDiary = () => {
                 <div className="mealManagerTop">
                   <div className="mealTitleContainer">
                     <p className="mealTitle">Dinner•</p>
-                    <p className="mealCaloriesGoal">{countCalories(dinnerList)} kcal</p>
+                    <p className="mealCaloriesGoal">
+                      {countCalories(dinnerList)} kcal
+                    </p>
                   </div>
                   <p
                     className="addMeal"
@@ -416,15 +492,30 @@ const FoodDiary = () => {
                   {dinnerList.map((meal, index) => {
                     return (
                       <div className="mealItem" key={index}>
-                        <div className="entryDescription" onClick={()=>selectMeal(meal)}>
+                        <div
+                          className="entryDescription"
+                          onClick={() => selectMeal(meal)}
+                        >
                           <p className="mealName">{meal.name}</p>
                           <p className="mealDescription">
                             {meal.grammage}g • {meal.calories}kcal
                           </p>
                         </div>
                         <div className="entryOptions">
-                          <button onClick={() => selectMealToEdit(meal, index, "dinner")} ><img src={EditBlack} alt="Edit food" /></button>
-                          <button onClick={() => deleteFoodEntry(index, dinnerList, setDinnerList)} ><img src={Trashcan} alt="Delete entry" /></button>
+                          <button
+                            onClick={() =>
+                              selectMealToEdit(meal, index, "dinner")
+                            }
+                          >
+                            <img src={EditBlack} alt="Edit food" />
+                          </button>
+                          <button
+                            onClick={() =>
+                              deleteFoodEntry(index, dinnerList, setDinnerList)
+                            }
+                          >
+                            <img src={Trashcan} alt="Delete entry" />
+                          </button>
                         </div>
                       </div>
                     );
@@ -449,7 +540,9 @@ const FoodDiary = () => {
                   <div className="mealManagerTop">
                     <div className="mealTitleContainer">
                       <p className="mealTitle">Lunch•</p>
-                      <p className="mealCaloriesGoal">{countCalories(lunchList)} kcal</p>
+                      <p className="mealCaloriesGoal">
+                        {countCalories(lunchList)} kcal
+                      </p>
                     </div>
                     <p
                       className="addMeal"
@@ -462,15 +555,31 @@ const FoodDiary = () => {
                     {lunchList.map((meal, index) => {
                       return (
                         <div className="mealItem" key={index}>
-                        <div className="entryDescription" onClick={()=>selectMeal(meal)}>
-                          <p className="mealName">{meal.name}</p>
-                          <p className="mealDescription">
-                            {meal.grammage}g • {meal.calories}kcal
-                          </p>
-                        </div>
-                        <div className="entryOptions">
-                          <button onClick={() => selectMealToEdit(meal, index, "lunch")} ><img src={EditBlack} alt="Edit food" /></button>
-                          <button onClick={() => deleteFoodEntry(index, lunchList, setLunchList)} ><img src={Trashcan} alt="Delete entry" /></button>
+                          <div
+                            className="entryDescription"
+                            onClick={() => selectMeal(meal)}
+                          >
+                            <p className="mealName">{meal.name}</p>
+                            <p className="mealDescription">
+                              {meal.grammage}g • {meal.calories}kcal
+                            </p>
+                          </div>
+                          <div className="entryOptions">
+                            <button
+                              onClick={() =>
+                                selectMealToEdit(meal, index, "lunch")
+                              }
+                            >
+                              <img src={EditBlack} alt="Edit food" />
+                            </button>
+                            <button
+                              onClick={() =>
+                                deleteFoodEntry(index, lunchList, setLunchList)
+                              }
+                            >
+                              <img src={Trashcan} alt="Delete entry" />
+                            </button>
+                          </div>
                         </div>
                       );
                     })}
@@ -491,7 +600,9 @@ const FoodDiary = () => {
                   <div className="mealManagerTop">
                     <div className="mealTitleContainer">
                       <p className="mealTitle">Snacks•</p>
-                      <p className="mealCaloriesGoal">{countCalories(snacksList)} kcal</p>
+                      <p className="mealCaloriesGoal">
+                        {countCalories(snacksList)} kcal
+                      </p>
                     </div>
                     <p
                       className="addMeal"
@@ -504,15 +615,35 @@ const FoodDiary = () => {
                     {snacksList.map((meal, index) => {
                       return (
                         <div className="mealItem" key={index}>
-                        <div className="entryDescription" onClick={()=>selectMeal(meal)}>
-                          <p className="mealName">{meal.name}</p>
-                          <p className="mealDescription">
-                            {meal.grammage}g • {meal.calories}kcal
-                          </p>
-                        </div>
-                        <div className="entryOptions">
-                          <button onClick={() => selectMealToEdit(meal, index, "snacks")} ><img src={EditBlack} alt="Edit food" /></button>
-                          <button onClick={() => deleteFoodEntry(index, snacksList, setSnacksList)} ><img src={Trashcan} alt="Delete entry" /></button>
+                          <div
+                            className="entryDescription"
+                            onClick={() => selectMeal(meal)}
+                          >
+                            <p className="mealName">{meal.name}</p>
+                            <p className="mealDescription">
+                              {meal.grammage}g • {meal.calories}kcal
+                            </p>
+                          </div>
+                          <div className="entryOptions">
+                            <button
+                              onClick={() =>
+                                selectMealToEdit(meal, index, "snacks")
+                              }
+                            >
+                              <img src={EditBlack} alt="Edit food" />
+                            </button>
+                            <button
+                              onClick={() =>
+                                deleteFoodEntry(
+                                  index,
+                                  snacksList,
+                                  setSnacksList
+                                )
+                              }
+                            >
+                              <img src={Trashcan} alt="Delete entry" />
+                            </button>
+                          </div>
                         </div>
                       );
                     })}
@@ -532,4 +663,5 @@ const FoodDiary = () => {
     </>
   );
 };
+
 export default FoodDiary;
