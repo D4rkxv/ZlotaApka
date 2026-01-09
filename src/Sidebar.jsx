@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext} from "react";
+import { AuthContext } from "./AuthContext.jsx";
 import "./Sidebar.css";
 import Logo from "./assets/Ellipse4.png";
 import "./LoginPage.css";
@@ -28,6 +29,9 @@ function Sidebar() {
     goToSettings,
     selectedWidget,
   } = useDashboard();
+  const {
+      user
+    } = useContext(AuthContext)
   const { logout, isAuthenticated } = useAuthLayout();
   const handleProfileClick = () => {
     console.log(goToProfile);
@@ -123,8 +127,8 @@ function Sidebar() {
               <img src={profilePic} className="profilePicture" />
             </div>
             <div className="middleAccountSide">
-              <p className="sidebarName">Jan Kowalski</p>
-              <p className="sidebarEmail">Jankowalski@gmail.com</p>
+              <p className="sidebarName">{user.name}</p>
+              <p className="sidebarEmail">{user.email}</p>
             </div>
             <div className="rightAccountSide">
               <img src={arrowUp} className="arrowCard" />

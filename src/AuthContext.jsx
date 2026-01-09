@@ -1,12 +1,21 @@
-import React, { useState, useContext, createContext } from "react";
+import React, { useState, useContext, createContext, useEffect } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({
-    name: "jan kowalski",
-    email: "jankowalski@gmail.com",
-  }); //delete if u want start on landing page! //  { name: "jan kowalski", email: "jankowalski@gmail.com", }
+  const [user, setUser] = useState(() => {
+  const savedUser = localStorage.getItem("user");
+  return savedUser
+    ? JSON.parse(savedUser)
+    : {
+        name: "Jan Kowalski",
+        email: "jankowalski@gmail.com",
+      };
+});//delete if u want start on landing page! //  { name: "jan kowalski", email: "jankowalski@gmail.com", }
+useEffect(() => {
+  localStorage.setItem("user", JSON.stringify(user));
+}, [user]);
+
   const [currentPage, setCurrentPage] = useState("loading");
   const isAuthenticated = !!user;
 
@@ -19,6 +28,9 @@ export const AuthProvider = ({ children }) => {
     setCurrentPage("landing");
     localStorage.removeItem("token");
   };
+  const setName = (newName) =>{
+    setUser({name: newName, email:user.email})
+  }
   const switchPage = (page) => {
     setCurrentPage(page);
   };
@@ -39,6 +51,7 @@ export const AuthProvider = ({ children }) => {
         login,
         user,
         isAuthenticated,
+        setName
       }}
     >
       {children}

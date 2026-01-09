@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Sidebar from "./Sidebar.jsx";
 import "./App.css";
 import "./Profile.css";
 import mountains from "./assets/Mountains.png";
 import profilePic from "./assets/BigProfilePic.png";
 import { useDashboard } from "./DashboardContext.jsx";
+import { AuthContext } from "./AuthContext.jsx";
 function Profile() {
   const {
     currentHydration,
@@ -33,6 +34,22 @@ function Profile() {
     waterProgressWidth,
     allSeconds,
   } = useDashboard();
+  const {
+    user,
+    setName
+  } = useContext(AuthContext)
+  const [modifyingProfile, setModifyingProfile] = useState(false)
+  const [newName, setNewName] = useState(user.name)
+
+
+  const cancelNameModification = () =>{
+    setModifyingProfile(false)
+    setNewName(user.name)
+  }
+  const saveNewName = () =>{
+    setName(newName)
+    setModifyingProfile(false)
+  }
   return (
     <div className="widgetContainer2">
       <Sidebar />
@@ -45,10 +62,14 @@ function Profile() {
               <img src={profilePic} className="bigProfilePic" />
               <div className="editProfileContainer">
                 <div className="userDataContainer">
-                  <p className="userName">Jan kowalski</p>
+                  <div className="editNameContainer">
+                    {!modifyingProfile ? <input type="text" value={user.name} disabled/>:<input type="text" value={newName} className="modification" onChange={(e)=>setNewName(e.target.value)} />}
+                    {modifyingProfile ? <button className="emptyBtn" onClick={()=>cancelNameModification()}>Close</button>:null}
+                    {modifyingProfile ? <button className="fullBtn" onClick={()=>saveNewName()}>Save</button>:null}
+                  </div>
                   <p className="userGoals">Goal: gain 5k • Intermediate </p>
                 </div>
-                <p className="profileEdit">Edit Profile</p>
+                <p className="profileEdit" onClick={()=>setModifyingProfile(true)}>Edit Profile</p>
               </div>
             </div>
           </div>
@@ -58,7 +79,7 @@ function Profile() {
             <div className="bodyMetricData">
               <div className="topMetric">
                 <p className="sectionTitle">Body & Metrics</p>
-                <p className="editWidget">Edit Profile</p>
+                <p className="editWidget">Edit Metrics</p>
               </div>
               <div className="metricItem">
                 <p>Height</p>
