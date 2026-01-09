@@ -11,6 +11,27 @@ function Profile() {
     setCurrentHydration,
     hydrationGoal,
     setHydrationGoal,
+    sleepTimeInput,
+    setSleepTimeInput,
+    sleepTime,
+    setSleepTime,
+    caloriesGoal,
+    setCaloriesGoal,
+    dailyActivity,
+    setDailyActivity,
+    weeklyWorkouts,
+    setWeeklyWorkouts,
+    currentWeight,
+    setCurrentWeight,
+    goalWeight,
+    setGoalWeight,
+    gender,
+    setGender,
+    currentHeight,
+    setCurrentHeight,
+    currentAge,
+    waterProgressWidth,
+    allSeconds,
   } = useDashboard();
   return (
     <div className="widgetContainer2">
@@ -41,27 +62,27 @@ function Profile() {
               </div>
               <div className="metricItem">
                 <p>Height</p>
-                <p>180cm</p>
+                <p>{currentHeight}cm</p>
               </div>
               <hr />
               <div className="metricItem">
                 <p>Weight</p>
-                <p>80kg</p>
+                <p>{currentWeight}kg</p>
               </div>
               <hr />
               <div className="metricItem">
                 <p>Age</p>
-                <p>18</p>
+                <p>{currentAge}</p>
               </div>
               <hr />
               <div className="metricItem">
                 <p>Sex</p>
-                <p>Male</p>
+                <p>{gender}</p>
               </div>
               <hr />
               <div className="metricItem">
                 <p>Goal Weight</p>
-                <p>76kg</p>
+                <p>{goalWeight}kg</p>
               </div>
             </div>
             <div className="bodyGoals">
@@ -71,7 +92,7 @@ function Profile() {
               </div>
               <div className="goalItem">
                 <p>
-                  Daily activity time • {45} / {45}min
+                  Daily activity time • {allSeconds / 60} / {dailyActivity}min
                 </p>
                 <div className="progressTrack progressTrackProfile">
                   <div className="progressFill" />
@@ -81,15 +102,20 @@ function Profile() {
               <div className="goalItem">
                 <p>
                   Daily water intake {currentHydration.toFixed(1)} L /{" "}
-                  {hydrationGoal.toFixed(1)} L
+                  {(hydrationGoal * 1).toFixed(1)} L
                 </p>
                 <div className="progressTrack progressTrackProfile">
-                  <div className="progressFill" />
+                  <div
+                    className="progressFill"
+                    style={{ width: `${waterProgressWidth}%` }}
+                  />
                 </div>
               </div>
 
               <div className="goalItem">
-                <p>Weight Goal • {67}% to target</p>
+                <p>
+                  Weight Goal • {(currentWeight / goalWeight) * 100}% to target
+                </p>
                 <div className="progressTrack progressTrackProfile">
                   <div className="progressFill" />
                 </div>

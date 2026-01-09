@@ -221,7 +221,8 @@ export function Dashboard() {
               <p className="smallWidgetTitle">Water</p>
               <p className="smalWidgetDesc">
                 {" "}
-                {currentHydration.toFixed(1)} L / {hydrationGoal.toFixed(1)} L
+                {currentHydration.toFixed(1)} L /{" "}
+                {(hydrationGoal * 1).toFixed(1)} L
               </p>
               <div className="progressWrapper">
                 <div className="progressTrack">
@@ -367,7 +368,8 @@ export function Dashboard() {
                 />
               </div>
               <p className="waterTarget">
-                {currentHydration.toFixed(1)} / {hydrationGoal.toFixed(1)} L
+                {currentHydration.toFixed(1)} / {(hydrationGoal * 1).toFixed(1)}{" "}
+                L
               </p>
             </div>
             <div className="lineChartContainer" onClick={goToWorkouts}>

@@ -20,15 +20,21 @@ const WelcomePopup = ({ setPopupVisibility }) => {
     setGoalWeight,
     gender,
     setGender,
+    hydrationGoal,
+    setHydrationGoal,
+    currentHeight,
+    setCurrentHeight,
+    currentAge,
+    setCurrentAge,
   } = useDashboard();
   useEffect(() => {
     setSleepTime([(sleepTimeInput / 60).toFixed(0), sleepTimeInput % 60]);
   }, [sleepTimeInput]);
   const handleGenderChange = (e) => {
-    const value = e.target;
+    const value = e.target.value;
     setGender(value);
   };
-
+  console.log(hydrationGoal);
   return (
     <div className="popupBackground">
       <div className="welcomePopup popupContainer">
@@ -46,21 +52,46 @@ const WelcomePopup = ({ setPopupVisibility }) => {
           </p>
           <div className="popupSection">
             <p className="popupSectionTitle">Your details</p>
-            <input
-              type="number"
-              id="weightInput"
-              placeholder="Current Weight"
-              value={currentWeight}
-              onChange={(e) => setCurrentWeight(e.target.value)}
-              required
-              min={1}
-            />
-            <input
-              type="date"
-              id="birthdayInput"
-              placeholder="Date of birth"
-              required
-            />
+
+            <div className="inputGroup">
+              <input
+                type="number"
+                id="heightInput"
+                value={currentHeight}
+                onChange={(e) => setCurrentHeight(e.target.value)}
+                required
+                min={1}
+              />
+              <label>Current Height</label>
+            </div>
+            <div className="inputGroup">
+              <input
+                type="number"
+                id="weightInput"
+                value={currentWeight}
+                onChange={(e) => setCurrentWeight(e.target.value)}
+                required
+                min={1}
+              />
+              <label>Current Weight</label>
+            </div>
+            <div className="inputGroup">
+              <input
+                type="number"
+                id="ageInput"
+                value={currentAge}
+                onChange={(e) => setCurrentAge(e.target.value)}
+                required
+                min={1}
+              />
+              <label>Current Age</label>
+            </div>
+            {/* <input
+                type="date"
+                id="birthdayInput"
+                placeholder="Date of birth"
+                required
+              /> */}
             <div className="popupSubSection">
               <p>Gender</p>
               <div className="divider">
@@ -70,9 +101,9 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                     name="gender"
                     id="maleGender"
                     // required
-                    value={"male"}
+                    value={"Male"}
                     onChange={handleGenderChange}
-                    checked={gender === "male"}
+                    checked={gender === "Male"}
                   />
                   <label htmlFor="maleGender">Male</label>
                 </div>
@@ -82,9 +113,9 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                     name="gender"
                     id="femaleGender"
                     // required
-                    value={"female"}
+                    value={"Female"}
                     onChange={handleGenderChange}
-                    checked={gender === "female"}
+                    checked={gender === "Female"}
                   />
                   <label htmlFor="femaleGender">Female</label>
                 </div>
@@ -93,15 +124,17 @@ const WelcomePopup = ({ setPopupVisibility }) => {
           </div>
           <div className="popupSection">
             <p className="popupSectionTitle">Your Goals</p>
-            <input
-              type="number"
-              id="goalWeightInput"
-              min={1}
-              placeholder="Goal Weight"
-              value={goalWeight}
-              onChange={(e) => setGoalWeight(e.target.value)}
-              required
-            />
+            <div className="inputGroup">
+              <input
+                type="number"
+                id="goalWeightInput"
+                min={1}
+                value={goalWeight}
+                onChange={(e) => setGoalWeight(e.target.value)}
+                required
+              />
+              <label>Goal Weight</label>
+            </div>
             <p className="popupSubSection">
               Daily sleep goal • {sleepTime[0]}h{" "}
               {sleepTime[1] > 0 ? `${sleepTime[1]}min` : null}
@@ -178,6 +211,23 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                 required
               />
               <p>7</p>
+            </div>
+            <p className="popupSubSection">Daily Water • {hydrationGoal}</p>
+            <div className="sliderContainer">
+              <p>2L</p>
+              <input
+                type="range"
+                name="activityInput"
+                id="activityInput"
+                min={2}
+                max={6}
+                value={hydrationGoal}
+                onChange={(e) => {
+                  setHydrationGoal(e.target.value);
+                }}
+                required
+              />
+              <p>6L</p>
             </div>
           </div>
           <div className="popupButtonContainer">

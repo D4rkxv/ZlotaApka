@@ -26,6 +26,16 @@ export const DashboardProvider = ({ children }) => {
     return saved !== null ? JSON.parse(saved) : true;
   });
 
+  const [currentHeight, setCurrentHeight] = useState(() => {
+    const saved = localStorage.getItem("currentHeight");
+    return saved !== null ? JSON.parse(saved) : null;
+  });
+
+  const [currentAge, setCurrentAge] = useState(() => {
+    const saved = localStorage.getItem("currentAge");
+    return saved !== null ? JSON.parse(saved) : null;
+  });
+
   const [sleepTimeInput, setSleepTimeInput] = useState(() => {
     const saved = localStorage.getItem("sleepTimeInput");
     return saved !== null ? JSON.parse(saved) : 240;
@@ -60,7 +70,28 @@ export const DashboardProvider = ({ children }) => {
     const saved = localStorage.getItem("goalWeight");
     return saved !== null ? JSON.parse(saved) : null;
   });
-  const [gender, setGender] = useState("");
+
+  const [hydrationGoal, setHydrationGoal] = useState(() => {
+    const saved = localStorage.getItem("hydrationGoal");
+    return saved !== null ? JSON.parse(saved) : 2;
+  });
+
+  const [gender, setGender] = useState(() => {
+    const saved = localStorage.getItem("gender");
+    return saved !== null ? JSON.parse(saved) : "";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("gender", JSON.stringify(gender));
+  }, [gender]);
+
+  useEffect(() => {
+    localStorage.setItem("currentHeight", JSON.stringify(currentHeight));
+  }, [currentHeight]);
+
+  useEffect(() => {
+    localStorage.setItem("currentAge", JSON.stringify(currentAge));
+  }, [currentAge]);
 
   useEffect(() => {
     localStorage.setItem("showWelcomePopup", JSON.stringify(showWelcomePopup));
@@ -95,7 +126,11 @@ export const DashboardProvider = ({ children }) => {
   }, [goalWeight]);
 
   useEffect(() => {
-    if (currentWeight !== null) {
+    localStorage.setItem("hydrationGoal", JSON.stringify(hydrationGoal));
+  }, [hydrationGoal]);
+
+  useEffect(() => {
+    if (currentWeight !== null && currentHeight !== null && gender !== null) {
       setShowWelcomePopup(false);
     } else {
       setShowWelcomePopup(true);
@@ -228,7 +263,6 @@ export const DashboardProvider = ({ children }) => {
   ];
 
   //water Section
-  const [hydrationGoal, setHydrationGoal] = useState(3.0);
   const [currentHydration, setCurrentHydration] = useState(() => {
     try {
       let data = localStorage.getItem("currentHydration");
@@ -569,7 +603,7 @@ export const DashboardProvider = ({ children }) => {
       setSnacksList([]);
       setDinnerList([]);
       setWaterLog([]);
-      setCurrentHydration(0)
+      setCurrentHydration(0);
 
       localStorage.setItem("lastDate", today);
     }
@@ -800,6 +834,10 @@ export const DashboardProvider = ({ children }) => {
         setGoalWeight,
         gender,
         setGender,
+        currentHeight,
+        setCurrentHeight,
+        currentAge,
+        setCurrentAge,
         //switching
         selectedWidget,
         switchWidget: switchWidget,
