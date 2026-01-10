@@ -9,47 +9,28 @@ import { AuthContext } from "./AuthContext.jsx";
 function Profile() {
   const {
     currentHydration,
-    setCurrentHydration,
     hydrationGoal,
-    setHydrationGoal,
-    sleepTimeInput,
-    setSleepTimeInput,
-    sleepTime,
-    setSleepTime,
-    caloriesGoal,
-    setCaloriesGoal,
     dailyActivity,
-    setDailyActivity,
-    weeklyWorkouts,
-    setWeeklyWorkouts,
     currentWeight,
-    setCurrentWeight,
     goalWeight,
-    setGoalWeight,
     gender,
-    setGender,
     currentHeight,
-    setCurrentHeight,
     currentAge,
     waterProgressWidth,
     allSeconds,
   } = useDashboard();
-  const {
-    user,
-    setName
-  } = useContext(AuthContext)
-  const [modifyingProfile, setModifyingProfile] = useState(false)
-  const [newName, setNewName] = useState(user.name)
+  const { user, setName } = useContext(AuthContext);
+  const [modifyingProfile, setModifyingProfile] = useState(false);
+  const [newName, setNewName] = useState(user.name);
 
-
-  const cancelNameModification = () =>{
-    setModifyingProfile(false)
-    setNewName(user.name)
-  }
-  const saveNewName = () =>{
-    setName(newName)
-    setModifyingProfile(false)
-  }
+  const cancelNameModification = () => {
+    setModifyingProfile(false);
+    setNewName(user.name);
+  };
+  const saveNewName = () => {
+    setName(newName);
+    setModifyingProfile(false);
+  };
   return (
     <div className="widgetContainer2">
       <Sidebar />
@@ -63,13 +44,38 @@ function Profile() {
               <div className="editProfileContainer">
                 <div className="userDataContainer">
                   <div className="editNameContainer">
-                    {!modifyingProfile ? <input type="text" value={user.name} disabled/>:<input type="text" value={newName} className="modification" onChange={(e)=>setNewName(e.target.value)} />}
-                    {modifyingProfile ? <button className="emptyBtn" onClick={()=>cancelNameModification()}>Close</button>:null}
-                    {modifyingProfile ? <button className="fullBtn" onClick={()=>saveNewName()}>Save</button>:null}
+                    {!modifyingProfile ? (
+                      <input type="text" value={user.name} disabled />
+                    ) : (
+                      <input
+                        type="text"
+                        value={newName}
+                        className="modification"
+                        onChange={(e) => setNewName(e.target.value)}
+                      />
+                    )}
+                    {modifyingProfile ? (
+                      <button
+                        className="emptyBtn"
+                        onClick={() => cancelNameModification()}
+                      >
+                        Close
+                      </button>
+                    ) : null}
+                    {modifyingProfile ? (
+                      <button className="fullBtn" onClick={() => saveNewName()}>
+                        Save
+                      </button>
+                    ) : null}
                   </div>
                   <p className="userGoals">Goal: gain 5k • Intermediate </p>
                 </div>
-                <p className="profileEdit" onClick={()=>setModifyingProfile(true)}>Edit Profile</p>
+                <p
+                  className="profileEdit"
+                  onClick={() => setModifyingProfile(true)}
+                >
+                  Edit Profile
+                </p>
               </div>
             </div>
           </div>

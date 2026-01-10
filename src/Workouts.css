@@ -94,13 +94,14 @@
 .activityHistory {
   max-height: 41.693vh;
   padding: 12px 32px;
-  width: 10.176vw;
+  width: 18.176vw;
   border: 1px solid var(--primary-10);
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
   border-radius: 12px;
 }
+
 .timerContainer {
   width: 200px;
   height: 200px;
@@ -149,7 +150,7 @@
   color: var(--primary);
   cursor: pointer;
 }
-.addActivity:hover{
+.addActivity:hover {
   text-decoration: underline;
 }
 .workoutList {
@@ -201,7 +202,7 @@
   border-radius: 24px;
   transition: all 0.3s ease-in;
 }
-.workoutBtn1:hover{
+.workoutBtn1:hover {
   background-color: var(--primary);
   color: var(--pureWhite);
 }

@@ -308,7 +308,6 @@ const FoodDiary = () => {
   };
 
   const selectMeal = (meal) => {
-    console.log(meal);
     setShownMeal(meal);
     setShowEntryViewPopup(true);
   };

@@ -53,6 +53,9 @@ export function Dashboard() {
     goalWeight,
     showWelcomePopup,
     setShowWelcomePopup,
+    currentChallenge,
+    setCurrentChallenge,
+    isChecked2,
   } = useDashboard();
 
   const sleepComparison = getSleepComparison();
@@ -242,7 +245,11 @@ export function Dashboard() {
                 <p className="smallWidgetDesc2">0.2%</p>
               </div>
               <p className="smallWidgetGrayDesc">
-                Goal: {goalWeight} Kg ( +6 remaining)
+                Goal: {goalWeight} Kg (
+                {goalWeight - currentWeight > 0
+                  ? `+${goalWeight - currentWeight}Kg to gain`
+                  : `${goalWeight - currentWeight}Kg to lose`}
+                )
               </p>
             </div>
 
@@ -293,46 +300,18 @@ export function Dashboard() {
             <div className="dailyChallenges">
               <p className="widgetTitle">Daily Challenges</p>
               <form>
-                <div className="inputGroup2">
-                  <input
-                    type="checkbox"
-                    id="task1"
-                    className="circleCheckbox"
-                  />
-                  <label htmlFor="task1" className="circleLabel">
-                    Drink 2.5L of water
-                  </label>
-                </div>
-                <div className="inputGroup2">
-                  <input
-                    type="checkbox"
-                    id="task2"
-                    className="circleCheckbox"
-                  />
-                  <label htmlFor="task2" className="circleLabel">
-                    Walk 8 000 steps
-                  </label>
-                </div>
-                <div className="inputGroup2">
-                  <input
-                    type="checkbox"
-                    id="task3"
-                    className="circleCheckbox"
-                  />
-                  <label htmlFor="task3" className="circleLabel">
-                    Log 40 min workout
-                  </label>
-                </div>
-                <div className="inputGroup2">
-                  <input
-                    type="checkbox"
-                    id="task4"
-                    className="circleCheckbox"
-                  />
-                  <label htmlFor="task4" className="circleLabel">
-                    Try new diet
-                  </label>
-                </div>
+                {currentChallenge?.map((workout, index) => (
+                  <div key={workout.id} className="inputGroup2">
+                    <input
+                      type="checkbox"
+                      id={workout.id}
+                      className="circleCheckbox"
+                    />
+                    <label htmlFor={workout.id} className="circleLabel">
+                      {workout.name}
+                    </label>
+                  </div>
+                ))}
               </form>
             </div>
             <div className="caloriesWidgetBar" onClick={goToSleep}>
