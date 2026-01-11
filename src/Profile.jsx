@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef} from "react";
 import Sidebar from "./Sidebar.jsx";
 import "./App.css";
 import "./Profile.css";
@@ -33,6 +33,8 @@ function Profile() {
     currentAge,
     waterProgressWidth,
     allSeconds,
+    profileImage,
+    saveNewProfileImage
   } = useDashboard();
   const {
     user,
@@ -40,32 +42,79 @@ function Profile() {
   } = useContext(AuthContext)
   const [modifyingProfile, setModifyingProfile] = useState(false)
   const [newName, setNewName] = useState(user.name)
+  const [tempProfileImage, setTempProfileImage] = useState(null); 
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
+  const [modifyingMetrics, setModifyingMetrics] = useState(false)
+  const [newHeight, setNewHeight] = useState(currentHeight)
+  const [newWeight, setNewWeight] = useState(currentWeight)
+  const [newAge, setNewAge] = useState(currentAge)
+  const [newGender, setNewGender] = useState(gender)
+  const [newGoalWeight, setNewGoalWeight] = useState(goalWeight)
+
+  const fileInputRef = useRef(null);
 
 
-  const cancelNameModification = () =>{
-    setModifyingProfile(false)
-    setNewName(user.name)
+
+  const cancelProfileModification = () => {
+  setModifyingProfile(false);
+  setNewName(user.name);
+  setTempProfileImage(null);
+  setSelectedImageFile(null);
+};
+
+  const saveProfileChanges = () => {
+  setName(newName);
+
+  if (tempProfileImage) {
+    saveNewProfileImage(selectedImageFile)
   }
-  const saveNewName = () =>{
-    setName(newName)
-    setModifyingProfile(false)
+
+  setTempProfileImage(null);
+  setSelectedImageFile(null);
+  setModifyingProfile(false);
+};
+
+
+  const handleImageClick = () => {
+  if (modifyingProfile) {
+    fileInputRef.current.click();
   }
+};
+  const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setSelectedImageFile(file);
+  setTempProfileImage(URL.createObjectURL(file));
+};
+
   return (
-    <div className="widgetContainer2">
+    <div className="widgetContainer2 profile">
       <Sidebar />
       <div className="allProfileSectionContainer">
         <div className="topProfileSection">
           <div className="profileContainer">
             <img src={mountains} className="mountainImg" />
-
             <div className="userData">
-              <img src={profilePic} className="bigProfilePic" />
+              <img
+                src={tempProfileImage || profileImage}
+                className={modifyingProfile ? "bigProfilePic activeImg" : "bigProfilePic"}
+                onClick={handleImageClick}
+                style={{ cursor: modifyingProfile ? "pointer" : "default" }}
+              />
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleImageChange}
+              />
               <div className="editProfileContainer">
                 <div className="userDataContainer">
                   <div className="editNameContainer">
                     {!modifyingProfile ? <input type="text" value={user.name} disabled/>:<input type="text" value={newName} className="modification" onChange={(e)=>setNewName(e.target.value)} />}
-                    {modifyingProfile ? <button className="emptyBtn" onClick={()=>cancelNameModification()}>Close</button>:null}
-                    {modifyingProfile ? <button className="fullBtn" onClick={()=>saveNewName()}>Save</button>:null}
+                    {modifyingProfile ? <button className="emptyBtn" onClick={()=>cancelProfileModification()}>Close</button>:null}
+                    {modifyingProfile ? <button className="fullBtn" onClick={()=>saveProfileChanges()}>Save</button>:null}
                   </div>
                   <p className="userGoals">Goal: gain 5k • Intermediate </p>
                 </div>
@@ -79,16 +128,19 @@ function Profile() {
             <div className="bodyMetricData">
               <div className="topMetric">
                 <p className="sectionTitle">Body & Metrics</p>
-                <p className="editWidget">Edit Metrics</p>
+                {!modifyingMetrics ? <p className="editWidget" onClick={()=>setModifyingMetrics(true)}>Edit Metrics</p>: <div className="editWidgetContainer">
+                  <p className="editWidget" onClick={()=>setModifyingMetrics(false)}>Cancel</p>
+                  <p className="editWidget">Save</p>
+                  </div>}
               </div>
               <div className="metricItem">
                 <p>Height</p>
-                <p>{currentHeight}cm</p>
+                {modifyingMetrics ? <input type="number" value={newHeight} className="modification" onChange={(e)=>setNewHeight(parseInt(e.target.value))} />:<p>{currentHeight}cm</p>}
               </div>
               <hr />
               <div className="metricItem">
                 <p>Weight</p>
-                <p>{currentWeight}kg</p>
+                {modifyingMetrics ? <input type="number" value={newWeight} className="modification" onChange={(e)=>setNewWeight(parseInt(e.target.value))} />:<p>{currentWeight}kg</p>}
               </div>
               <hr />
               <div className="metricItem">
@@ -113,10 +165,10 @@ function Profile() {
               </div>
               <div className="goalItem">
                 <p>
-                  Daily activity time • {allSeconds / 60} / {dailyActivity}min
+                  Daily activity time • {(allSeconds / 60).toFixed(1)} / {dailyActivity}min
                 </p>
                 <div className="progressTrack progressTrackProfile">
-                  <div className="progressFill" />
+                  <div className="progressFill" style={{width: `${(((allSeconds/60).toFixed(1) / dailyActivity) * 100).toFixed(1)}%`}}/>
                 </div>
               </div>
 
@@ -135,10 +187,10 @@ function Profile() {
 
               <div className="goalItem">
                 <p>
-                  Weight Goal • {(currentWeight / goalWeight) * 100}% to target
+                  Weight Goal • {((currentWeight / goalWeight) * 100).toFixed(2)}% to target
                 </p>
                 <div className="progressTrack progressTrackProfile">
-                  <div className="progressFill" />
+                  <div className="progressFill" style={{width: `${((currentWeight / goalWeight) * 100).toFixed(2)}%`}} />
                 </div>
               </div>
             </div>
