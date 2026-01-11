@@ -336,6 +336,10 @@ export const DashboardProvider = ({ children }) => {
       return 0.0;
     }
   });
+  //TEST!
+  const EMPTYWATER12DAY = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  const [water12Day, setWater12Day] = useState(EMPTYWATER12DAY);
+
   const [waterLog, setWaterLog] = useState(() =>
     getListFromStorage("waterLog")
   );
@@ -389,6 +393,104 @@ export const DashboardProvider = ({ children }) => {
     []
   );
 
+  const addWater = useCallback((water) => {
+    setWater12Day((prev) => {
+      const safePrev =
+        Array.isArray(prev) && prev.length === 12
+          ? prev
+          : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+      const saved = localStorage.getItem("WaterBarChartData");
+      let cycleStartDate = new Date();
+
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.nextReset) {
+            const TWELVE_DAYS_MS = 12 * 24 * 60 * 60 * 1000;
+            cycleStartDate = new Date(parsed.nextReset - TWELVE_DAYS_MS);
+          }
+        } catch (e) {
+          console.error("Błąd parsowania cyklu:", e);
+        }
+      }
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      cycleStartDate.setHours(0, 0, 0, 0);
+
+      const daysPassed = Math.floor(
+        (now - cycleStartDate) / (24 * 60 * 60 * 1000)
+      );
+      const dayIndex = Math.max(0, Math.min(11, daysPassed));
+
+      const copy = [...safePrev];
+      copy[dayIndex] += Number(water) * 1000;
+
+      return copy;
+    });
+  }, []);
+
+  const saveWith12DayReset = useCallback(
+    (key, value, serializer = JSON.stringify) => {
+      const now = new Date();
+      let twelveDaysLaterMs = 12 * 24 * 60 * 60 * 1000;
+      let nextResetTime;
+      const existingItem = localStorage.getItem(key);
+      if (existingItem) {
+        try {
+          const parsedItem = JSON.parse(existingItem);
+          if (parsedItem.nextReset && now.getTime() < parsedItem.nextReset) {
+            nextResetTime = parsedItem.nextReset;
+          }
+        } catch (e) {
+          console.log("BUG WITH 12 DAY RESET PARSING");
+        }
+      }
+      if (!nextResetTime) {
+        nextResetTime = now.getTime() + twelveDaysLaterMs;
+        console.log("SETTING NEW 12 DAY RESET TIME", key);
+      }
+      const toSave = { value, nextReset: nextResetTime };
+      localStorage.setItem(key, serializer(toSave));
+    },
+    []
+  );
+
+  useEffect(() => {
+    const loadWith12DayReset = (key, setter, parser, defaultValue = null) => {
+      try {
+        const saved = localStorage.getItem(key);
+        if (saved) {
+          const data = JSON.parse(saved);
+          const now = new Date().getTime();
+          if (data.nextReset && now >= data.nextReset) {
+            localStorage.removeItem(key);
+            setter(defaultValue);
+            return;
+          }
+          setter(parser(data.value));
+        } else {
+          setter(defaultValue);
+        }
+      } catch (e) {
+        setter(defaultValue);
+      }
+    };
+    loadWith12DayReset(
+      "WaterBarChartData",
+      setWater12Day,
+      (v) => (Array.isArray(v) ? v : []),
+      []
+    );
+  }, []);
+
+  //TEST!
+  useEffect(() => {
+    saveWith12DayReset("WaterBarChartData", water12Day);
+  }, [water12Day, saveWith12DayReset]);
+
+  //workout Logging
+
   const addWorkoutMinutes = useCallback((minutes) => {
     setWeekMinutes((prev) => {
       const now = new Date();
@@ -401,7 +503,6 @@ export const DashboardProvider = ({ children }) => {
     });
   }, []);
 
-  //workout Logging
   const logWorkout = useCallback(({ name, time, calories, icon }) => {
     const newWorkout = {
       id: Date.now(),
@@ -970,6 +1071,9 @@ export const DashboardProvider = ({ children }) => {
         workoutProgressWidth,
         waterLog,
         setWaterLog,
+        water12Day,
+        setWater12Day,
+        addWater,
         //food
         breakfastList,
         setBreakfastList,
