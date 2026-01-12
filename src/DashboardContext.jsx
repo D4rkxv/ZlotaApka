@@ -336,9 +336,21 @@ export const DashboardProvider = ({ children }) => {
       return 0.0;
     }
   });
-  //TEST!
   const EMPTYWATER12DAY = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   const [water12Day, setWater12Day] = useState(EMPTYWATER12DAY);
+  const EMPTYWATERWEEK = [0, 0, 0, 0, 0, 0, 0];
+  const [waterWeek, setWaterWeek] = useState(EMPTYWATERWEEK);
+
+  const addWaterWeekly = useCallback((water) => {
+    setWaterWeek((prev) => {
+      const now = new Date();
+      let dayIndex = now.getDay();
+      dayIndex = (dayIndex + 6) % 7;
+      const copy = [...prev];
+      copy[dayIndex] += Number(water) * 1000;
+      return copy;
+    });
+  }, []);
 
   const [waterLog, setWaterLog] = useState(() =>
     getListFromStorage("waterLog")
@@ -632,6 +644,13 @@ export const DashboardProvider = ({ children }) => {
       EMPTYFOODWEEK
     );
 
+    loadWithWeeklyReset(
+      "waterWeek",
+      setWaterWeek,
+      (v) => (Array.isArray(v) ? v : EMPTYWATERWEEK),
+      EMPTYWATERWEEK
+    );
+
     const savedHistory = localStorage.getItem("fitnessWorkouts");
     if (savedHistory) setActivityHistory(JSON.parse(savedHistory));
 
@@ -661,6 +680,10 @@ export const DashboardProvider = ({ children }) => {
   useEffect(() => {
     saveWithWeeklyReset("weekFood", weekFood);
   }, [weekFood, saveWithWeeklyReset]);
+
+  useEffect(() => {
+    saveWithWeeklyReset("waterWeek", waterWeek);
+  }, [waterWeek, saveWithWeeklyReset]);
 
   useEffect(() => {
     const loadDailyWorkout = () => {
@@ -1074,6 +1097,9 @@ export const DashboardProvider = ({ children }) => {
         water12Day,
         setWater12Day,
         addWater,
+        waterWeek,
+        setWaterWeek,
+        addWaterWeekly,
         //food
         breakfastList,
         setBreakfastList,

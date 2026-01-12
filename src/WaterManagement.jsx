@@ -18,8 +18,28 @@ const WaterManagement = () => {
     setWaterLog,
     water12Day,
     addWater,
+    waterWeek,
+    addWaterWeekly,
   } = useDashboard();
   const [showCustomAdd, setShowCustomAdd] = useState(false);
+
+  const getWeeklyAverage = () => {
+    const nonZeroDays = waterWeek.filter((day) => day > 0);
+    if (nonZeroDays.length === 0) return 0;
+    const sum = nonZeroDays.reduce((acc, val) => acc + val, 0);
+    const average = sum / nonZeroDays.length;
+    return (average / 1000).toFixed(1);
+  };
+
+  const getBestDay = () => {
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    if (!waterWeek || waterWeek.length === 0) return "No data";
+    const max = Math.max(...waterWeek);
+    if (max === 0) return "No data";
+    const index = waterWeek.indexOf(max);
+    return `${days[index]} - ${(max / 1000).toFixed(1)}L`;
+  };
+
   const generateLabels = () => {
     const mS = [
       "Jan",
@@ -35,7 +55,6 @@ const WaterManagement = () => {
       "Nov",
       "Dec",
     ];
-
     let cycleStartDate = new Date();
     const saved = localStorage.getItem("WaterBarChartData");
 
@@ -161,6 +180,7 @@ const WaterManagement = () => {
   const addCustomAmountOfWater = (amount) => {
     handleHydrationChange(amount / 1000);
     addWater(amount / 1000);
+    addWaterWeekly(amount / 1000);
   };
 
   const deleteWaterLogEntry = (amount, key) => {
@@ -172,6 +192,7 @@ const WaterManagement = () => {
     setWaterLog(newWaterLog);
     setCurrentHydration((prev) => Math.max(0, prev - amount / 1000));
     addWater(-entryToDelete.amount / 1000);
+    addWaterWeekly(-entryToDelete.amount / 1000);
   };
 
   return (
@@ -219,6 +240,7 @@ const WaterManagement = () => {
                       onClick={() => {
                         handleHydrationChange(0.1);
                         addWater(0.1);
+                        addWaterWeekly(0.1);
                       }}
                     >
                       +100ml
@@ -235,8 +257,8 @@ const WaterManagement = () => {
               <div className="hydrationSummaryContainer">
                 <p className="sectionTitle">Hydration summary</p>
                 <ul>
-                  <li>Average this week: 2.6L</li>
-                  <li>Best day: Tue - 3.5L</li>
+                  <li>Average this week: {getWeeklyAverage()}L</li>
+                  <li>Best day: {getBestDay()}</li>
                 </ul>
               </div>
             </div>
