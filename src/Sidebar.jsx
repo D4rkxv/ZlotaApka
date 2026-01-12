@@ -10,7 +10,6 @@ import workout from "./assets/workouts.svg";
 import sleep from "./assets/sleep.svg";
 import help from "./assets/help.svg";
 import arrowUp from "./assets/arrow.svg";
-import profilePic from "./assets/testprofile.png";
 import { useDashboard } from "./DashboardContext.jsx";
 import profile from "./assets/profile.svg";
 import settings from "./assets/settings.svg";
@@ -28,6 +27,7 @@ function Sidebar() {
     goToProfile,
     goToSettings,
     selectedWidget,
+    profileImage
   } = useDashboard();
   const { user } = useContext(AuthContext);
   const { logout, isAuthenticated } = useAuthLayout();
@@ -121,7 +121,7 @@ function Sidebar() {
         >
           <div className="accountHeader">
             <div className="leftAccountSide">
-              <img src={profilePic} className="profilePicture" />
+              <img src={profileImage} className="profilePicture" />
             </div>
             <div className="middleAccountSide">
               <p className="sidebarName">{user.name}</p>

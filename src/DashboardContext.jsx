@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
+import profilePic from "./assets/BigProfilePic.png";
 
 const DashboardContext = createContext();
 
@@ -1017,6 +1018,29 @@ export const DashboardProvider = ({ children }) => {
     };
   }, [sleepHistory]);
 
+  //profile picture
+  const [profileImage, setProfileImage] = useState(profilePic);
+
+  useEffect(() => {
+  const savedImage = localStorage.getItem("profileImage");
+
+  if (savedImage) {
+    setProfileImage(savedImage);
+  }
+}, []);
+
+  const saveNewProfileImage = (newImageFile) =>{
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      localStorage.setItem("profileImage", reader.result);
+      setProfileImage(reader.result);
+    };
+
+    reader.readAsDataURL(newImageFile);
+  }
+
+
   return (
     <DashboardContext.Provider
       value={{
@@ -1144,6 +1168,9 @@ export const DashboardProvider = ({ children }) => {
         getSleepComparison,
         showWelcomePopup,
         setShowWelcomePopup,
+        //profilePic
+        profileImage,
+        saveNewProfileImage
       }}
     >
       {children}
