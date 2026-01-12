@@ -47,8 +47,6 @@ function Profile() {
   const [modifyingMetrics, setModifyingMetrics] = useState(false)
   const [newHeight, setNewHeight] = useState(currentHeight)
   const [newWeight, setNewWeight] = useState(currentWeight)
-  const [newAge, setNewAge] = useState(currentAge)
-  const [newGender, setNewGender] = useState(gender)
   const [newGoalWeight, setNewGoalWeight] = useState(goalWeight)
 
   const fileInputRef = useRef(null);
@@ -88,6 +86,20 @@ function Profile() {
   setTempProfileImage(URL.createObjectURL(file));
 };
 
+const saveNewMetrics = () =>{
+  if(!newHeight || !newWeight || !newGoalWeight) return;
+  setCurrentHeight(newHeight)
+  setCurrentWeight(newWeight)
+  setGoalWeight(newGoalWeight)
+  setModifyingMetrics(false)
+}
+
+const writeGoal = () =>{
+  if(currentWeight < goalWeight) return `Gain ${goalWeight-currentWeight} kilos`
+  else if(currentWeight > goalWeight) return `Lose ${currentWeight-goalWeight} kilos`
+  else return `Maintain weight of ${goalWeight} kilos`
+}
+
   return (
     <div className="widgetContainer2 profile">
       <Sidebar />
@@ -116,7 +128,7 @@ function Profile() {
                     {modifyingProfile ? <button className="emptyBtn" onClick={()=>cancelProfileModification()}>Close</button>:null}
                     {modifyingProfile ? <button className="fullBtn" onClick={()=>saveProfileChanges()}>Save</button>:null}
                   </div>
-                  <p className="userGoals">Goal: gain 5k • Intermediate </p>
+                  <p className="userGoals">Goal: {writeGoal()} • Intermediate </p>
                 </div>
                 <p className="profileEdit" onClick={()=>setModifyingProfile(true)}>Edit Profile</p>
               </div>
@@ -130,7 +142,7 @@ function Profile() {
                 <p className="sectionTitle">Body & Metrics</p>
                 {!modifyingMetrics ? <p className="editWidget" onClick={()=>setModifyingMetrics(true)}>Edit Metrics</p>: <div className="editWidgetContainer">
                   <p className="editWidget" onClick={()=>setModifyingMetrics(false)}>Cancel</p>
-                  <p className="editWidget">Save</p>
+                  <p className="editWidget" onClick={()=>saveNewMetrics()}>Save</p>
                   </div>}
               </div>
               <div className="metricItem">
@@ -155,7 +167,7 @@ function Profile() {
               <hr />
               <div className="metricItem">
                 <p>Goal Weight</p>
-                <p>{goalWeight}kg</p>
+                {modifyingMetrics ? <input type="number" value={newGoalWeight} className="modification" onChange={(e)=>setNewGoalWeight(parseInt(e.target.value))} />:<p>{goalWeight}kg</p>}
               </div>
             </div>
             <div className="bodyGoals">
