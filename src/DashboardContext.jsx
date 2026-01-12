@@ -22,6 +22,8 @@ export class Meal {
 
 export const DashboardProvider = ({ children }) => {
   //Welcome popup
+  const [isChecked2, setIsChecked2] = useState(Array(6).fill(false));
+
   const [showWelcomePopup, setShowWelcomePopup] = useState(() => {
     const saved = localStorage.getItem("showWelcomePopup");
     return saved !== null ? JSON.parse(saved) : true;
@@ -176,6 +178,7 @@ export const DashboardProvider = ({ children }) => {
   const [quickActivities, setQuickActivities] = useState([]);
   const [allCalories, setAllCalories] = useState(null);
   const [currentWorkout, setCurrentWorkout] = useState(null);
+  const [currentChallenge, setCurrentChallenge] = useState(null);
   const [todayKey, setTodayKey] = useState("");
   const EMPTYWORKOUTWEEK = [0, 0, 0, 0, 0, 0, 0];
   const [weekMinutes, setWeekMinutes] = useState(EMPTYWORKOUTWEEK);
@@ -262,6 +265,68 @@ export const DashboardProvider = ({ children }) => {
       { id: "w10-6", name: "Bear crawl hold - 3x40s" },
     ],
   ];
+  const dailyChallenges = [
+    [
+      { id: "c1-1", name: "No caffeine after 2 PM" },
+      { id: "c1-2", name: "Read book 15 min" },
+      { id: "c1-3", name: "Walk 5000 steps" },
+      { id: "c1-4", name: "No sweets today" },
+    ],
+    [
+      { id: "c2-1", name: "Deep work 90 min" },
+      { id: "c2-2", name: "Bed before 11:00 PM" },
+      { id: "c2-3", name: "Eat 3 meals only" },
+      { id: "c2-4", name: "Plank 2 min total" },
+    ],
+    [
+      { id: "c3-1", name: "Cold shower" },
+      { id: "c3-2", name: "No social media morning" },
+      { id: "c3-3", name: "Outdoor walk 45 min" },
+      { id: "c3-4", name: "Protein 25g per meal" },
+    ],
+    [
+      { id: "c4-1", name: "Stretch 15 min" },
+      { id: "c4-2", name: "Drink 3L Water" },
+      { id: "c4-3", name: "Call family/friend" },
+      { id: "c4-4", name: "No fast food" },
+    ],
+    [
+      { id: "c5-1", name: "Run or Jog 20 min" },
+      { id: "c5-2", name: "Journal 5 min" },
+      { id: "c5-3", name: "Sunlight exposure 15 min" },
+      { id: "c5-4", name: "Screen time under 3h" },
+    ],
+    [
+      { id: "c6-1", name: "Learn new skill 30 min" },
+      { id: "c6-2", name: "Clean room/desk 10 min" },
+      { id: "c6-3", name: "100 Push-ups total" },
+      { id: "c6-4", name: "Eat 2 pieces of fruit" },
+    ],
+    [
+      { id: "c7-1", name: "Zero alcohol today" },
+      { id: "c7-2", name: "Meditate 10 min" },
+      { id: "c7-3", name: "Bike or Swim 30 min" },
+      { id: "c7-4", name: "Track all calories" },
+    ],
+    [
+      { id: "c8-1", name: "Walk 10 min after dinner" },
+      { id: "c8-2", name: "No phone in bed" },
+      { id: "c8-3", name: "Stand while working 1h" },
+      { id: "c8-4", name: "Listen to edu podcast" },
+    ],
+    [
+      { id: "c9-1", name: "Squats 50 reps total" },
+      { id: "c9-2", name: "Write 3 gratitude things" },
+      { id: "c9-3", name: "Water before coffee" },
+      { id: "c9-4", name: "Sleep 7h 30m" },
+    ],
+    [
+      { id: "c10-1", name: "Power nap 20 min" },
+      { id: "c10-2", name: "No bread/pasta today" },
+      { id: "c10-3", name: "Visualize goals 5 min" },
+      { id: "c10-4", name: "Walk 8000 steps" },
+    ],
+  ];
 
   //water Section
   const [currentHydration, setCurrentHydration] = useState(() => {
@@ -272,6 +337,22 @@ export const DashboardProvider = ({ children }) => {
       return 0.0;
     }
   });
+  const EMPTYWATER12DAY = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  const [water12Day, setWater12Day] = useState(EMPTYWATER12DAY);
+  const EMPTYWATERWEEK = [0, 0, 0, 0, 0, 0, 0];
+  const [waterWeek, setWaterWeek] = useState(EMPTYWATERWEEK);
+
+  const addWaterWeekly = useCallback((water) => {
+    setWaterWeek((prev) => {
+      const now = new Date();
+      let dayIndex = now.getDay();
+      dayIndex = (dayIndex + 6) % 7;
+      const copy = [...prev];
+      copy[dayIndex] += Number(water) * 1000;
+      return copy;
+    });
+  }, []);
+
   const [waterLog, setWaterLog] = useState(() =>
     getListFromStorage("waterLog")
   );
@@ -321,14 +402,107 @@ export const DashboardProvider = ({ children }) => {
         nextReset: nextSundayMidnight.getTime(),
       };
       localStorage.setItem(key, serializer(toSave));
-      console.log(
-        `DEBUG: Next reset ${key}: ${nextSundayMidnight.toLocaleString(
-          "pl-PL"
-        )} (days: ${daysToSunday})`
-      );
     },
     []
   );
+
+  const addWater = useCallback((water) => {
+    setWater12Day((prev) => {
+      const safePrev =
+        Array.isArray(prev) && prev.length === 12
+          ? prev
+          : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+      const saved = localStorage.getItem("WaterBarChartData");
+      let cycleStartDate = new Date();
+
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.nextReset) {
+            const TWELVE_DAYS_MS = 12 * 24 * 60 * 60 * 1000;
+            cycleStartDate = new Date(parsed.nextReset - TWELVE_DAYS_MS);
+          }
+        } catch (e) {
+          console.error("Błąd parsowania cyklu:", e);
+        }
+      }
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      cycleStartDate.setHours(0, 0, 0, 0);
+
+      const daysPassed = Math.floor(
+        (now - cycleStartDate) / (24 * 60 * 60 * 1000)
+      );
+      const dayIndex = Math.max(0, Math.min(11, daysPassed));
+
+      const copy = [...safePrev];
+      copy[dayIndex] += Number(water) * 1000;
+
+      return copy;
+    });
+  }, []);
+
+  const saveWith12DayReset = useCallback(
+    (key, value, serializer = JSON.stringify) => {
+      const now = new Date();
+      let twelveDaysLaterMs = 12 * 24 * 60 * 60 * 1000;
+      let nextResetTime;
+      const existingItem = localStorage.getItem(key);
+      if (existingItem) {
+        try {
+          const parsedItem = JSON.parse(existingItem);
+          if (parsedItem.nextReset && now.getTime() < parsedItem.nextReset) {
+            nextResetTime = parsedItem.nextReset;
+          }
+        } catch (e) {
+          console.log("BUG WITH 12 DAY RESET PARSING");
+        }
+      }
+      if (!nextResetTime) {
+        nextResetTime = now.getTime() + twelveDaysLaterMs;
+        console.log("SETTING NEW 12 DAY RESET TIME", key);
+      }
+      const toSave = { value, nextReset: nextResetTime };
+      localStorage.setItem(key, serializer(toSave));
+    },
+    []
+  );
+
+  useEffect(() => {
+    const loadWith12DayReset = (key, setter, parser, defaultValue = null) => {
+      try {
+        const saved = localStorage.getItem(key);
+        if (saved) {
+          const data = JSON.parse(saved);
+          const now = new Date().getTime();
+          if (data.nextReset && now >= data.nextReset) {
+            localStorage.removeItem(key);
+            setter(defaultValue);
+            return;
+          }
+          setter(parser(data.value));
+        } else {
+          setter(defaultValue);
+        }
+      } catch (e) {
+        setter(defaultValue);
+      }
+    };
+    loadWith12DayReset(
+      "WaterBarChartData",
+      setWater12Day,
+      (v) => (Array.isArray(v) ? v : []),
+      []
+    );
+  }, []);
+
+  //TEST!
+  useEffect(() => {
+    saveWith12DayReset("WaterBarChartData", water12Day);
+  }, [water12Day, saveWith12DayReset]);
+
+  //workout Logging
 
   const addWorkoutMinutes = useCallback((minutes) => {
     setWeekMinutes((prev) => {
@@ -342,7 +516,6 @@ export const DashboardProvider = ({ children }) => {
     });
   }, []);
 
-  //workout Logging
   const logWorkout = useCallback(({ name, time, calories, icon }) => {
     const newWorkout = {
       id: Date.now(),
@@ -360,9 +533,7 @@ export const DashboardProvider = ({ children }) => {
       const updated = [newWorkout, ...prev.slice(0, 100)];
       try {
         localStorage.setItem("fitnessWorkouts", JSON.stringify(updated));
-      } catch (e) {
-        console.log("SAVE ERROR:", e);
-      }
+      } catch (e) {}
       return updated;
     });
   }, []);
@@ -416,7 +587,6 @@ export const DashboardProvider = ({ children }) => {
           const data = JSON.parse(saved);
           const now = new Date().getTime();
           if (data.nextReset && now >= data.nextReset) {
-            console.log(`DEBUG: Weekly reset: ${key}`);
             localStorage.removeItem(key);
             setter(defaultValue);
             return;
@@ -426,7 +596,6 @@ export const DashboardProvider = ({ children }) => {
           setter(defaultValue);
         }
       } catch (e) {
-        console.log(`Load error ${key}:`, e);
         setter(defaultValue);
       }
     };
@@ -476,8 +645,18 @@ export const DashboardProvider = ({ children }) => {
       EMPTYFOODWEEK
     );
 
+    loadWithWeeklyReset(
+      "waterWeek",
+      setWaterWeek,
+      (v) => (Array.isArray(v) ? v : EMPTYWATERWEEK),
+      EMPTYWATERWEEK
+    );
+
     const savedHistory = localStorage.getItem("fitnessWorkouts");
     if (savedHistory) setActivityHistory(JSON.parse(savedHistory));
+
+    const savedChallenge = localStorage.getItem("fitnessChallenge");
+    if (savedChallenge) setActivityHistory(JSON.parse(savedChallenge));
 
     const savedCalories = localStorage.getItem("totalCalories");
     if (savedCalories) setAllCalories(parseInt(savedCalories) || 0);
@@ -492,7 +671,6 @@ export const DashboardProvider = ({ children }) => {
   useEffect(() => {
     if (allSeconds !== null) {
       saveWithWeeklyReset("allSeconds", allSeconds.toString());
-      console.log("SAVE workoutsSEC ==", allSeconds);
     }
   }, [allSeconds, saveWithWeeklyReset]);
 
@@ -503,6 +681,10 @@ export const DashboardProvider = ({ children }) => {
   useEffect(() => {
     saveWithWeeklyReset("weekFood", weekFood);
   }, [weekFood, saveWithWeeklyReset]);
+
+  useEffect(() => {
+    saveWithWeeklyReset("waterWeek", waterWeek);
+  }, [waterWeek, saveWithWeeklyReset]);
 
   useEffect(() => {
     const loadDailyWorkout = () => {
@@ -517,9 +699,7 @@ export const DashboardProvider = ({ children }) => {
             localStorage.removeItem("fitnessWorkouts");
             setActivityHistory([]);
           }
-        } catch (e) {
-          console.log("History parse error:", e);
-        }
+        } catch (e) {}
       }
 
       const saved = localStorage.getItem("dailyWorkout");
@@ -543,7 +723,36 @@ export const DashboardProvider = ({ children }) => {
     const timer = setTimeout(loadDailyWorkout, timeout);
     return () => clearTimeout(timer);
   }, []);
+  useEffect(() => {
+    const loadDailyChallenge = () => {
+      const now = new Date();
+      const today = now.toISOString().split("T")[0];
 
+      const saved = localStorage.getItem("dailyChallengeData");
+      const parsed = saved ? JSON.parse(saved) : null;
+
+      if (parsed?.date !== today) {
+        const randomChallenge =
+          dailyChallenges[Math.floor(Math.random() * dailyChallenges.length)];
+
+        const toSave = { challenge: randomChallenge, date: today };
+
+        localStorage.setItem("dailyChallengeData", JSON.stringify(toSave));
+        setCurrentChallenge(randomChallenge);
+      } else {
+        setCurrentChallenge(parsed.challenge);
+      }
+    };
+
+    loadDailyChallenge();
+
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0);
+    const timeout = midnight.getTime() - Date.now();
+    const timer = setTimeout(loadDailyChallenge, timeout);
+
+    return () => clearTimeout(timer);
+  }, []);
   const workoutProgressWidth = ((workoutsDone / weeklyWorkouts) * 100).toFixed(
     1
   );
@@ -735,7 +944,6 @@ export const DashboardProvider = ({ children }) => {
         : 2;
     const qualityPct = ((qualityNum - 1) / 3) * 100;
     const sleepScore = Math.round(0.7 * durationPct + 0.3 * qualityPct);
-    console.log(sleepScore);
 
     addSleepMinutes(sleepMinutes);
     const sleepData = {
@@ -754,10 +962,7 @@ export const DashboardProvider = ({ children }) => {
       const updated = [sleepData, ...prev.slice(0)];
       try {
         localStorage.setItem("sleepHistory", JSON.stringify(updated));
-        console.log(`Saved SLEEP:`, updated);
-      } catch (e) {
-        console.log("SAVE ERROR:", e);
-      }
+      } catch (e) {}
       setInBedTime("");
       setOutOfBedTime("");
       setSleepQuality("");
@@ -782,9 +987,7 @@ export const DashboardProvider = ({ children }) => {
           setScore(todayEntry.score);
         }
       }
-    } catch (e) {
-      console.log("LOAD ERROR:", e);
-    }
+    } catch (e) {}
   }, []);
 
   const getSleepComparison = useCallback(() => {
@@ -862,6 +1065,10 @@ export const DashboardProvider = ({ children }) => {
         setCurrentHeight,
         currentAge,
         setCurrentAge,
+        currentChallenge,
+        setCurrentChallenge,
+        isChecked2,
+        setIsChecked2,
         //switching
         selectedWidget,
         switchWidget: switchWidget,
@@ -911,6 +1118,12 @@ export const DashboardProvider = ({ children }) => {
         workoutProgressWidth,
         waterLog,
         setWaterLog,
+        water12Day,
+        setWater12Day,
+        addWater,
+        waterWeek,
+        setWaterWeek,
+        addWaterWeekly,
         //food
         breakfastList,
         setBreakfastList,

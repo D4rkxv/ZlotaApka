@@ -12,7 +12,6 @@ import { useAuthLayout } from "./AuthContext";
 
 function LandingPage() {
   const { goToLogin, goToRegister } = useAuthLayout();
-  console.log(goToRegister);
   return (
     <>
       <div className="navbar">

@@ -9,27 +9,12 @@ import { AuthContext } from "./AuthContext.jsx";
 function Profile() {
   const {
     currentHydration,
-    setCurrentHydration,
     hydrationGoal,
-    setHydrationGoal,
-    sleepTimeInput,
-    setSleepTimeInput,
-    sleepTime,
-    setSleepTime,
-    caloriesGoal,
-    setCaloriesGoal,
     dailyActivity,
-    setDailyActivity,
-    weeklyWorkouts,
-    setWeeklyWorkouts,
     currentWeight,
-    setCurrentWeight,
     goalWeight,
-    setGoalWeight,
     gender,
-    setGender,
     currentHeight,
-    setCurrentHeight,
     currentAge,
     waterProgressWidth,
     allSeconds,
@@ -130,7 +115,12 @@ const writeGoal = () =>{
                   </div>
                   <p className="userGoals">Goal: {writeGoal()} • Intermediate </p>
                 </div>
-                <p className="profileEdit" onClick={()=>setModifyingProfile(true)}>Edit Profile</p>
+                <p
+                  className="profileEdit"
+                  onClick={() => setModifyingProfile(true)}
+                >
+                  Edit Profile
+                </p>
               </div>
             </div>
           </div>

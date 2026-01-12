@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext.jsx";
 import "./Sidebar.css";
 import Logo from "./assets/Ellipse4.png";
@@ -29,12 +29,9 @@ function Sidebar() {
     selectedWidget,
     profileImage
   } = useDashboard();
-  const {
-      user
-    } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const { logout, isAuthenticated } = useAuthLayout();
   const handleProfileClick = () => {
-    console.log(goToProfile);
     goToProfile();
     setOpen(!open);
   };

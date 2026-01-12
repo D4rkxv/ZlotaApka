@@ -34,7 +34,6 @@ const WelcomePopup = ({ setPopupVisibility }) => {
     const value = e.target.value;
     setGender(value);
   };
-  console.log(hydrationGoal);
   return (
     <div className="popupBackground">
       <div className="welcomePopup popupContainer">
