@@ -1,17 +1,9 @@
 import "./App.css";
+import { useAuthLayout } from "./AuthContext.jsx";
 import LandingPage from "./LandingPage.jsx";
-import { Routes, Route, Link } from "react-router";
 import LoginPage from "./LoginPage.jsx";
 import RegisterPage from "./RegisterPage.jsx";
-import Login from "./LoginPage.jsx";
-import { useAuthLayout } from "./AuthContext.jsx";
-import { useDashboard } from "./DashboardContext.jsx";
-import Dashboard from "./Dashboard.jsx";
-import WaterTracker from "./WaterManagement.jsx";
-import FoodDiary from "./FoodDiary.jsx";
-import Workouts from "./Workouts.jsx";
-import SleepTracker from "./SleepTracker.jsx";
-import Profile from "./Profile.jsx";
+
 function GuestApp() {
   const { currentPage } = useAuthLayout();
 

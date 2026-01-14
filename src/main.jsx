@@ -11,4 +11,10 @@ import { Dashboard } from "./Dashboard.jsx";
 import WaterManagement from "./WaterManagement.jsx";
 import { DashboardProvider } from "./DashboardContext.jsx";
 
-createRoot(document.getElementById("root")).render(<App />);
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  </StrictMode>
+);

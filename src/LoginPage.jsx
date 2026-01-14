@@ -7,7 +7,31 @@ import "./LoginPage.css";
 import { useAuthLayout } from "./AuthContext";
 
 function LoginPage() {
-  const { goToLanding, goToRegister } = useAuthLayout();
+  const { goToLanding, goToRegister, login, isLoading, error } =
+    useAuthLayout();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.email || !formData.password) {
+      console.log("Please fill in all fields");
+      return;
+    }
+
+    const result = await login(formData.email, formData.password);
+
+    if (!result.success) {
+      console.log(result.error || "Login failed");
+    }
+  };
+
   return (
     <div className="formContainer">
       <div className="leftContainer">
@@ -22,16 +46,27 @@ function LoginPage() {
         <div className="loginForm">
           <p>Welcome Back</p>
           <p>Enter your email and password to continue</p>
-          <form className="inputForm">
+          <form className="inputForm" onSubmit={handleSubmit}>
             <div className="inputGroup">
-              <input type="text" name="loginInput" id="loginInput" required />
-              <label>Login</label>
+              <input
+                type="email"
+                name="email"
+                id="loginInput"
+                value={formData.email}
+                onChange={handleChange}
+                disabled={isLoading}
+                required
+              />
+              <label>Email</label>
             </div>
             <div className="inputGroup">
               <input
                 type="password"
-                name="passwordInput"
+                name="password"
                 id="passwordInput"
+                value={formData.password}
+                onChange={handleChange}
+                disabled={isLoading}
                 required
               />
               <label>Password</label>
@@ -50,7 +85,7 @@ function LoginPage() {
               </a>
             </div>
             <button type="submit" className="logInBtn">
-              Log In
+              {isLoading ? "Logging in..." : "Log In"}
             </button>
           </form>
           <div className="anotherOptions">
