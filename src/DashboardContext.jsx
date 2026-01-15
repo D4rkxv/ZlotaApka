@@ -756,6 +756,20 @@ export const DashboardProvider = ({ children }) => {
   const workoutProgressWidth = ((workoutsDone / weeklyWorkouts) * 100).toFixed(
     1
   );
+  //daily weight update 
+  const getWeightUpdated = () => {
+    const value = localStorage.getItem("dailyWeightUpdate");
+    return value ? JSON.parse(value) : false;
+  };
+
+  const [weightUpdated, setWeightUpdated] = useState(getWeightUpdated);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "dailyWeightUpdate",
+      JSON.stringify(weightUpdated)
+    );
+  }, [weightUpdated]);
 
   //food
   const addFood = useCallback((calories) => {
@@ -1170,7 +1184,10 @@ export const DashboardProvider = ({ children }) => {
         setShowWelcomePopup,
         //profilePic
         profileImage,
-        saveNewProfileImage
+        saveNewProfileImage,
+        //daily weight update
+        weightUpdated,
+        setWeightUpdated
       }}
     >
       {children}
