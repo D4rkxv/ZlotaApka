@@ -30,6 +30,7 @@ import TrendDown from "./assets/TrendDown.svg";
 import LineChart from "./LineChart.jsx";
 import DonutChart from "./DonutChart.jsx";
 import WelcomePopup from "./WelcomePopup.jsx";
+import WeightUpdatePopup from "./WeightUpdatePopup.jsx";
 
 const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -56,6 +57,8 @@ export function Dashboard() {
     currentChallenge,
     setCurrentChallenge,
     isChecked2,
+    weightUpdated,
+    setWeightUpdated
   } = useDashboard();
 
   const sleepComparison = getSleepComparison();
@@ -190,9 +193,11 @@ export function Dashboard() {
 
   return (
     <>
+      {!weightUpdated && !showWelcomePopup? <WeightUpdatePopup setDailyWeightUpdated={setWeightUpdated}/>:null}
       {showWelcomePopup ? (
         <WelcomePopup setPopupVisibility={setShowWelcomePopup} />
       ) : null}
+    
       <div className="dashboardContainer siteContainer">
         <Sidebar />
 
