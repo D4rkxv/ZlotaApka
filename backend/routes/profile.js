@@ -9,10 +9,10 @@ router.get("/", authenticateToken, async (req, res) => {
 
   db.get(
     `SELECT
-      up.*,
-      u.name,
-      u.email,
-      u.created_at
+    up.*,
+    u.name,
+    u.email,
+    u.created_at
     FROM user_profiles up
     LEFT JOIN users u ON up.user_id = u.id
     WHERE up.user_id = ?`,
@@ -55,9 +55,9 @@ router.put("/", authenticateToken, async (req, res) => {
     gender,
     daily_activity,
     weekly_workouts,
-    current_height, // DODAJ TO
-    current_age, // DODAJ TO
-    onboarding_completed, // DODAJ TO
+    current_height,
+    current_age,
+    onboarding_completed,
   } = req.body;
 
   db.run(
