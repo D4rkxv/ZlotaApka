@@ -85,26 +85,8 @@ function Workouts() {
     currentWorkout,
     weekMinutes,
     addWorkoutMinutes,
-    sleepTimeInput,
-    setSleepTimeInput,
-    sleepTime,
-    setSleepTime,
-    caloriesGoal,
-    setCaloriesGoal,
-    dailyActivity,
-    setDailyActivity,
     weeklyWorkouts,
-    setWeeklyWorkouts,
-    currentWeight,
-    setCurrentWeight,
-    goalWeight,
-    setGoalWeight,
-    gender,
-    setGender,
-    showWelcomePopup,
-    setShowWelcomePopup,
   } = useDashboard();
-
   const [showWorkoutPopup, setShowWorkoutPopup] = useState(false);
   const [currentWorkoutName, setCurrentWorkoutName] =
     useState("Full Body Workout");

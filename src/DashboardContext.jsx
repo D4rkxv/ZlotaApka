@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import profilePic from "./assets/BigProfilePic.png";
+import { AuthContext } from "./AuthContext.jsx";
 
 const DashboardContext = createContext();
 
@@ -21,124 +22,139 @@ export class Meal {
 }
 
 export const DashboardProvider = ({ children }) => {
+  const { userProfile, updateUserProfile } = useContext(AuthContext);
   //Welcome popup
   const [isChecked2, setIsChecked2] = useState(Array(6).fill(false));
 
-  const [showWelcomePopup, setShowWelcomePopup] = useState(() => {
-    const saved = localStorage.getItem("showWelcomePopup");
-    return saved !== null ? JSON.parse(saved) : true;
-  });
+  const [showWelcomePopup, setShowWelcomePopup] = useState(true);
+  const [currentHeight, setCurrentHeight] = useState(null);
+  const [currentAge, setCurrentAge] = useState(null);
+  const [sleepTimeInput, setSleepTimeInput] = useState(240);
+  const [sleepTime, setSleepTime] = useState([0, 0]);
+  const [caloriesGoal, setCaloriesGoal] = useState(1000);
+  const [dailyActivity, setDailyActivity] = useState(10);
+  const [weeklyWorkouts, setWeeklyWorkouts] = useState(1);
+  const [currentWeight, setCurrentWeight] = useState(null);
+  const [goalWeight, setGoalWeight] = useState(null);
+  const [hydrationGoal, setHydrationGoal] = useState(2);
+  const [gender, setGender] = useState("");
 
-  const [currentHeight, setCurrentHeight] = useState(() => {
-    const saved = localStorage.getItem("currentHeight");
-    return saved !== null ? JSON.parse(saved) : null;
-  });
+  const saveProfileData = useCallback(async () => {
+    const profileData = {
+      current_weight: currentWeight,
+      goal_weight: goalWeight,
+      gender: gender,
+      current_height: currentHeight,
+      current_age: currentAge,
+      hydration_goal: hydrationGoal,
+      calories_goal: caloriesGoal,
+      sleep_goal_hours: sleepTime[0],
+      sleep_goal_minutes: sleepTime[1],
+      daily_activity: dailyActivity,
+      weekly_workouts: weeklyWorkouts,
+      onboarding_completed: 1,
+    };
 
-  const [currentAge, setCurrentAge] = useState(() => {
-    const saved = localStorage.getItem("currentAge");
-    return saved !== null ? JSON.parse(saved) : null;
-  });
+    console.log("Saving profile data:", profileData);
+    const result = await updateUserProfile(profileData);
 
-  const [sleepTimeInput, setSleepTimeInput] = useState(() => {
-    const saved = localStorage.getItem("sleepTimeInput");
-    return saved !== null ? JSON.parse(saved) : 240;
-  });
-
-  const [sleepTime, setSleepTime] = useState(() => {
-    const saved = localStorage.getItem("sleepTime");
-    return saved !== null ? JSON.parse(saved) : [0, 0];
-  });
-
-  const [caloriesGoal, setCaloriesGoal] = useState(() => {
-    const saved = localStorage.getItem("caloriesGoal");
-    return saved !== null ? JSON.parse(saved) : 1000;
-  });
-
-  const [dailyActivity, setDailyActivity] = useState(() => {
-    const saved = localStorage.getItem("dailyActivity");
-    return saved !== null ? JSON.parse(saved) : 10;
-  });
-
-  const [weeklyWorkouts, setWeeklyWorkouts] = useState(() => {
-    const saved = localStorage.getItem("weeklyWorkouts");
-    return saved !== null ? JSON.parse(saved) : 1;
-  });
-
-  const [currentWeight, setCurrentWeight] = useState(() => {
-    const saved = localStorage.getItem("currentWeight");
-    return saved !== null ? JSON.parse(saved) : null;
-  });
-
-  const [goalWeight, setGoalWeight] = useState(() => {
-    const saved = localStorage.getItem("goalWeight");
-    return saved !== null ? JSON.parse(saved) : null;
-  });
-
-  const [hydrationGoal, setHydrationGoal] = useState(() => {
-    const saved = localStorage.getItem("hydrationGoal");
-    return saved !== null ? JSON.parse(saved) : 2;
-  });
-
-  const [gender, setGender] = useState(() => {
-    const saved = localStorage.getItem("gender");
-    return saved !== null ? JSON.parse(saved) : "";
-  });
-
-  useEffect(() => {
-    localStorage.setItem("gender", JSON.stringify(gender));
-  }, [gender]);
-
-  useEffect(() => {
-    localStorage.setItem("currentHeight", JSON.stringify(currentHeight));
-  }, [currentHeight]);
-
-  useEffect(() => {
-    localStorage.setItem("currentAge", JSON.stringify(currentAge));
-  }, [currentAge]);
-
-  useEffect(() => {
-    localStorage.setItem("showWelcomePopup", JSON.stringify(showWelcomePopup));
-  }, [showWelcomePopup]);
-
-  useEffect(() => {
-    localStorage.setItem("sleepTimeInput", JSON.stringify(sleepTimeInput));
-  }, [sleepTimeInput]);
-
-  useEffect(() => {
-    localStorage.setItem("sleepTime", JSON.stringify(sleepTime));
-  }, [sleepTime]);
-
-  useEffect(() => {
-    localStorage.setItem("caloriesGoal", JSON.stringify(caloriesGoal));
-  }, [caloriesGoal]);
-
-  useEffect(() => {
-    localStorage.setItem("dailyActivity", JSON.stringify(dailyActivity));
-  }, [dailyActivity]);
-
-  useEffect(() => {
-    localStorage.setItem("weeklyWorkouts", JSON.stringify(weeklyWorkouts));
-  }, [weeklyWorkouts]);
-
-  useEffect(() => {
-    localStorage.setItem("currentWeight", JSON.stringify(currentWeight));
-  }, [currentWeight]);
-
-  useEffect(() => {
-    localStorage.setItem("goalWeight", JSON.stringify(goalWeight));
-  }, [goalWeight]);
-
-  useEffect(() => {
-    localStorage.setItem("hydrationGoal", JSON.stringify(hydrationGoal));
-  }, [hydrationGoal]);
-
-  useEffect(() => {
-    if (currentWeight !== null && currentHeight !== null && gender !== null) {
-      setShowWelcomePopup(false);
+    if (result.success) {
+      console.log("Profile data saved successfully");
+      return { success: true };
     } else {
-      setShowWelcomePopup(true);
+      console.error("Error saving profile data:", result.message);
+      return { success: false, error: result.error };
     }
-  }, []);
+  }, [
+    currentWeight,
+    goalWeight,
+    gender,
+    currentHeight,
+    currentAge,
+    hydrationGoal,
+    caloriesGoal,
+    sleepTime,
+    dailyActivity,
+    weeklyWorkouts,
+    updateUserProfile,
+  ]);
+
+  useEffect(() => {
+    if (userProfile) {
+      console.log("Synchronizing with backend profile:", userProfile);
+
+      if (
+        userProfile.current_weight !== null &&
+        userProfile.current_weight !== undefined
+      ) {
+        setCurrentWeight(userProfile.current_weight);
+      }
+      if (
+        userProfile.goal_weight !== null &&
+        userProfile.goal_weight !== undefined
+      ) {
+        setGoalWeight(userProfile.goal_weight);
+      }
+      if (userProfile.gender) {
+        setGender(userProfile.gender);
+      }
+      if (
+        userProfile.current_height !== null &&
+        userProfile.current_height !== undefined
+      ) {
+        setCurrentHeight(userProfile.current_height);
+      }
+      if (
+        userProfile.current_age !== null &&
+        userProfile.current_age !== undefined
+      ) {
+        setCurrentAge(userProfile.current_age);
+      }
+      if (
+        userProfile.hydration_goal !== null &&
+        userProfile.hydration_goal !== undefined
+      ) {
+        setHydrationGoal(userProfile.hydration_goal);
+      }
+      if (
+        userProfile.calories_goal !== null &&
+        userProfile.calories_goal !== undefined
+      ) {
+        setCaloriesGoal(userProfile.calories_goal);
+      }
+      if (
+        userProfile.sleep_goal_hours !== null &&
+        userProfile.sleep_goal_hours !== undefined
+      ) {
+        setSleepTime([
+          userProfile.sleep_goal_hours,
+          userProfile.sleep_goal_minutes || 0,
+        ]);
+        setSleepTimeInput(
+          userProfile.sleep_goal_hours * 60 +
+            (userProfile.sleep_goal_minutes || 0)
+        );
+      }
+      if (
+        userProfile.daily_activity !== null &&
+        userProfile.daily_activity !== undefined
+      ) {
+        setDailyActivity(userProfile.daily_activity);
+      }
+      if (
+        userProfile.weekly_workouts !== null &&
+        userProfile.weekly_workouts !== undefined
+      ) {
+        setWeeklyWorkouts(userProfile.weekly_workouts);
+      }
+
+      if (userProfile.onboarding_completed === 1) {
+        setShowWelcomePopup(false);
+      } else {
+        setShowWelcomePopup(true);
+      }
+    }
+  }, [userProfile]);
 
   //page Switching
   const [selectedWidget, setSelectedWidget] = useState("dashboard");
@@ -1022,14 +1038,14 @@ export const DashboardProvider = ({ children }) => {
   const [profileImage, setProfileImage] = useState(profilePic);
 
   useEffect(() => {
-  const savedImage = localStorage.getItem("profileImage");
+    const savedImage = localStorage.getItem("profileImage");
 
-  if (savedImage) {
-    setProfileImage(savedImage);
-  }
-}, []);
+    if (savedImage) {
+      setProfileImage(savedImage);
+    }
+  }, []);
 
-  const saveNewProfileImage = (newImageFile) =>{
+  const saveNewProfileImage = (newImageFile) => {
     const reader = new FileReader();
 
     reader.onload = () => {
@@ -1038,12 +1054,12 @@ export const DashboardProvider = ({ children }) => {
     };
 
     reader.readAsDataURL(newImageFile);
-  }
-
+  };
 
   return (
     <DashboardContext.Provider
       value={{
+        saveProfileData,
         //Welcome popup
         sleepTimeInput,
         setSleepTimeInput,
@@ -1170,7 +1186,7 @@ export const DashboardProvider = ({ children }) => {
         setShowWelcomePopup,
         //profilePic
         profileImage,
-        saveNewProfileImage
+        saveNewProfileImage,
       }}
     >
       {children}

@@ -12,9 +12,7 @@ import WaterManagement from "./WaterManagement.jsx";
 import { DashboardProvider } from "./DashboardContext.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  </StrictMode>
+  <AuthProvider>
+    <App />
+  </AuthProvider>
 );

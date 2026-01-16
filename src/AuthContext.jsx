@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }) => {
   );
   const [currentPage, setCurrentPage] = useState("landing");
   const [isLoading, setIsLoading] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
   const [error, setError] = useState(null);
   const isAuthenticated = !!user && !!token;
 
@@ -77,6 +78,54 @@ export const AuthProvider = ({ children }) => {
 
     initAuth();
   }, []);
+
+  useEffect(() => {
+    if (user && token && !userProfile) {
+      console.log("Fetching user profile data...");
+      fetchUserProfile();
+    }
+  }, [user, token]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await api.get("/profile");
+
+      if (response.data.status === "success") {
+        console.log("Fetched user profile:", response.data.data);
+        setUserProfile(response.data.data);
+        return response.data.data;
+      } else {
+        console.error("Failed to fetch profile:", response.data);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      return null;
+    }
+  };
+
+  const updateUserProfile = async (profileData) => {
+    try {
+      console.log("Updating profile with:", profileData);
+
+      const response = await api.put("/profile", profileData);
+
+      if (response.data.status === "success") {
+        console.log("Profile updated:", response.data.data);
+        setUserProfile(response.data.data);
+        return { success: true, data: response.data.data };
+      } else {
+        console.error("Failed to update profile:", response.data);
+        return { success: false, error: response.data.message };
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      return {
+        success: false,
+        error: error.response?.data?.message || error.message,
+      };
+    }
+  };
 
   const login = async (email, password) => {
     setIsLoading(true);
@@ -140,6 +189,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     setToken(null);
+    setUserProfile(null);
     setCurrentPage("landing");
     localStorage.removeItem("token");
   };
@@ -171,6 +221,9 @@ export const AuthProvider = ({ children }) => {
         token,
         isLoading,
         error,
+        userProfile,
+        fetchUserProfile,
+        updateUserProfile,
       }}
     >
       {children}

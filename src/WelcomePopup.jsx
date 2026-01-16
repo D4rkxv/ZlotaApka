@@ -26,7 +26,9 @@ const WelcomePopup = ({ setPopupVisibility }) => {
     setCurrentHeight,
     currentAge,
     setCurrentAge,
+    saveProfileData,
   } = useDashboard();
+  const [isSaving, setIsSaving] = useState(false);
   useEffect(() => {
     setSleepTime([(sleepTimeInput / 60).toFixed(0), sleepTimeInput % 60]);
   }, [sleepTimeInput]);
@@ -34,15 +36,32 @@ const WelcomePopup = ({ setPopupVisibility }) => {
     const value = e.target.value;
     setGender(value);
   };
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    if (
+      !currentWeight ||
+      !goalWeight ||
+      !gender ||
+      !currentHeight ||
+      !currentAge
+    ) {
+      alert("Please fill in all required fields");
+      return;
+    }
+    setIsSaving(true);
+    const result = await saveProfileData();
+    setIsSaving(false);
+    if (result.success) {
+      console.log("Profile saved successfully!");
+      setPopupVisibility(false);
+    } else {
+      alert("Error saving profile: " + (result.error || "Unknown error"));
+    }
+  };
   return (
     <div className="popupBackground">
       <div className="welcomePopup popupContainer">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setPopupVisibility(false);
-          }}
-        >
+        <form onSubmit={handleSaveProfile}>
           <p className="popupTitle">Welcome to VitaTrack!</p>
           <p className="popupDescription">
             Before we start, we need to ask you a few important questions about
