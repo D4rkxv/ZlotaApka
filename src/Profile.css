@@ -43,6 +43,12 @@
   border-radius: 12px;
   z-index: 2;
 }
+.profileEditActions{
+  width: 9%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .profileEdit {
   color: var(--primary);
   cursor: pointer;
@@ -104,24 +110,7 @@
   margin: 0 10px;
   transition: 0.3s all ease-in;
 }
-.userData .emptyBtn{
-  background-color: transparent;
-  color: var(--primary);
-  border: 1px solid var(--primary);
-}
-.userData .emptyBtn:hover{
-  background-color: var(--primary);
-  color: var(--pureWhite);
-}
-.userData button.fullBtn{
-  background-color: var(--primary);
-  color: var(--pureWhite);
-  border: 1px solid var(--primary);
-}
-.userData button.fullBtn:hover{
-  background-color: transparent;
-  color: var(--primary);
-}
+
 
 .userName {
   margin: 0 0 4px 0;
@@ -134,6 +123,11 @@
   color: var(--textColor-50);
   font-weight: 500;
   font-size: 24px;
+}
+.bodyGoals input{
+  font-size: 24px;
+  width: 12%;
+  text-align: center;
 }
 .botProfileSection {
   display: flex;
