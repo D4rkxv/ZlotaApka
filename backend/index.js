@@ -5,6 +5,10 @@ const db = require("./database");
 
 const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profile");
+const waterRoutes = require("./routes/water");
+const workoutsRoutes = require("./routes/workouts");
+const sleepRoutes = require("./routes/sleep");
+const mealsRoutes = require("./routes/meals");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -27,6 +31,10 @@ app.get("/health", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/water", waterRoutes);
+app.use("/api/workouts", workoutsRoutes);
+app.use("/api/sleep", sleepRoutes);
+app.use("/api/meals", mealsRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ status: "error", message: "Endpoint not found" });

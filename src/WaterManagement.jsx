@@ -12,15 +12,14 @@ import WaterPopup from "./WaterPopup";
 const WaterManagement = () => {
   const {
     currentHydration,
-    setCurrentHydration,
     hydrationGoal,
     waterLog,
-    setWaterLog,
     water12Day,
     addWater,
     waterWeek,
-    addWaterWeekly,
+    deleteWaterEntry,
   } = useDashboard();
+
   const [showCustomAdd, setShowCustomAdd] = useState(false);
 
   const getWeeklyAverage = () => {
@@ -28,7 +27,7 @@ const WaterManagement = () => {
     if (nonZeroDays.length === 0) return 0;
     const sum = nonZeroDays.reduce((acc, val) => acc + val, 0);
     const average = sum / nonZeroDays.length;
-    return (average / 1000).toFixed(1);
+    return average.toFixed(1);
   };
 
   const getBestDay = () => {
@@ -37,7 +36,7 @@ const WaterManagement = () => {
     const max = Math.max(...waterWeek);
     if (max === 0) return "No data";
     const index = waterWeek.indexOf(max);
-    return `${days[index]} - ${(max / 1000).toFixed(1)}L`;
+    return `${days[index]} - ${max.toFixed(1)}L`;
   };
 
   const generateLabels = () => {
@@ -55,25 +54,29 @@ const WaterManagement = () => {
       "Nov",
       "Dec",
     ];
-    let cycleStartDate = new Date();
-    const saved = localStorage.getItem("WaterBarChartData");
 
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.nextReset) {
-          const TWELVE_DAYS_MS = 12 * 24 * 60 * 60 * 1000;
-          cycleStartDate = new Date(parsed.nextReset - TWELVE_DAYS_MS);
-        }
-      } catch (e) {
-        console.error("Błąd parsowania dat:", e);
+    const { cycleStart } = useDashboard();
+
+    if (!cycleStart) {
+      const labels = [];
+      const today = new Date();
+
+      for (let i = 0; i < 12; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        const day = date.getDate();
+        const month = mS[date.getMonth()];
+        labels.push(`${day} ${month}`);
       }
+      return labels;
     }
 
     const labels = [];
+    const startDate = new Date(cycleStart);
+
     for (let i = 0; i < 12; i++) {
-      const date = new Date(cycleStartDate);
-      date.setDate(cycleStartDate.getDate() + i);
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
       const day = date.getDate();
       const month = mS[date.getMonth()];
       labels.push(`${day} ${month}`);
@@ -115,13 +118,14 @@ const WaterManagement = () => {
     labels: generateLabels(),
     datasets: [
       {
-        data: water12Day,
+        data: water12Day.map((val) => val * 1000),
         backgroundColor: "#1DA1F2",
         borderRadius: 8,
         barThickness: 18,
       },
     ],
   };
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -153,20 +157,6 @@ const WaterManagement = () => {
     },
   };
 
-  const handleHydrationChange = (amount) => {
-    setCurrentHydration((prev) => Math.max(0, prev + amount));
-    setWaterLog((prev) => [
-      {
-        amount: amount * 1000,
-        time: new Date().toLocaleTimeString("pl-PL", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      },
-      ...prev,
-    ]);
-  };
-
   useEffect(() => {
     setSelectedTips([]);
     for (let i = 0; i < 5; i++) {
@@ -178,21 +168,7 @@ const WaterManagement = () => {
   }, []);
 
   const addCustomAmountOfWater = (amount) => {
-    handleHydrationChange(amount / 1000);
     addWater(amount / 1000);
-    addWaterWeekly(amount / 1000);
-  };
-
-  const deleteWaterLogEntry = (amount, key) => {
-    const entryToDelete = waterLog[key];
-
-    let newWaterLog = waterLog.filter((entry, index) => {
-      return index != key;
-    });
-    setWaterLog(newWaterLog);
-    setCurrentHydration((prev) => Math.max(0, prev - amount / 1000));
-    addWater(-entryToDelete.amount / 1000);
-    addWaterWeekly(-entryToDelete.amount / 1000);
   };
 
   return (
@@ -228,8 +204,7 @@ const WaterManagement = () => {
                       className="wideBtn transparentBtn"
                       onClick={() => {
                         if (waterLog.length > 0) {
-                          const lastEntry = waterLog[0];
-                          deleteWaterLogEntry(lastEntry.amount, 0);
+                          deleteWaterEntry(0);
                         }
                       }}
                     >
@@ -237,11 +212,7 @@ const WaterManagement = () => {
                     </button>
                     <button
                       className="wideBtn coloredBtn"
-                      onClick={() => {
-                        handleHydrationChange(0.1);
-                        addWater(0.1);
-                        addWaterWeekly(0.1);
-                      }}
+                      onClick={() => addWater(0.1)}
                     >
                       +100ml
                     </button>
@@ -279,16 +250,12 @@ const WaterManagement = () => {
                           <div className="entryDescription">
                             <img src={WaterGlass} alt="Glass of water" />
                             <p>
-                              {" "}
-                              {entry.time} • {entry.amount}ml
+                              {entry.time} • {(entry.amount * 1000).toFixed(0)}
+                              ml
                             </p>
                           </div>
                           <div className="entryOptions">
-                            <button
-                              onClick={() => {
-                                deleteWaterLogEntry(entry.amount, index);
-                              }}
-                            >
+                            <button onClick={() => deleteWaterEntry(index)}>
                               <img src={Trashcan} alt="Delete entry" />
                             </button>
                           </div>

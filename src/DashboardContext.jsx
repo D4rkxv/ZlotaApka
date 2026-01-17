@@ -6,7 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import profilePic from "./assets/BigProfilePic.png";
-import { AuthContext } from "./AuthContext.jsx";
+import { AuthContext, api } from "./AuthContext.jsx";
 
 const DashboardContext = createContext();
 
@@ -22,10 +22,10 @@ export class Meal {
 }
 
 export const DashboardProvider = ({ children }) => {
-  const { userProfile, updateUserProfile } = useContext(AuthContext);
+  const { userProfile, updateUserProfile, token } = useContext(AuthContext);
+
   //Welcome popup
   const [isChecked2, setIsChecked2] = useState(Array(6).fill(false));
-
   const [showWelcomePopup, setShowWelcomePopup] = useState(true);
   const [currentHeight, setCurrentHeight] = useState(null);
   const [currentAge, setCurrentAge] = useState(null);
@@ -281,6 +281,7 @@ export const DashboardProvider = ({ children }) => {
       { id: "w10-6", name: "Bear crawl hold - 3x40s" },
     ],
   ];
+
   const dailyChallenges = [
     [
       { id: "c1-1", name: "No caffeine after 2 PM" },
@@ -344,45 +345,93 @@ export const DashboardProvider = ({ children }) => {
     ],
   ];
 
-  //water Section
-  const [currentHydration, setCurrentHydration] = useState(() => {
+  //water Section backend
+  const [currentHydration, setCurrentHydration] = useState(0);
+  const [waterLog, setWaterLog] = useState([]);
+  const [water12Day, setWater12Day] = useState(Array(12).fill(0));
+  const [waterWeek, setWaterWeek] = useState(Array(7).fill(0));
+
+  const [cycleStart, setCycleStart] = useState(null);
+
+  const fetchWaterData = async () => {
+    if (!token) return;
+
     try {
-      let data = localStorage.getItem("currentHydration");
-      return data ? parseFloat(data) : 0.0;
-    } catch {
-      return 0.0;
+      const currentDate = new Date().toISOString().split("T")[0];
+
+      const logsResponse = await api.get(
+        `/water?date=${currentDate}&limit=100`
+      );
+      if (logsResponse.data.status === "success") {
+        const logs = logsResponse.data.data;
+        setWaterLog(
+          logs.map((log) => ({
+            id: log.id,
+            amount: log.amount,
+            time: log.time,
+          }))
+        );
+
+        const total = logs.reduce((sum, log) => sum + log.amount, 0);
+        setCurrentHydration(total);
+      }
+
+      const today = new Date().toISOString().split("T")[0];
+      const statsResponse = await api.get(`/water/stats?currentDate=${today}`);
+      if (statsResponse.data.status === "success") {
+        const { weekly, twelve_day, cycle_start } = statsResponse.data.data;
+
+        setCycleStart(cycle_start);
+        setWaterWeek(weekly.map((d) => d.amount));
+        setWater12Day(twelve_day.map((d) => d.amount));
+      }
+    } catch (error) {
+      console.error("Error fetching water data:", error);
     }
-  });
-  const EMPTYWATER12DAY = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  const [water12Day, setWater12Day] = useState(EMPTYWATER12DAY);
-  const EMPTYWATERWEEK = [0, 0, 0, 0, 0, 0, 0];
-  const [waterWeek, setWaterWeek] = useState(EMPTYWATERWEEK);
+  };
 
-  const addWaterWeekly = useCallback((water) => {
-    setWaterWeek((prev) => {
-      const now = new Date();
-      let dayIndex = now.getDay();
-      dayIndex = (dayIndex + 6) % 7;
-      const copy = [...prev];
-      copy[dayIndex] += Number(water) * 1000;
-      return copy;
-    });
-  }, []);
+  const addWater = async (amount) => {
+    try {
+      const newEntry = {
+        amount: amount,
+        date: new Date().toISOString().split("T")[0],
+        time: new Date().toLocaleTimeString("pl-PL", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
 
-  const [waterLog, setWaterLog] = useState(() =>
-    getListFromStorage("waterLog")
-  );
-  useEffect(() => {
-    localStorage.setItem("waterLog", JSON.stringify(waterLog));
-  }, [waterLog]);
+      const response = await api.post("/water", newEntry);
+      if (response.data.status === "success") {
+        await fetchWaterData();
+      }
+    } catch (error) {
+      console.error("Error adding water:", error);
+    }
+  };
+  const deleteWaterEntry = async (index) => {
+    try {
+      const entry = waterLog[index];
+      if (!entry || !entry.id) {
+        console.error("Entry not found or missing ID");
+        return;
+      }
 
-  useEffect(() => {
-    localStorage.setItem("currentHydration", currentHydration);
-  }, [currentHydration]);
+      await api.delete(`/water/${entry.id}`);
+      await fetchWaterData();
+    } catch (error) {
+      console.error("Error deleting water entry:", error);
+    }
+  };
 
   const waterProgressWidth = ((currentHydration / hydrationGoal) * 100).toFixed(
     1
   );
+  useEffect(() => {
+    if (token) {
+      fetchWaterData();
+    }
+  }, [token]);
 
   //sleep Section
   const [inBedTime, setInBedTime] = useState("");
@@ -422,104 +471,7 @@ export const DashboardProvider = ({ children }) => {
     []
   );
 
-  const addWater = useCallback((water) => {
-    setWater12Day((prev) => {
-      const safePrev =
-        Array.isArray(prev) && prev.length === 12
-          ? prev
-          : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-      const saved = localStorage.getItem("WaterBarChartData");
-      let cycleStartDate = new Date();
-
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (parsed.nextReset) {
-            const TWELVE_DAYS_MS = 12 * 24 * 60 * 60 * 1000;
-            cycleStartDate = new Date(parsed.nextReset - TWELVE_DAYS_MS);
-          }
-        } catch (e) {
-          console.error("Błąd parsowania cyklu:", e);
-        }
-      }
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      cycleStartDate.setHours(0, 0, 0, 0);
-
-      const daysPassed = Math.floor(
-        (now - cycleStartDate) / (24 * 60 * 60 * 1000)
-      );
-      const dayIndex = Math.max(0, Math.min(11, daysPassed));
-
-      const copy = [...safePrev];
-      copy[dayIndex] += Number(water) * 1000;
-
-      return copy;
-    });
-  }, []);
-
-  const saveWith12DayReset = useCallback(
-    (key, value, serializer = JSON.stringify) => {
-      const now = new Date();
-      let twelveDaysLaterMs = 12 * 24 * 60 * 60 * 1000;
-      let nextResetTime;
-      const existingItem = localStorage.getItem(key);
-      if (existingItem) {
-        try {
-          const parsedItem = JSON.parse(existingItem);
-          if (parsedItem.nextReset && now.getTime() < parsedItem.nextReset) {
-            nextResetTime = parsedItem.nextReset;
-          }
-        } catch (e) {
-          console.log("BUG WITH 12 DAY RESET PARSING");
-        }
-      }
-      if (!nextResetTime) {
-        nextResetTime = now.getTime() + twelveDaysLaterMs;
-        console.log("SETTING NEW 12 DAY RESET TIME", key);
-      }
-      const toSave = { value, nextReset: nextResetTime };
-      localStorage.setItem(key, serializer(toSave));
-    },
-    []
-  );
-
-  useEffect(() => {
-    const loadWith12DayReset = (key, setter, parser, defaultValue = null) => {
-      try {
-        const saved = localStorage.getItem(key);
-        if (saved) {
-          const data = JSON.parse(saved);
-          const now = new Date().getTime();
-          if (data.nextReset && now >= data.nextReset) {
-            localStorage.removeItem(key);
-            setter(defaultValue);
-            return;
-          }
-          setter(parser(data.value));
-        } else {
-          setter(defaultValue);
-        }
-      } catch (e) {
-        setter(defaultValue);
-      }
-    };
-    loadWith12DayReset(
-      "WaterBarChartData",
-      setWater12Day,
-      (v) => (Array.isArray(v) ? v : []),
-      []
-    );
-  }, []);
-
-  //TEST!
-  useEffect(() => {
-    saveWith12DayReset("WaterBarChartData", water12Day);
-  }, [water12Day, saveWith12DayReset]);
-
   //workout Logging
-
   const addWorkoutMinutes = useCallback((minutes) => {
     setWeekMinutes((prev) => {
       const now = new Date();
@@ -554,13 +506,16 @@ export const DashboardProvider = ({ children }) => {
     });
   }, []);
 
-  const addCalories = useCallback((calories) => {
-    setAllCalories((prev) => {
-      const newTotal = (prev || 0) + Number(calories);
-      saveWithWeeklyReset("totalCalories", newTotal.toString());
-      return newTotal;
-    });
-  }, []);
+  const addCalories = useCallback(
+    (calories) => {
+      setAllCalories((prev) => {
+        const newTotal = (prev || 0) + Number(calories);
+        saveWithWeeklyReset("totalCalories", newTotal.toString());
+        return newTotal;
+      });
+    },
+    [saveWithWeeklyReset]
+  );
 
   const addTime = useCallback((seconds) => {
     setAllSeconds((prev) => {
@@ -615,24 +570,28 @@ export const DashboardProvider = ({ children }) => {
         setter(defaultValue);
       }
     };
+
     loadWithWeeklyReset(
       "totalCalories",
       setAllCalories,
       (v) => parseInt(v) || 0,
       0
     );
+
     loadWithWeeklyReset(
       "workoutsDone",
       setWorkoutsDone,
       (v) => parseInt(v) || 0,
       0
     );
+
     loadWithWeeklyReset(
       "allSeconds",
       setAllSeconds,
       (v) => parseInt(v) || 0,
       0
     );
+
     loadWithWeeklyReset(
       "quickActivities",
       setQuickActivities,
@@ -659,13 +618,6 @@ export const DashboardProvider = ({ children }) => {
       setWeekFood,
       (v) => (Array.isArray(v) ? v : EMPTYFOODWEEK),
       EMPTYFOODWEEK
-    );
-
-    loadWithWeeklyReset(
-      "waterWeek",
-      setWaterWeek,
-      (v) => (Array.isArray(v) ? v : EMPTYWATERWEEK),
-      EMPTYWATERWEEK
     );
 
     const savedHistory = localStorage.getItem("fitnessWorkouts");
@@ -697,10 +649,6 @@ export const DashboardProvider = ({ children }) => {
   useEffect(() => {
     saveWithWeeklyReset("weekFood", weekFood);
   }, [weekFood, saveWithWeeklyReset]);
-
-  useEffect(() => {
-    saveWithWeeklyReset("waterWeek", waterWeek);
-  }, [waterWeek, saveWithWeeklyReset]);
 
   useEffect(() => {
     const loadDailyWorkout = () => {
@@ -739,6 +687,7 @@ export const DashboardProvider = ({ children }) => {
     const timer = setTimeout(loadDailyWorkout, timeout);
     return () => clearTimeout(timer);
   }, []);
+
   useEffect(() => {
     const loadDailyChallenge = () => {
       const now = new Date();
@@ -769,6 +718,7 @@ export const DashboardProvider = ({ children }) => {
 
     return () => clearTimeout(timer);
   }, []);
+
   const workoutProgressWidth = ((workoutsDone / weeklyWorkouts) * 100).toFixed(
     1
   );
@@ -839,9 +789,6 @@ export const DashboardProvider = ({ children }) => {
       setLunchList([]);
       setSnacksList([]);
       setDinnerList([]);
-      setWaterLog([]);
-      setCurrentHydration(0);
-
       localStorage.setItem("lastDate", today);
     }
   }, []);
@@ -1070,7 +1017,9 @@ export const DashboardProvider = ({ children }) => {
   return (
     <DashboardContext.Provider
       value={{
+        cycleStart,
         saveProfileData,
+        deleteWaterEntry,
         //Welcome popup
         sleepTimeInput,
         setSleepTimeInput,
@@ -1150,7 +1099,6 @@ export const DashboardProvider = ({ children }) => {
         addWater,
         waterWeek,
         setWaterWeek,
-        addWaterWeekly,
         //food
         breakfastList,
         setBreakfastList,
@@ -1195,10 +1143,8 @@ export const DashboardProvider = ({ children }) => {
         getSleepComparison,
         showWelcomePopup,
         setShowWelcomePopup,
-        //profilePic
         profileImage,
         saveNewProfileImage,
-        //daily weight update
         weightUpdated,
         setWeightUpdated,
       }}

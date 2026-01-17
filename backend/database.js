@@ -31,7 +31,7 @@ db.serialize(() => {
 
   db.run(
     `CREATE TABLE IF NOT EXISTS user_profiles (
-      user_id INTEGER PRIMARY KEY,
+     user_id INTEGER PRIMARY KEY,
       hydration_goal REAL DEFAULT 2.5,
       sleep_goal_hours INTEGER DEFAULT 8,
       sleep_goal_minutes INTEGER DEFAULT 0,
@@ -46,6 +46,7 @@ db.serialize(() => {
       current_height INTEGER,
       current_age INTEGER,
       onboarding_completed INTEGER DEFAULT 0,
+      water_cycle_start TEXT DEFAULT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );`,
     (err) => {
@@ -53,6 +54,95 @@ db.serialize(() => {
         console.error("Error creating user_profiles table:", err.message);
       } else {
         console.log("User profiles table ready");
+      }
+    }
+  );
+
+  db.run(
+    `CREATE TABLE IF NOT EXISTS water_logs (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      amount REAL NOT NULL,
+      date TEXT NOT NULL,
+      time TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );`,
+    (err) => {
+      if (err) {
+        console.error("Error creating water_logs table:", err.message);
+      } else {
+        console.log("Water logs table ready");
+      }
+    }
+  );
+
+  db.run(
+    `CREATE TABLE IF NOT EXISTS sleep_logs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      date TEXT NOT NULL,
+      in_bed_time TEXT NOT NULL,
+      out_of_bed_time TEXT NOT NULL,
+      sleep_quality INTEGER,
+      notes TEXT,
+      duration_hours REAL,
+      sleep_score INTEGER,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );`,
+    (err) => {
+      if (err) {
+        console.error("Error creating sleep_logs table:", err.message);
+      } else {
+        console.log("Sleep logs table ready");
+      }
+    }
+  );
+
+  db.run(
+    `CREATE TABLE IF NOT EXISTS workouts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      date TEXT NOT NULL,
+      time TEXT NOT NULL,
+      activity_type TEXT NOT NULL,
+      duration_minutes INTEGER NOT NULL,
+      calories_burned INTEGER,
+      notes TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );`,
+    (err) => {
+      if (err) {
+        console.error("Error creating workouts table:", err.message);
+      } else {
+        console.log("Workouts table ready");
+      }
+    }
+  );
+
+  db.run(
+    `CREATE TABLE IF NOT EXISTS meals (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      date TEXT NOT NULL,
+      time TEXT NOT NULL,
+      meal_type TEXT NOT NULL,
+      food_name TEXT NOT NULL,
+      calories INTEGER NOT NULL,
+      protein REAL,
+      carbs REAL,
+      fats REAL,
+      notes TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );`,
+    (err) => {
+      if (err) {
+        console.error("Error creating meals table:", err.message);
+      } else {
+        console.log("Meals table ready");
       }
     }
   );
