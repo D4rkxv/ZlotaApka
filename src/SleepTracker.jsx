@@ -69,11 +69,6 @@ function SleepTracker() {
     setSelectedTip(tips[randomIndex]);
   }, []);
 
-  const timeToMinutes = (timeStr) => {
-    const [hours, minutes] = timeStr.split(":").map(Number);
-    return hours * 60 + minutes;
-  };
-
   const handleSave = (e) => {
     e.preventDefault();
     logSleep();

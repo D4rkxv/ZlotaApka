@@ -4,6 +4,7 @@ const cors = require("cors");
 const db = require("./database");
 
 const authRoutes = require("./routes/auth");
+const profileRoutes = require("./routes/profile");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -25,6 +26,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ status: "error", message: "Endpoint not found" });
