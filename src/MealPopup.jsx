@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import "./Popups.css"
 import { Meal } from './DashboardContext';
 
-const MealPopup = ({setPopupMealType, addMeal, setList}) => {
+const MealPopup = ({setPopupMealType, addMeal, mealType}) => {
     const [name, setName] = useState("")
     const [grammage, setGrammage] = useState(0)
     const [calories, setCalories] = useState(0)
@@ -15,7 +15,7 @@ const MealPopup = ({setPopupMealType, addMeal, setList}) => {
             <div className="popupContainer mealPopup">
                 <form onSubmit={(e)=>{
                     e.preventDefault()
-                    addMeal(setList, new Meal(name, grammage, calories, protein, fats, carbs))
+                    addMeal(mealType, new Meal(name, grammage, calories, protein, fats, carbs))
                     setPopupMealType("")
                 }}>
                     <p className="popupTitle">Add meal</p>

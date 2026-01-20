@@ -6,7 +6,7 @@ const MealDescriptionPopup = ({meal, setPopupVisibility}) => {
     return(
         <div className="popupBackground">
             <div className="popupContainer mealDescription">
-                <p className="popupTitle">{meal.name} description:</p>
+                <p className="popupTitle">{meal.food_name} description:</p>
                 <div className="popupSection">
                     <p>Grammage: {meal.grammage}g</p>
                     <p>Calories: {meal.calories}kcal</p>

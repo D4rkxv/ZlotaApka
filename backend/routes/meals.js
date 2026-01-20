@@ -21,7 +21,7 @@ router.get("/", authenticateToken, async (req, res) => {
     params.push(meal_type);
   }
 
-  query += ` ORDER BY created_at DESC LIMIT ?`;
+  query += ` ORDER BY date DESC, id DESC LIMIT ?`;
   params.push(parseInt(limit));
 
   db.all(query, params, (err, rows) => {
@@ -42,9 +42,9 @@ router.get("/", authenticateToken, async (req, res) => {
 
 router.post("/", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
-  const { date, time, meal_type, food_name, calories, protein, carbs, fats, notes } = req.body;
+  const { date, meal_type, food_name, calories, protein, carbs, fats, grammage} = req.body;
 
-  if (!meal_type || !food_name || !calories) {
+  if (!meal_type || !food_name || calories == null || isNaN(calories)) {
     return res.status(400).json({
       status: "error",
       message: "Meal type, food name, and calories are required",
@@ -52,15 +52,12 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 
   const mealDate = date || new Date().toISOString().split("T")[0];
-  const mealTime = time || new Date().toLocaleTimeString("pl-PL", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+
 
   db.run(
-    `INSERT INTO meals (user_id, date, time, meal_type, food_name, calories, protein, carbs, fats, notes) 
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [userId, mealDate, mealTime, meal_type, food_name, calories, protein || null, carbs || null, fats || null, notes || null],
+    `INSERT INTO meals (user_id, date, meal_type, food_name, calories, protein, carbs, fats, grammage) 
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [userId, mealDate, meal_type, food_name, calories, protein || null, carbs || null, fats || null, grammage || null],
     function (err) {
       if (err) {
         console.error("Error adding meal:", err);
@@ -76,19 +73,83 @@ router.post("/", authenticateToken, async (req, res) => {
           id: this.lastID,
           user_id: userId,
           date: mealDate,
-          time: mealTime,
           meal_type,
           food_name,
           calories,
           protein,
           carbs,
           fats,
-          notes,
+          grammage
         },
       });
     }
   );
 });
+
+router.put("/:id", authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const { id } = req.params;
+
+  const {
+    food_name,
+    grammage,
+    calories,
+    protein,
+    carbs,
+    fats,
+  } = req.body;
+
+  if (!food_name || !grammage || isNaN(calories)) {
+    return res.status(400).json({
+      status: "error",
+      message: "Food name, grammage and calories are required",
+    });
+  }
+
+  db.run(
+    `UPDATE meals
+     SET
+       food_name = ?,
+       grammage = ?,
+       calories = ?,
+       protein = ?,
+       carbs = ?,
+       fats = ?
+     WHERE id = ? AND user_id = ?`,
+    [
+      food_name,
+      grammage,
+      calories,
+      protein || null,
+      carbs || null,
+      fats || null,
+      id,
+      userId,
+    ],
+    function (err) {
+      if (err) {
+        console.error("Error updating meal:", err);
+        return res.status(500).json({
+          status: "error",
+          message: "Error updating meal",
+        });
+      }
+
+      if (this.changes === 0) {
+        return res.status(404).json({
+          status: "error",
+          message: "Meal not found",
+        });
+      }
+
+      res.json({
+        status: "success",
+        message: "Meal updated",
+      });
+    }
+  );
+});
+
 
 router.delete("/:id", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
@@ -125,12 +186,25 @@ router.get("/stats", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
   const today = new Date().toISOString().split("T")[0];
 
-  const last7Days = [];
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    last7Days.push(date.toISOString().split("T")[0]);
+  const getLastWeekDates = () => {
+  const now = new Date();
+  const dayOfWeek = now.getDay(); 
+  
+  const monday = new Date(now);
+  const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  monday.setDate(now.getDate() - daysFromMonday);
+  
+  const weekDays = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + i);
+    weekDays.push(date.toISOString().split("T")[0]);
   }
+  
+  return weekDays;
+};
+
+  const lastWeekDays = getLastWeekDates();
 
   db.all(
     `SELECT meal_type, SUM(calories) as total_calories, SUM(protein) as total_protein, 
@@ -151,9 +225,9 @@ router.get("/stats", authenticateToken, async (req, res) => {
       db.all(
         `SELECT date, SUM(calories) as total_calories 
          FROM meals 
-         WHERE user_id = ? AND date IN (${last7Days.map(() => "?").join(",")})
+         WHERE user_id = ? AND date IN (${lastWeekDays.map(() => "?").join(",")})
          GROUP BY date`,
-        [userId, ...last7Days],
+        [userId, ...lastWeekDays],
         (err, weeklyData) => {
           if (err) {
             console.error("Error fetching weekly meals:", err);
@@ -168,7 +242,7 @@ router.get("/stats", authenticateToken, async (req, res) => {
             caloriesByDate[row.date] = row.total_calories || 0;
           });
 
-          const weeklyArray = last7Days.map((date) => ({
+          const weeklyArray = lastWeekDays.map((date) => ({
             date,
             calories: caloriesByDate[date] || 0,
           }));
@@ -195,7 +269,7 @@ router.get("/stats", authenticateToken, async (req, res) => {
           });
 
           db.all(
-            `SELECT * FROM meals WHERE user_id = ? AND date = ? ORDER BY created_at DESC`,
+            `SELECT * FROM meals WHERE user_id = ? AND date = ? ORDER BY date DESC, id DESC`,
             [userId, today],
             (err, allTodayMeals) => {
               if (err) {

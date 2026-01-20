@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import "./Popups.css"
 import { Meal } from './DashboardContext';
 
-const EditMealPopup = ({setPopupMealType, modifyMeal, meal, index, list, setList}) => {
-    const [name, setName] = useState(meal.name)
+const EditMealPopup = ({setPopupMealType, meal, updateMeal}) => {
+    const [name, setName] = useState(meal.food_name)
     const [grammage, setGrammage] = useState(meal.grammage)
     const [calories, setCalories] = useState(meal.calories)
     const [protein, setProtein] = useState(meal.protein)
@@ -15,7 +15,7 @@ const EditMealPopup = ({setPopupMealType, modifyMeal, meal, index, list, setList
             <div className="popupContainer mealPopup">
                 <form onSubmit={(e)=>{
                     e.preventDefault()
-                    modifyMeal(new Meal(name, grammage, calories, protein, fats, carbs), index, list, setList)
+                    updateMeal(meal.id, new Meal(name, grammage, calories, protein, fats, carbs))
                     setPopupMealType("")
                 }}>
                     <p className="popupTitle">Modify a previous meal</p>

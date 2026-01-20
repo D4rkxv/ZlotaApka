@@ -11,8 +11,8 @@ import { AuthContext, api } from "./AuthContext.jsx";
 const DashboardContext = createContext();
 
 export class Meal {
-  constructor(name, grammage, calories, protein, fats, carbs) {
-    this.name = name;
+  constructor(food_name, grammage, calories, protein, fats, carbs) {
+    this.food_name = food_name;
     this.grammage = grammage;
     this.calories = calories;
     this.protein = protein;
@@ -179,9 +179,6 @@ export const DashboardProvider = ({ children }) => {
     }
   };
 
-  //food
-  const EMPTYFOODWEEK = [0, 0, 0, 0, 0, 0, 0];
-  const [weekFood, setWeekFood] = useState(EMPTYFOODWEEK);
   //workout Section
   const [activityHistory, setActivityHistory] = useState([]);
   const [workoutsDone, setWorkoutsDone] = useState(null);
@@ -360,7 +357,7 @@ export const DashboardProvider = ({ children }) => {
       const currentDate = new Date().toISOString().split("T")[0];
 
       const logsResponse = await api.get(
-        `/water?date=${currentDate}&limit=100`
+        `/water?date=${currentDate}&limit=1000`
       );
       if (logsResponse.data.status === "success") {
         const logs = logsResponse.data.data;
@@ -427,11 +424,6 @@ export const DashboardProvider = ({ children }) => {
   const waterProgressWidth = ((currentHydration / hydrationGoal) * 100).toFixed(
     1
   );
-  useEffect(() => {
-    if (token) {
-      fetchWaterData();
-    }
-  }, [token]);
 
   //sleep Section
   const [inBedTime, setInBedTime] = useState("");
@@ -646,9 +638,6 @@ export const DashboardProvider = ({ children }) => {
     saveWithWeeklyReset("weekMinutes", weekMinutes);
   }, [weekMinutes, saveWithWeeklyReset]);
 
-  useEffect(() => {
-    saveWithWeeklyReset("weekFood", weekFood);
-  }, [weekFood, saveWithWeeklyReset]);
 
   useEffect(() => {
     const loadDailyWorkout = () => {
@@ -735,63 +724,46 @@ export const DashboardProvider = ({ children }) => {
   }, [weightUpdated]);
 
   //food
-  const addFood = useCallback((calories) => {
-    setWeekFood((prev) => {
-      const now = new Date();
-      let dayIndex = now.getDay();
-      dayIndex = (dayIndex + 6) % 7;
-
-      const copy = [...prev];
-      copy[dayIndex] += Number(calories);
-      return copy;
-    });
-  }, []);
-
-  const [breakfastList, setBreakfastList] = useState(() =>
-    getListFromStorage("breakfastList")
-  );
-  const [lunchList, setLunchList] = useState(() =>
-    getListFromStorage("lunchList")
-  );
-  const [snacksList, setSnacksList] = useState(() =>
-    getListFromStorage("snacksList")
-  );
-  const [dinnerList, setDinnerList] = useState(() =>
-    getListFromStorage("dinnerList")
-  );
+  const [breakfastList, setBreakfastList] = useState([]);
+  const [lunchList, setLunchList] = useState([]);
+  const [snacksList, setSnacksList] = useState([]);
+  const [dinnerList, setDinnerList] = useState([]);
   const [caloriesCount, setCaloriesCount] = useState(0);
   const [fatsCount, setFatsCount] = useState(0);
   const [proteinCount, setProteinCount] = useState(0);
   const [carbsCount, setCarbsCount] = useState(0);
+  const EMPTYFOODWEEK = [0, 0, 0, 0, 0, 0, 0];
+  const [weekFood, setWeekFood] = useState(EMPTYFOODWEEK);
 
-  useEffect(() => {
-    localStorage.setItem("breakfastList", JSON.stringify(breakfastList));
-  }, [breakfastList]);
 
-  useEffect(() => {
-    localStorage.setItem("lunchList", JSON.stringify(lunchList));
-  }, [lunchList]);
+const fetchMealsData = async () => {
+  if (!token) return;
 
-  useEffect(() => {
-    localStorage.setItem("snacksList", JSON.stringify(snacksList));
-  }, [snacksList]);
-
-  useEffect(() => {
-    localStorage.setItem("dinnerList", JSON.stringify(dinnerList));
-  }, [dinnerList]);
-
-  useEffect(() => {
+  try {
     const today = new Date().toISOString().split("T")[0];
-    const lastDate = localStorage.getItem("lastDate");
 
-    if (lastDate !== today) {
-      setBreakfastList([]);
-      setLunchList([]);
-      setSnacksList([]);
-      setDinnerList([]);
-      localStorage.setItem("lastDate", today);
+    const response = await api.get(`/meals?date=${today}&limit=1000`);
+
+    if (response.data.status === "success") {
+      const meals = response.data.data;
+
+      setBreakfastList(meals.filter(m => m.meal_type === "breakfast"));
+      setLunchList(meals.filter(m => m.meal_type === "lunch"));
+      setDinnerList(meals.filter(m => m.meal_type === "dinner"));
+      setSnacksList(meals.filter(m => m.meal_type === "snacks"));
     }
-  }, []);
+
+    const statsResponse = await api.get('/meals/stats');
+    if (statsResponse.data.status === "success") {
+      const { weekly } = statsResponse.data.data;
+      setWeekFood(weekly.map(d => d.calories));
+      
+    }
+  } catch (error) {
+    console.error("Error fetching meals:", error);
+  }
+};
+
 
   const countCalories = (list) => {
     let calories = 0;
@@ -863,10 +835,51 @@ export const DashboardProvider = ({ children }) => {
     setCarbsCount(countAllCarbs);
   }, [breakfastList, lunchList, dinnerList, snacksList]);
 
-  const addMealsToList = (setList, meal) => {
-    addFood(meal.calories);
-    setList((prev) => [...prev, meal]);
+  const addMeal = async (meal_type, meal) => {
+  try {
+    const payload = {
+      meal_type,
+      food_name: meal.food_name || meal.name,
+      calories: Number(meal.calories) || 0,
+      protein: Number(meal.protein) || 0,
+      carbs: Number(meal.carbs) || 0,
+      fats: Number(meal.fats) || 0,
+      grammage: Number(meal.grammage) || 0,
+      date: new Date().toISOString().split("T")[0],
+    };
+
+    console.log("Sending meal payload:", payload); 
+
+    const response = await api.post("/meals", payload);
+
+    if (response.data.status === "success") {
+      await fetchMealsData();
+    }
+  } catch (error) {
+    console.error("Error adding meal:", error);
+    console.error("Error response:", error.response?.data); 
+  }
+};
+
+  const updateMeal = async (mealId, updatedData) => {
+  try {
+    await api.put(`/meals/${mealId}`, updatedData);
+    await fetchMealsData(); 
+  } catch (error) {
+    console.error("Error updating meal:", error);
+  }
+};
+
+
+  const deleteMeal = async (mealId) => {
+    try {
+      await api.delete(`/meals/${mealId}`);
+      await fetchMealsData();
+    } catch (error) {
+      console.error("Error deleting meal:", error);
+    }
   };
+
 
   //sleep
   const addSleepMinutes = useCallback((minutes) => {
@@ -1013,6 +1026,31 @@ export const DashboardProvider = ({ children }) => {
 
     reader.readAsDataURL(newImageFile);
   };
+  //new token, data update
+  useEffect(() => {
+  if (token) {
+    fetchMealsData();
+    fetchWaterData();
+  }
+}, [token]);
+
+//new data, data update
+useEffect(() => {
+  const checkDateChange = setInterval(() => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    const savedDate = localStorage.getItem("lastCheckedDate");
+    
+    if (savedDate !== currentDate) {
+      localStorage.setItem("lastCheckedDate", currentDate);
+      if (token) {
+        fetchMealsData();
+        fetchWaterData();
+      }
+    }
+  }, 60000); 
+  
+  return () => clearInterval(checkDateChange);
+}, [token]);
 
   return (
     <DashboardContext.Provider
@@ -1108,7 +1146,9 @@ export const DashboardProvider = ({ children }) => {
         setSnacksList,
         dinnerList,
         setDinnerList,
-        addMealsToList,
+        addMeal,
+        updateMeal,
+        deleteMeal,
         countAllCalories,
         caloriesCount,
         fatsCount,

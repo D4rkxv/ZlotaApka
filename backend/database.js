@@ -104,13 +104,12 @@ db.serialize(() => {
     `CREATE TABLE IF NOT EXISTS workouts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
-      date TEXT NOT NULL,
-      time TEXT NOT NULL,
+      date DATE NOT NULL DEFAULT (DATE('now', 'localtime')),
+      time TIME NOT NULL DEFAULT (TIME('now', 'localtime')),
       activity_type TEXT NOT NULL,
+      activity_name TEXT NOT NULL,
       duration_minutes INTEGER NOT NULL,
       calories_burned INTEGER,
-      notes TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );`,
     (err) => {
@@ -126,16 +125,14 @@ db.serialize(() => {
     `CREATE TABLE IF NOT EXISTS meals (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
-      date TEXT NOT NULL,
-      time TEXT NOT NULL,
+      date DATE NOT NULL DEFAULT (DATE('now', 'localtime')),
       meal_type TEXT NOT NULL,
       food_name TEXT NOT NULL,
       calories INTEGER NOT NULL,
       protein REAL,
       carbs REAL,
       fats REAL,
-      notes TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      grammage REAL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );`,
     (err) => {
