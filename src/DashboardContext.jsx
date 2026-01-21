@@ -25,14 +25,14 @@ export const DashboardProvider = ({ children }) => {
   const { userProfile, updateUserProfile, token } = useContext(AuthContext);
 
   const getCurrentWeekKey = () => {
-  const now = new Date();
-  const dayOfWeek = now.getDay();
-  const monday = new Date(now);
-  const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-  monday.setDate(now.getDate() - daysFromMonday);
-  monday.setHours(0, 0, 0, 0);
-  return monday.toISOString().split("T")[0];
-};
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const monday = new Date(now);
+    const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    monday.setDate(now.getDate() - daysFromMonday);
+    monday.setHours(0, 0, 0, 0);
+    return monday.toISOString().split("T")[0];
+  };
 
   //Welcome popup
   const [isChecked2, setIsChecked2] = useState(Array(6).fill(false));
@@ -142,7 +142,7 @@ export const DashboardProvider = ({ children }) => {
         ]);
         setSleepTimeInput(
           userProfile.sleep_goal_hours * 60 +
-            (userProfile.sleep_goal_minutes || 0)
+            (userProfile.sleep_goal_minutes || 0),
         );
       }
       if (
@@ -205,6 +205,46 @@ export const DashboardProvider = ({ children }) => {
   const [todayKey, setTodayKey] = useState("");
   const EMPTYWORKOUTWEEK = [0, 0, 0, 0, 0, 0, 0];
   const [weekMinutes, setWeekMinutes] = useState(EMPTYWORKOUTWEEK);
+
+  const fetchWorkoutData = useCallback(async () => {
+    try {
+      if (!token) return;
+      const today = new Date().toISOString().split("T")[0];
+
+      const response = await api.get(`/workouts?date=${today}&limit=1000`);
+      if (response.data.status === "success") {
+        const workouts = response.data.data;
+        setActivityHistory(workouts);
+      }
+
+      const statsResponse = await api.get("/workouts/stats");
+      if (statsResponse.data.status === "success") {
+        const { weekly } = statsResponse.data.data;
+
+        const orderedWeek = [0, 0, 0, 0, 0, 0, 0];
+
+        let totalWeekMinutes = 0;
+        let totalWeekCalories = 0;
+        let totalWeekCount = 0;
+
+        weekly.forEach((dayData) => {
+          const date = new Date(dayData.date);
+          const dayIndex = date.getDay();
+          const mappedIndex = dayIndex === 0 ? 6 : dayIndex - 1;
+          orderedWeek[mappedIndex] = dayData.minutes;
+          totalWeekMinutes += dayData.minutes;
+          totalWeekCalories += dayData.calories;
+          totalWeekCount += dayData.count;
+        });
+        setWeekMinutes(orderedWeek);
+        setAllSeconds(totalWeekMinutes * 60);
+        setAllCalories(totalWeekCalories);
+        setWorkoutsDone(totalWeekCount);
+      }
+    } catch (error) {
+      console.error("Error fetching workouts:", error);
+    }
+  }, [token]);
 
   const allWorkouts = [
     [
@@ -367,7 +407,7 @@ export const DashboardProvider = ({ children }) => {
       const currentDate = new Date().toISOString().split("T")[0];
 
       const logsResponse = await api.get(
-        `/water?date=${currentDate}&limit=1000`
+        `/water?date=${currentDate}&limit=1000`,
       );
       if (logsResponse.data.status === "success") {
         const logs = logsResponse.data.data;
@@ -376,7 +416,7 @@ export const DashboardProvider = ({ children }) => {
             id: log.id,
             amount: log.amount,
             time: log.time,
-          }))
+          })),
         );
 
         const total = logs.reduce((sum, log) => sum + log.amount, 0);
@@ -432,7 +472,7 @@ export const DashboardProvider = ({ children }) => {
   };
 
   const waterProgressWidth = ((currentHydration / hydrationGoal) * 100).toFixed(
-    1
+    1,
   );
 
   //sleep Section
@@ -470,7 +510,7 @@ export const DashboardProvider = ({ children }) => {
       };
       localStorage.setItem(key, serializer(toSave));
     },
-    []
+    [],
   );
 
   //workout Logging
@@ -486,27 +526,30 @@ export const DashboardProvider = ({ children }) => {
     });
   }, []);
 
-  const logWorkout = useCallback(({ name, time, calories, icon }) => {
-    const newWorkout = {
-      id: Date.now(),
-      name: name || "Workout",
-      time: new Date().toLocaleTimeString("pl-PL", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      calories: calories || 0,
-      icon: icon,
-      date: new Date().toISOString().split("T")[0],
-    };
-
-    setActivityHistory((prev) => {
-      const updated = [newWorkout, ...prev.slice(0, 100)];
+  const logWorkout = useCallback(
+    async (workoutData) => {
       try {
-        localStorage.setItem("fitnessWorkouts", JSON.stringify(updated));
-      } catch (e) {}
-      return updated;
-    });
-  }, []);
+        const payload = {
+          activity_type: workoutData.type || "strength_training",
+          activity_name: workoutData.name || "Workout",
+          duration_minutes: workoutData.time || Math.floor(seconds / 60),
+          calories_burned: workoutData.calories || 0,
+          date: new Date().toISOString().split("T")[0],
+        };
+
+        const response = await api.post("/workouts", payload);
+
+        if (response.data.status === "success") {
+          await fetchWorkoutData();
+          return { success: true };
+        }
+      } catch (error) {
+        console.error("Error logging workout:", error);
+        return { success: false };
+      }
+    },
+    [seconds, fetchWorkoutData],
+  );
 
   const addCalories = useCallback(
     (calories) => {
@@ -516,7 +559,7 @@ export const DashboardProvider = ({ children }) => {
         return newTotal;
       });
     },
-    [saveWithWeeklyReset]
+    [saveWithWeeklyReset],
   );
 
   const addTime = useCallback((seconds) => {
@@ -549,7 +592,7 @@ export const DashboardProvider = ({ children }) => {
         return updated;
       });
     },
-    [addWorkoutMinutes]
+    [addWorkoutMinutes],
   );
 
   useEffect(() => {
@@ -577,49 +620,49 @@ export const DashboardProvider = ({ children }) => {
       "totalCalories",
       setAllCalories,
       (v) => parseInt(v) || 0,
-      0
+      0,
     );
 
     loadWithWeeklyReset(
       "workoutsDone",
       setWorkoutsDone,
       (v) => parseInt(v) || 0,
-      0
+      0,
     );
 
     loadWithWeeklyReset(
       "allSeconds",
       setAllSeconds,
       (v) => parseInt(v) || 0,
-      0
+      0,
     );
 
     loadWithWeeklyReset(
       "quickActivities",
       setQuickActivities,
       (data) => (Array.isArray(data?.value) ? data.value : []),
-      []
+      [],
     );
 
     loadWithWeeklyReset(
       "weekMinutes",
       setWeekMinutes,
       (v) => (Array.isArray(v) ? v : EMPTYWORKOUTWEEK),
-      EMPTYWORKOUTWEEK
+      EMPTYWORKOUTWEEK,
     );
 
     loadWithWeeklyReset(
       "weekSleepMinutes",
       setSleepWeekMinutes,
       (v) => (Array.isArray(v) ? v : EMPTYSLEEPWEEK),
-      EMPTYSLEEPWEEK
+      EMPTYSLEEPWEEK,
     );
 
     loadWithWeeklyReset(
       "weekFood",
       setWeekFood,
       (v) => (Array.isArray(v) ? v : EMPTYFOODWEEK),
-      EMPTYFOODWEEK
+      EMPTYFOODWEEK,
     );
 
     const savedHistory = localStorage.getItem("fitnessWorkouts");
@@ -647,7 +690,6 @@ export const DashboardProvider = ({ children }) => {
   useEffect(() => {
     saveWithWeeklyReset("weekMinutes", weekMinutes);
   }, [weekMinutes, saveWithWeeklyReset]);
-
 
   useEffect(() => {
     const loadDailyWorkout = () => {
@@ -719,7 +761,7 @@ export const DashboardProvider = ({ children }) => {
   }, []);
 
   const workoutProgressWidth = ((workoutsDone / weeklyWorkouts) * 100).toFixed(
-    1
+    1,
   );
   //daily weight update
   const getWeightUpdated = () => {
@@ -745,35 +787,32 @@ export const DashboardProvider = ({ children }) => {
   const EMPTYFOODWEEK = [0, 0, 0, 0, 0, 0, 0];
   const [weekFood, setWeekFood] = useState(EMPTYFOODWEEK);
 
+  const fetchMealsData = async () => {
+    if (!token) return;
 
-const fetchMealsData = async () => {
-  if (!token) return;
+    try {
+      const today = new Date().toISOString().split("T")[0];
 
-  try {
-    const today = new Date().toISOString().split("T")[0];
+      const response = await api.get(`/meals?date=${today}&limit=1000`);
 
-    const response = await api.get(`/meals?date=${today}&limit=1000`);
+      if (response.data.status === "success") {
+        const meals = response.data.data;
 
-    if (response.data.status === "success") {
-      const meals = response.data.data;
+        setBreakfastList(meals.filter((m) => m.meal_type === "breakfast"));
+        setLunchList(meals.filter((m) => m.meal_type === "lunch"));
+        setDinnerList(meals.filter((m) => m.meal_type === "dinner"));
+        setSnacksList(meals.filter((m) => m.meal_type === "snacks"));
+      }
 
-      setBreakfastList(meals.filter(m => m.meal_type === "breakfast"));
-      setLunchList(meals.filter(m => m.meal_type === "lunch"));
-      setDinnerList(meals.filter(m => m.meal_type === "dinner"));
-      setSnacksList(meals.filter(m => m.meal_type === "snacks"));
+      const statsResponse = await api.get("/meals/stats");
+      if (statsResponse.data.status === "success") {
+        const { weekly } = statsResponse.data.data;
+        setWeekFood(weekly.map((d) => d.calories));
+      }
+    } catch (error) {
+      console.error("Error fetching meals:", error);
     }
-
-    const statsResponse = await api.get('/meals/stats');
-    if (statsResponse.data.status === "success") {
-      const { weekly } = statsResponse.data.data;
-      setWeekFood(weekly.map(d => d.calories));
-      
-    }
-  } catch (error) {
-    console.error("Error fetching meals:", error);
-  }
-};
-
+  };
 
   const countCalories = (list) => {
     let calories = 0;
@@ -846,40 +885,39 @@ const fetchMealsData = async () => {
   }, [breakfastList, lunchList, dinnerList, snacksList]);
 
   const addMeal = async (meal_type, meal) => {
-  try {
-    const payload = {
-      meal_type,
-      food_name: meal.food_name || meal.name,
-      calories: Number(meal.calories) || 0,
-      protein: Number(meal.protein) || 0,
-      carbs: Number(meal.carbs) || 0,
-      fats: Number(meal.fats) || 0,
-      grammage: Number(meal.grammage) || 0,
-      date: new Date().toISOString().split("T")[0],
-    };
+    try {
+      const payload = {
+        meal_type,
+        food_name: meal.food_name || meal.name,
+        calories: Number(meal.calories) || 0,
+        protein: Number(meal.protein) || 0,
+        carbs: Number(meal.carbs) || 0,
+        fats: Number(meal.fats) || 0,
+        grammage: Number(meal.grammage) || 0,
+        date: new Date().toISOString().split("T")[0],
+      };
 
-    console.log("Sending meal payload:", payload); 
+      console.log("Sending meal payload:", payload);
 
-    const response = await api.post("/meals", payload);
+      const response = await api.post("/meals", payload);
 
-    if (response.data.status === "success") {
-      await fetchMealsData();
+      if (response.data.status === "success") {
+        await fetchMealsData();
+      }
+    } catch (error) {
+      console.error("Error adding meal:", error);
+      console.error("Error response:", error.response?.data);
     }
-  } catch (error) {
-    console.error("Error adding meal:", error);
-    console.error("Error response:", error.response?.data); 
-  }
-};
+  };
 
   const updateMeal = async (mealId, updatedData) => {
-  try {
-    await api.put(`/meals/${mealId}`, updatedData);
-    await fetchMealsData(); 
-  } catch (error) {
-    console.error("Error updating meal:", error);
-  }
-};
-
+    try {
+      await api.put(`/meals/${mealId}`, updatedData);
+      await fetchMealsData();
+    } catch (error) {
+      console.error("Error updating meal:", error);
+    }
+  };
 
   const deleteMeal = async (mealId) => {
     try {
@@ -889,7 +927,6 @@ const fetchMealsData = async () => {
       console.error("Error deleting meal:", error);
     }
   };
-
 
   //sleep
   const addSleepMinutes = useCallback((minutes) => {
@@ -927,18 +964,18 @@ const fetchMealsData = async () => {
     const goalHours = sleepGoal[0] + sleepGoal[1] / 60;
     const durationPct = Math.min(
       ((sleepHours + sleepMins / 60) / goalHours) * 100,
-      100
+      100,
     );
     const qualityNum =
       sleepQuality === "poor"
         ? 1
         : sleepQuality === "average"
-        ? 2
-        : sleepQuality === "good"
-        ? 3
-        : sleepQuality === "excellent"
-        ? 4
-        : 2;
+          ? 2
+          : sleepQuality === "good"
+            ? 3
+            : sleepQuality === "excellent"
+              ? 4
+              : 2;
     const qualityPct = ((qualityNum - 1) / 3) * 100;
     const sleepScore = Math.round(0.7 * durationPct + 0.3 * qualityPct);
 
@@ -992,7 +1029,7 @@ const fetchMealsData = async () => {
       return null;
     }
     const sorted = [...sleepHistory].sort(
-      (a, b) => new Date(b.date) - new Date(a.date)
+      (a, b) => new Date(b.date) - new Date(a.date),
     );
     const today = sorted[0];
     const yesterday = sorted[1];
@@ -1069,22 +1106,50 @@ useEffect(() => {
         fetchMealsData();
         fetchWaterData();
       }
-    }
-    
-    if (savedWeekKey !== currentWeekKey) {
-      localStorage.setItem("lastCheckedWeek", currentWeekKey);
-      if (token) {
-        setWeekFood(EMPTYFOODWEEK);
-        setWeekMinutes(EMPTYWORKOUTWEEK);
-        setSleepWeekMinutes(EMPTYSLEEPWEEK);
-        setWaterWeek(Array(7).fill(0));
-        fetchMealsData();
-        fetchWaterData();
+
+      const currentDate = new Date().toISOString().split("T")[0];
+      if (!localStorage.getItem("lastCheckedDate")) {
+        localStorage.setItem("lastCheckedDate", currentDate);
       }
+
+      fetchMealsData();
+      fetchWaterData();
     }
-  }, 60000);
-  return () => clearInterval(checkDateChange);
-}, [token]);
+  }, [token]);
+
+  //new data, data update
+  useEffect(() => {
+    const checkDateAndWeekChange = setInterval(() => {
+      const currentDate = new Date().toISOString().split("T")[0];
+      const savedDate = localStorage.getItem("lastCheckedDate");
+
+      const currentWeekKey = getCurrentWeekKey();
+      const savedWeekKey = localStorage.getItem("lastCheckedWeek");
+
+      if (savedDate !== currentDate) {
+        localStorage.setItem("lastCheckedDate", currentDate);
+        if (token) {
+          fetchMealsData();
+          fetchWaterData();
+          fetchWorkoutData();
+        }
+      }
+
+      if (savedWeekKey !== currentWeekKey) {
+        localStorage.setItem("lastCheckedWeek", currentWeekKey);
+        if (token) {
+          setWeekFood(EMPTYFOODWEEK);
+          setWeekMinutes(EMPTYWORKOUTWEEK);
+          setSleepWeekMinutes(EMPTYSLEEPWEEK);
+          setWaterWeek(Array(7).fill(0));
+          fetchMealsData();
+          fetchWaterData();
+          fetchWorkoutData();
+        }
+      }
+    }, 60000);
+    return () => clearInterval(checkDateChange);
+  }, [token]);
 
   return (
     <DashboardContext.Provider
@@ -1128,6 +1193,7 @@ useEffect(() => {
         goToProfile,
         goToSettings,
         //workout
+        fetchWorkoutData,
         logWorkout,
         activityHistory,
         setActivityHistory,
