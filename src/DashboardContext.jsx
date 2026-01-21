@@ -1075,10 +1075,36 @@ export const DashboardProvider = ({ children }) => {
   };
   //new token, data update
   useEffect(() => {
-    if (token) {
-      const currentWeekKey = getCurrentWeekKey();
-      if (!localStorage.getItem("lastCheckedWeek")) {
-        localStorage.setItem("lastCheckedWeek", currentWeekKey);
+  if (token) {
+    const currentWeekKey = getCurrentWeekKey();
+    if (!localStorage.getItem("lastCheckedWeek")) {
+      localStorage.setItem("lastCheckedWeek", currentWeekKey);
+    }
+    
+    const currentDate = new Date().toISOString().split("T")[0];
+    if (!localStorage.getItem("lastCheckedDate")) {
+      localStorage.setItem("lastCheckedDate", currentDate);
+    }
+    
+    fetchMealsData();
+    fetchWaterData();
+  }
+}, [token]);
+
+//new data, data update
+useEffect(() => {
+  const checkDateAndWeekChange = setInterval(() => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    const savedDate = localStorage.getItem("lastCheckedDate");
+    
+    const currentWeekKey = getCurrentWeekKey();
+    const savedWeekKey = localStorage.getItem("lastCheckedWeek");
+    
+    if (savedDate !== currentDate) {
+      localStorage.setItem("lastCheckedDate", currentDate);
+      if (token) {
+        fetchMealsData();
+        fetchWaterData();
       }
 
       const currentDate = new Date().toISOString().split("T")[0];
