@@ -106,7 +106,7 @@ function Workouts() {
       const current = Array.isArray(prev) ? prev : Array(6).fill(false);
       const wasChecked = current[index];
       setExerciseDone((prevCount) =>
-        wasChecked ? prevCount - 1 : prevCount + 1
+        wasChecked ? prevCount - 1 : prevCount + 1,
       );
       const newChecked = [...current];
       newChecked[index] = !newChecked[index];
@@ -136,32 +136,41 @@ function Workouts() {
     setExerciseDone(0);
     setWorkoutStatus("idle");
   };
-  const handleFinalClick = () => {
-    const workoutName = `${currentWorkoutName || "Full Body Workout"} `;
-    logWorkout({ name: workoutName });
+  const handleFinalClick = async () => {
+    console.log("⏱️ [Workouts] Licznik sekund:", seconds);
+
+    let workoutMins = Math.floor(seconds / 60);
+    if (seconds > 0 && workoutMins === 0) {
+      workoutMins = 1;
+    }
+
+    const workoutData = {
+      name: currentWorkoutName || "Full Body Workout",
+      type: "strength_training",
+      time: workoutMins,
+      calories: Math.round(workoutMins * 5),
+    };
+
+    console.log("button clicked", workoutData);
+
+    await logWorkout(workoutData);
+
     setWorkoutStatus("idle");
     setIsChecked(Array(6).fill(false));
     setIsDisabled(true);
-
-    const workoutMins = Math.floor(seconds / 60);
-    if (workoutMins > 0) {
-      addWorkoutMinutes(workoutMins);
-    }
-
     setSeconds(0);
     setIsActive(false);
     setExerciseDone(0);
-    setWorkoutsDone((prev) => prev + 1);
-    setAllSeconds((prev) => prev + seconds);
   };
-  const handleWorkoutItemClick = (quickItem) => {
-    logWorkout(quickItem);
-    addCalories(quickItem.calories);
-    addTime(quickItem.time);
+  const handleWorkoutItemClick = async (quickItem) => {
+    const workoutData = {
+      name: quickItem.name,
+      type: quickItem.type || "cardio",
+      time: Number(quickItem.time),
+      calories: Number(quickItem.calories),
+    };
 
-    if (quickItem.time) {
-      addWorkoutMinutes(Number(quickItem.time));
-    }
+    await logWorkout(workoutData);
   };
 
   useEffect(() => {
@@ -180,7 +189,7 @@ function Workouts() {
         label: "Workout",
         data: weekMinutes,
         backgroundColor: weekMinutes.map((val) =>
-          val > 40 ? "#00A8FF" : "rgba(0,168,255,0.25)"
+          val > 40 ? "#00A8FF" : "rgba(0,168,255,0.25)",
         ),
         borderRadius: 6,
         barThickness: 32,
@@ -362,7 +371,7 @@ function Workouts() {
                   <div className="activityHistoryContainer">
                     {activityHistory.slice(0, 100).map((item) => (
                       <div key={item.id} className="historyItem">
-                        {item.time} - {item.name}
+                        {item.time} - {item.activity_name}
                       </div>
                     ))}
                   </div>

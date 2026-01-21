@@ -16,7 +16,7 @@ router.get("/", authenticateToken, async (req, res) => {
     params.push(date);
   }
 
-  query += ` ORDER BY created_at DESC LIMIT ?`;
+  query += ` ORDER BY date DESC, time DESC LIMIT ?`;
   params.push(parseInt(limit));
 
   db.all(query, params, (err, rows) => {
@@ -37,7 +37,14 @@ router.get("/", authenticateToken, async (req, res) => {
 
 router.post("/", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
-  const { date, time, activity_type, duration_minutes, calories_burned, notes } = req.body;
+  const {
+    date,
+    time,
+    activity_type,
+    activity_name,
+    duration_minutes,
+    calories_burned,
+  } = req.body;
 
   if (!activity_type || !duration_minutes) {
     return res.status(400).json({
@@ -47,15 +54,25 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 
   const workoutDate = date || new Date().toISOString().split("T")[0];
-  const workoutTime = time || new Date().toLocaleTimeString("pl-PL", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const workoutTime =
+    time ||
+    new Date().toLocaleTimeString("pl-PL", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   db.run(
-    `INSERT INTO workouts (user_id, date, time, activity_type, duration_minutes, calories_burned, notes) 
+    `INSERT INTO workouts (user_id, date, time, activity_type, activity_name ,duration_minutes, calories_burned) 
      VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [userId, workoutDate, workoutTime, activity_type, duration_minutes, calories_burned || null, notes || null],
+    [
+      userId,
+      workoutDate,
+      workoutTime,
+      activity_type,
+      activity_name,
+      duration_minutes,
+      calories_burned || null,
+    ],
     function (err) {
       if (err) {
         console.error("Error adding workout:", err);
@@ -73,12 +90,12 @@ router.post("/", authenticateToken, async (req, res) => {
           date: workoutDate,
           time: workoutTime,
           activity_type,
+          activity_name,
           duration_minutes,
           calories_burned,
-          notes,
         },
       });
-    }
+    },
   );
 });
 
@@ -109,7 +126,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
         status: "success",
         message: "Workout deleted",
       });
-    }
+    },
   );
 });
 
@@ -117,19 +134,31 @@ router.get("/stats", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
   const today = new Date().toISOString().split("T")[0];
 
-  const last7Days = [];
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    last7Days.push(date.toISOString().split("T")[0]);
-  }
+  const getLastWeekDates = () => {
+    const now = req.query.date ? new Date(req.query.date) : new Date();
+    const dayOfWeek = now.getDay();
+
+    const monday = new Date(now);
+    const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    monday.setDate(now.getDate() - daysFromMonday);
+
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + i);
+      weekDays.push(date.toISOString().split("T")[0]);
+    }
+    return weekDays;
+  };
+
+  const lastWeekDays = getLastWeekDates();
 
   db.all(
     `SELECT date, SUM(duration_minutes) as total_minutes, SUM(calories_burned) as total_calories, COUNT(*) as count
-     FROM workouts 
-     WHERE user_id = ? AND date IN (${last7Days.map(() => "?").join(",")})
-     GROUP BY date`,
-    [userId, ...last7Days],
+      FROM workouts 
+      WHERE user_id = ? AND date IN (${lastWeekDays.map(() => "?").join(",")})
+      GROUP BY date`,
+    [userId, ...lastWeekDays],
     (err, weeklyData) => {
       if (err) {
         console.error("Error fetching workout stats:", err);
@@ -148,12 +177,17 @@ router.get("/stats", authenticateToken, async (req, res) => {
         };
       });
 
-      const weeklyArray = last7Days.map((date) => ({
+      const weeklyArray = lastWeekDays.map((date) => ({
         date,
         minutes: statsByDate[date]?.minutes || 0,
         calories: statsByDate[date]?.calories || 0,
         count: statsByDate[date]?.count || 0,
       }));
+
+      const weeklyTotal = weeklyArray.reduce(
+        (sum, day) => sum + day.minutes,
+        0,
+      );
 
       db.all(
         `SELECT * FROM workouts WHERE user_id = ? AND date = ? ORDER BY time DESC`,
@@ -172,12 +206,12 @@ router.get("/stats", authenticateToken, async (req, res) => {
             data: {
               today: todayWorkouts || [],
               weekly: weeklyArray,
-              weeklyTotal: weeklyArray.reduce((sum, day) => sum + day.minutes, 0),
+              weeklyTotal: weeklyTotal,
             },
           });
-        }
+        },
       );
-    }
+    },
   );
 });
 
