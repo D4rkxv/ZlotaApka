@@ -1122,7 +1122,8 @@ export const DashboardProvider = ({ children }) => {
         }
       }
     }, 60000);
-    return () => clearInterval(checkDateChange);
+
+    return () => clearInterval(checkDateAndWeekChange);
   }, [token]);
 
   return (
