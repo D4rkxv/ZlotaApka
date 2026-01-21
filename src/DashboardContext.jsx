@@ -24,6 +24,16 @@ export class Meal {
 export const DashboardProvider = ({ children }) => {
   const { userProfile, updateUserProfile, token } = useContext(AuthContext);
 
+  const getCurrentWeekKey = () => {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const monday = new Date(now);
+  const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  monday.setDate(now.getDate() - daysFromMonday);
+  monday.setHours(0, 0, 0, 0);
+  return monday.toISOString().split("T")[0];
+};
+
   //Welcome popup
   const [isChecked2, setIsChecked2] = useState(Array(6).fill(false));
   const [showWelcomePopup, setShowWelcomePopup] = useState(true);
@@ -1029,6 +1039,16 @@ const fetchMealsData = async () => {
   //new token, data update
   useEffect(() => {
   if (token) {
+    const currentWeekKey = getCurrentWeekKey();
+    if (!localStorage.getItem("lastCheckedWeek")) {
+      localStorage.setItem("lastCheckedWeek", currentWeekKey);
+    }
+    
+    const currentDate = new Date().toISOString().split("T")[0];
+    if (!localStorage.getItem("lastCheckedDate")) {
+      localStorage.setItem("lastCheckedDate", currentDate);
+    }
+    
     fetchMealsData();
     fetchWaterData();
   }
@@ -1036,9 +1056,12 @@ const fetchMealsData = async () => {
 
 //new data, data update
 useEffect(() => {
-  const checkDateChange = setInterval(() => {
+  const checkDateAndWeekChange = setInterval(() => {
     const currentDate = new Date().toISOString().split("T")[0];
     const savedDate = localStorage.getItem("lastCheckedDate");
+    
+    const currentWeekKey = getCurrentWeekKey();
+    const savedWeekKey = localStorage.getItem("lastCheckedWeek");
     
     if (savedDate !== currentDate) {
       localStorage.setItem("lastCheckedDate", currentDate);
@@ -1047,8 +1070,19 @@ useEffect(() => {
         fetchWaterData();
       }
     }
-  }, 60000); 
-  
+    
+    if (savedWeekKey !== currentWeekKey) {
+      localStorage.setItem("lastCheckedWeek", currentWeekKey);
+      if (token) {
+        setWeekFood(EMPTYFOODWEEK);
+        setWeekMinutes(EMPTYWORKOUTWEEK);
+        setSleepWeekMinutes(EMPTYSLEEPWEEK);
+        setWaterWeek(Array(7).fill(0));
+        fetchMealsData();
+        fetchWaterData();
+      }
+    }
+  }, 60000);
   return () => clearInterval(checkDateChange);
 }, [token]);
 
