@@ -482,13 +482,114 @@ export const DashboardProvider = ({ children }) => {
   const [score, setScore] = useState(0);
   const [sleepGoal, setSleepGoal] = useState([8, 0]);
   const [lastNightSleep, setLastNightSleep] = useState([0, 0]);
-  const [sleepHistory, setSleepHistory] = useState([]);
+  const [todaySleep, setTodaySleep] = useState(null);
+  const [sleepWeekData, setSleepWeekData] = useState(Array(7).fill({ hours: 0, score: 0, quality: null }));
   const [profileInBedTime, setProfileInBedTime] = useState("");
   const [profileOutOfBedTime, setProfileOutOfBedTime] = useState("");
   const [profileSleepQuality, setProfileSleepQuality] = useState(null);
   const EMPTYSLEEPWEEK = [0, 0, 0, 0, 0, 0, 0];
   const [sleepWeekMinutes, setSleepWeekMinutes] = useState(EMPTYSLEEPWEEK);
 
+  const fetchSleepData = useCallback(async () => {
+  if (!token) return;
+
+  try {
+    const today = new Date().toISOString().split("T")[0];
+
+    const statsResponse = await api.get("/sleep/stats");
+    if (statsResponse.data.status === "success") {
+      const { today: todayData, weekly } = statsResponse.data.data;
+      
+      setTodaySleep(todayData);
+      setSleepWeekData(weekly);
+      
+      if (todayData) {
+        setProfileInBedTime(todayData.in_bed_time);
+        setProfileOutOfBedTime(todayData.out_of_bed_time);
+        setInBedTime(todayData.in_bed_time || "")
+        setOutOfBedTime(todayData.out_of_bed_time || "")
+        setProfileSleepQuality(todayData.sleep_quality);
+        setSleepQuality(todayData.sleep_quality || "")
+        setScore(todayData.sleep_score || 0);
+        setLastNightSleep([
+          Math.floor(todayData.duration_hours || 0),
+          Math.round(((todayData.duration_hours || 0) % 1) * 60)
+        ]);
+      }
+      
+      const weekMinutes = weekly.map(day => (day.hours || 0) * 60);
+      setSleepWeekMinutes(weekMinutes);
+    }
+  } catch (error) {
+    console.error("Error fetching sleep data:", error);
+  }
+}, [token]);
+
+const logSleep = useCallback(async () => {
+  if (!inBedTime || !outOfBedTime || !sleepQuality) {
+    console.error("All fields are required");
+    return { success: false, message: "All fields are required" };
+  }
+
+  try {
+    const payload = {
+      in_bed_time: inBedTime,
+      out_of_bed_time: outOfBedTime,
+      sleep_quality: sleepQuality,
+      date: new Date().toISOString().split("T")[0],
+    };
+
+    const response = await api.post("/sleep", payload);
+    
+    if (response.data.status === "success") {
+      await fetchSleepData();
+      return { success: true };
+    }
+  } catch (error) {
+    console.error("Error logging sleep:", error);
+    return { success: false, error };
+  }
+}, [inBedTime, outOfBedTime, sleepQuality, fetchSleepData]);
+
+const getSleepComparison = useCallback(() => {
+  if (!sleepWeekData || sleepWeekData.length < 2) {
+    return null;
+  }
+  
+  const daysWithData = sleepWeekData.filter(day => day.hours > 0);
+  
+  if (daysWithData.length < 2) {
+    return null;
+  }
+  
+  const sorted = [...daysWithData].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
+  
+  const today = sorted[0];
+  const yesterday = sorted[1];
+
+  const todayMinutes = (today.hours || 0) * 60;
+  const yesterdayMinutes = (yesterday.hours || 0) * 60;
+
+  const diffMinutes = todayMinutes - yesterdayMinutes;
+
+  const percentChange = yesterdayMinutes > 0
+    ? ((diffMinutes / yesterdayMinutes) * 100).toFixed(1)
+    : 0;
+    
+  return {
+    todayMinutes,
+    yesterdayMinutes,
+    diffMinutes,
+    percentChange: parseFloat(percentChange),
+    isIncrease: diffMinutes > 0,
+  };
+}, [sleepWeekData]);
+  
+
+  //workout 
+  
   const saveWithWeeklyReset = useCallback(
     (key, value, serializer = JSON.stringify) => {
       const now = new Date();
@@ -513,7 +614,6 @@ export const DashboardProvider = ({ children }) => {
     [],
   );
 
-  //workout Logging
   const addWorkoutMinutes = useCallback((minutes) => {
     setWeekMinutes((prev) => {
       const now = new Date();
@@ -644,26 +744,6 @@ export const DashboardProvider = ({ children }) => {
       [],
     );
 
-    loadWithWeeklyReset(
-      "weekMinutes",
-      setWeekMinutes,
-      (v) => (Array.isArray(v) ? v : EMPTYWORKOUTWEEK),
-      EMPTYWORKOUTWEEK,
-    );
-
-    loadWithWeeklyReset(
-      "weekSleepMinutes",
-      setSleepWeekMinutes,
-      (v) => (Array.isArray(v) ? v : EMPTYSLEEPWEEK),
-      EMPTYSLEEPWEEK,
-    );
-
-    loadWithWeeklyReset(
-      "weekFood",
-      setWeekFood,
-      (v) => (Array.isArray(v) ? v : EMPTYFOODWEEK),
-      EMPTYFOODWEEK,
-    );
 
     const savedHistory = localStorage.getItem("fitnessWorkouts");
     if (savedHistory) setActivityHistory(JSON.parse(savedHistory));
@@ -927,131 +1007,6 @@ export const DashboardProvider = ({ children }) => {
       console.error("Error deleting meal:", error);
     }
   };
-
-  //sleep
-  const addSleepMinutes = useCallback((minutes) => {
-    setSleepWeekMinutes((prev) => {
-      const now = new Date();
-      let dayIndex = now.getDay();
-      dayIndex = (dayIndex + 6) % 7;
-
-      const copy = [...prev];
-      copy[dayIndex] = Number(minutes);
-      return copy;
-    });
-  }, []);
-  useEffect(() => {
-    saveWithWeeklyReset("weekSleepMinutes", sleepWeekMinutes);
-  }, [sleepWeekMinutes, saveWithWeeklyReset]);
-  const timeToMinutes = (timeStr) => {
-    const [hours, minutes] = timeStr.split(":").map(Number);
-    return hours * 60 + minutes;
-  };
-
-  const logSleep = useCallback(() => {
-    const bedMinutes = timeToMinutes(inBedTime);
-    const outMinutes = timeToMinutes(outOfBedTime);
-
-    let sleepMinutes;
-    if (outMinutes > bedMinutes) {
-      sleepMinutes = outMinutes - bedMinutes;
-    } else {
-      sleepMinutes = outMinutes + 24 * 60 - bedMinutes;
-    }
-    const sleepHours = Math.floor(sleepMinutes / 60);
-    const sleepMins = sleepMinutes % 60;
-    setLastNightSleep([sleepHours, sleepMins]);
-    const goalHours = sleepGoal[0] + sleepGoal[1] / 60;
-    const durationPct = Math.min(
-      ((sleepHours + sleepMins / 60) / goalHours) * 100,
-      100,
-    );
-    const qualityNum =
-      sleepQuality === "poor"
-        ? 1
-        : sleepQuality === "average"
-          ? 2
-          : sleepQuality === "good"
-            ? 3
-            : sleepQuality === "excellent"
-              ? 4
-              : 2;
-    const qualityPct = ((qualityNum - 1) / 3) * 100;
-    const sleepScore = Math.round(0.7 * durationPct + 0.3 * qualityPct);
-
-    addSleepMinutes(sleepMinutes);
-    const sleepData = {
-      inBedTime,
-      outOfBedTime,
-      sleepQuality,
-      date: new Date().toISOString().split("T")[0],
-      sleepHours,
-      sleepMins,
-      score: sleepScore,
-    };
-    setProfileInBedTime(inBedTime);
-    setProfileOutOfBedTime(outOfBedTime);
-    setScore(sleepScore);
-    setSleepHistory((prev) => {
-      const updated = [sleepData, ...prev.slice(0)];
-      try {
-        localStorage.setItem("sleepHistory", JSON.stringify(updated));
-      } catch (e) {}
-      setInBedTime("");
-      setOutOfBedTime("");
-      setSleepQuality("");
-      return updated;
-    });
-  }, [inBedTime, outOfBedTime, sleepQuality, sleepGoal, addSleepMinutes]);
-
-  useEffect(() => {
-    try {
-      const history = localStorage.getItem("sleepHistory");
-      if (history) {
-        const parsed = JSON.parse(history);
-        setSleepHistory(parsed);
-
-        const today = new Date().toISOString().split("T")[0];
-        const todayEntry = parsed.find((entry) => entry.date === today);
-        if (todayEntry) {
-          setProfileInBedTime(todayEntry.inBedTime);
-          setProfileOutOfBedTime(todayEntry.outOfBedTime);
-          setProfileSleepQuality(todayEntry.sleepQuality);
-          setLastNightSleep([todayEntry.sleepHours, todayEntry.sleepMins]);
-          setScore(todayEntry.score);
-        }
-      }
-    } catch (e) {}
-  }, []);
-
-  const getSleepComparison = useCallback(() => {
-    if (sleepHistory.length < 2) {
-      return null;
-    }
-    const sorted = [...sleepHistory].sort(
-      (a, b) => new Date(b.date) - new Date(a.date),
-    );
-    const today = sorted[0];
-    const yesterday = sorted[1];
-
-    const todayMinutes = today.sleepHours * 60 + today.sleepMins;
-    const yesterdayMinutes = yesterday.sleepHours * 60 + yesterday.sleepMins;
-
-    const diffMinutes = todayMinutes - yesterdayMinutes;
-
-    const percentChange =
-      yesterdayMinutes > 0
-        ? ((diffMinutes / yesterdayMinutes) * 100).toFixed(1)
-        : 0;
-    return {
-      todayMinutes,
-      yesterdayMinutes,
-      diffMinutes,
-      percentChange: parseFloat(percentChange),
-      isIncrease: diffMinutes > 0,
-    };
-  }, [sleepHistory]);
-
   //profile picture
   const [profileImage, setProfileImage] = useState(profilePic);
 
@@ -1075,36 +1030,10 @@ export const DashboardProvider = ({ children }) => {
   };
   //new token, data update
   useEffect(() => {
-  if (token) {
-    const currentWeekKey = getCurrentWeekKey();
-    if (!localStorage.getItem("lastCheckedWeek")) {
-      localStorage.setItem("lastCheckedWeek", currentWeekKey);
-    }
-    
-    const currentDate = new Date().toISOString().split("T")[0];
-    if (!localStorage.getItem("lastCheckedDate")) {
-      localStorage.setItem("lastCheckedDate", currentDate);
-    }
-    
-    fetchMealsData();
-    fetchWaterData();
-  }
-}, [token]);
-
-//new data, data update
-useEffect(() => {
-  const checkDateAndWeekChange = setInterval(() => {
-    const currentDate = new Date().toISOString().split("T")[0];
-    const savedDate = localStorage.getItem("lastCheckedDate");
-    
-    const currentWeekKey = getCurrentWeekKey();
-    const savedWeekKey = localStorage.getItem("lastCheckedWeek");
-    
-    if (savedDate !== currentDate) {
-      localStorage.setItem("lastCheckedDate", currentDate);
-      if (token) {
-        fetchMealsData();
-        fetchWaterData();
+    if (token) {
+      const currentWeekKey = getCurrentWeekKey();
+      if (!localStorage.getItem("lastCheckedWeek")) {
+        localStorage.setItem("lastCheckedWeek", currentWeekKey);
       }
 
       const currentDate = new Date().toISOString().split("T")[0];
@@ -1114,6 +1043,8 @@ useEffect(() => {
 
       fetchMealsData();
       fetchWaterData();
+      fetchSleepData();
+      fetchWorkoutData();
     }
   }, [token]);
 
@@ -1132,6 +1063,7 @@ useEffect(() => {
           fetchMealsData();
           fetchWaterData();
           fetchWorkoutData();
+          fetchSleepData();
         }
       }
 
@@ -1280,7 +1212,6 @@ useEffect(() => {
         setProfileSleepQuality,
         sleepWeekMinutes,
         setSleepWeekMinutes,
-        addSleepMinutes,
         getSleepComparison,
         showWelcomePopup,
         setShowWelcomePopup,

@@ -81,14 +81,12 @@ db.serialize(() => {
     `CREATE TABLE IF NOT EXISTS sleep_logs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
-      date TEXT NOT NULL,
-      in_bed_time TEXT NOT NULL,
-      out_of_bed_time TEXT NOT NULL,
+      date DATE NOT NULL DEFAULT (DATE('now', 'localtime')),
+      in_bed_time TIME NOT NULL DEFAULT (TIME('now', 'localtime')),
+      out_of_bed_time TIME NOT NULL DEFAULT (TIME('now', 'localtime')),
       sleep_quality INTEGER,
-      notes TEXT,
       duration_hours REAL,
       sleep_score INTEGER,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );`,
     (err) => {

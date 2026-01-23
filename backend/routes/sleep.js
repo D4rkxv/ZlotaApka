@@ -37,7 +37,7 @@ router.get("/", authenticateToken, async (req, res) => {
 
 router.post("/", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
-  const { date, in_bed_time, out_of_bed_time, sleep_quality, notes } = req.body;
+  const { date, in_bed_time, out_of_bed_time, sleep_quality } = req.body;
 
   if (!in_bed_time || !out_of_bed_time) {
     return res.status(400).json({
@@ -67,33 +67,79 @@ router.post("/", authenticateToken, async (req, res) => {
 
   const sleepDate = date || new Date().toISOString().split("T")[0];
 
-  db.run(
-    `INSERT INTO sleep_logs (user_id, date, in_bed_time, out_of_bed_time, sleep_quality, notes, duration_hours, sleep_score) 
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [userId, sleepDate, in_bed_time, out_of_bed_time, sleep_quality || null, notes || null, sleepHours, sleepScore],
-    function (err) {
+  db.get(
+    `SELECT id FROM sleep_logs WHERE user_id = ? AND date = ?`,
+    [userId, sleepDate],
+    (err, existingRow) => {
       if (err) {
-        console.error("Error adding sleep log:", err);
+        console.error("Error checking existing sleep log:", err);
         return res.status(500).json({
           status: "error",
-          message: "Error adding sleep log",
+          message: "Error checking sleep log",
         });
       }
 
-      res.status(201).json({
-        status: "success",
-        data: {
-          id: this.lastID,
-          user_id: userId,
-          date: sleepDate,
-          in_bed_time,
-          out_of_bed_time,
-          sleep_quality,
-          notes,
-          duration_hours: sleepHours,
-          sleep_score: sleepScore,
-        },
-      });
+      if (existingRow) {
+        db.run(
+          `UPDATE sleep_logs 
+           SET in_bed_time = ?, out_of_bed_time = ?, sleep_quality = ?, 
+               duration_hours = ?, sleep_score = ?
+           WHERE id = ? AND user_id = ?`,
+          [in_bed_time, out_of_bed_time, sleep_quality || null, sleepHours, sleepScore, existingRow.id, userId],
+          function (err) {
+            if (err) {
+              console.error("Error updating sleep log:", err);
+              return res.status(500).json({
+                status: "error",
+                message: "Error updating sleep log",
+              });
+            }
+
+            res.status(200).json({
+              status: "success",
+              data: {
+                id: existingRow.id,
+                user_id: userId,
+                date: sleepDate,
+                in_bed_time,
+                out_of_bed_time,
+                sleep_quality,
+                duration_hours: sleepHours,
+                sleep_score: sleepScore,
+              },
+            });
+          }
+        );
+      } else {
+        db.run(
+          `INSERT INTO sleep_logs (user_id, date, in_bed_time, out_of_bed_time, sleep_quality, duration_hours, sleep_score) 
+           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          [userId, sleepDate, in_bed_time, out_of_bed_time, sleep_quality || null, sleepHours, sleepScore],
+          function (err) {
+            if (err) {
+              console.error("Error adding sleep log:", err);
+              return res.status(500).json({
+                status: "error",
+                message: "Error adding sleep log",
+              });
+            }
+
+            res.status(201).json({
+              status: "success",
+              data: {
+                id: this.lastID,
+                user_id: userId,
+                date: sleepDate,
+                in_bed_time,
+                out_of_bed_time,
+                sleep_quality,
+                duration_hours: sleepHours,
+                sleep_score: sleepScore,
+              },
+            });
+          }
+        );
+      }
     }
   );
 });
@@ -101,7 +147,7 @@ router.post("/", authenticateToken, async (req, res) => {
 router.put("/:id", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
   const { id } = req.params;
-  const { in_bed_time, out_of_bed_time, sleep_quality, notes } = req.body;
+  const { in_bed_time, out_of_bed_time, sleep_quality } = req.body;
 
   let updateFields = [];
   let updateValues = [];
@@ -135,10 +181,6 @@ router.put("/:id", authenticateToken, async (req, res) => {
     updateValues.push(sleep_quality);
   }
 
-  if (notes !== undefined) {
-    updateFields.push("notes = ?");
-    updateValues.push(notes);
-  }
 
   if (updateFields.length === 0) {
     return res.status(400).json({
@@ -211,19 +253,32 @@ router.get("/stats", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
   const today = new Date().toISOString().split("T")[0];
 
-  const last7Days = [];
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    last7Days.push(date.toISOString().split("T")[0]);
-  }
+  const getLastWeekDates = () => {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); 
+    
+    const monday = new Date(now);
+    const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    monday.setDate(now.getDate() - daysFromMonday);
+    
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + i);
+      weekDays.push(date.toISOString().split("T")[0]);
+    }
+    
+    return weekDays;
+  };
+
+const lastWeekDays = getLastWeekDates();
 
   db.all(
     `SELECT date, duration_hours, sleep_score, sleep_quality 
      FROM sleep_logs 
-     WHERE user_id = ? AND date IN (${last7Days.map(() => "?").join(",")})
+     WHERE user_id = ? AND date IN (${lastWeekDays.map(() => "?").join(",")})
      ORDER BY date`,
-    [userId, ...last7Days],
+    [userId, ...lastWeekDays],
     (err, weeklyData) => {
       if (err) {
         console.error("Error fetching sleep stats:", err);
@@ -242,7 +297,7 @@ router.get("/stats", authenticateToken, async (req, res) => {
         };
       });
 
-      const weeklyArray = last7Days.map((date) => ({
+      const weeklyArray = lastWeekDays.map((date) => ({
         date,
         hours: sleepByDate[date]?.hours || 0,
         score: sleepByDate[date]?.score || 0,

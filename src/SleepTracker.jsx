@@ -103,20 +103,20 @@ function SleepTracker() {
   };
 
   const sleepThisWeekData = {
-    labels,
-    datasets: [
-      {
-        label: "Sleep This Week",
-        data: sleepWeekMinutes,
-        backgroundColor: sleepWeekMinutes.map((v) =>
-          v >= 7 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)"
-        ),
-        borderRadius: 6,
-        borderSkipped: false,
-        barThickness: 34,
-      },
-    ],
-  };
+  labels,
+  datasets: [
+    {
+      label: "Sleep This Week",
+      data: sleepWeekMinutes.map(minutes => minutes / 60), 
+      backgroundColor: sleepWeekMinutes.map((v) =>
+        (v / 60) >= 7 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)"
+      ),
+      borderRadius: 6,
+      borderSkipped: false,
+      barThickness: 34,
+    },
+  ],
+};
 
   const sleepThisWeekOptions = {
     responsive: true,
@@ -127,28 +127,27 @@ function SleepTracker() {
         enabled: true,
       },
     },
-    scales: {
-      x: {
-        grid: { display: false },
-        ticks: {
-          color: "#9ca3af",
-          font: { size: 12, family: "Poppins" },
-        },
-      },
-      y: {
-        display: false,
-        min: 0,
-        beginAtZero: true,
-        suggestedMax: 10,
+     scales: {
+    x: {
+      grid: { display: false },
+      ticks: {
+        color: "#9ca3af",
+        font: { size: 12, family: "Poppins" },
       },
     },
-    datasets: {
-      bar: {
-        categoryPercentage: 1,
-        barPercentage: 1,
-      },
+    y: {
+      display: true, 
+      min: 0,
+      beginAtZero: true,
+      max: 10, 
+      ticks: {
+        callback: function(value) {
+          return value + 'h';
+        }
+      }
     },
-  };
+  },
+};
 
   return (
     <div className="sleepContainer siteContainer">
@@ -182,7 +181,7 @@ function SleepTracker() {
               />
             </div>
             <p className="sleepStartEndTime">
-              In bed at: {profileInBedTime} • Woke up at: {profileOutOfBedTime}
+              In bed at: {profileInBedTime || "N/A"} • Woke up at: {profileOutOfBedTime || "N/A"}
             </p>
           </div>
           <div className="sleepScoreContainer">
@@ -284,7 +283,7 @@ function SleepTracker() {
                   <label htmlFor="excellentSleep">Excellent</label>
                 </div>
               </div>
-              <button className="workoutBtn1">Log Sleep</button>
+              <button className="workoutBtn1">{profileOutOfBedTime && profileInBedTime ? "Update last night's sleep":"Log last night's sleep"}</button>
             </form>
           </div>
           <div className="sleepWeekChartContainer">
