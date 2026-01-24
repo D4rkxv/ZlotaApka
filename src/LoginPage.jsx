@@ -78,7 +78,9 @@ function LoginPage() {
                   name="rememberCheckbox"
                   id="rememberCheckbox"
                 />
-                <label>Remember me?</label>
+                <label htmlFor="rememberCheckbox" id="rememberCheckbox">
+                  Remember me?
+                </label>
               </div>
               <a href="https://olx.pl" className="link">
                 <p className="underlineLink">Forgot Your Password?</p>

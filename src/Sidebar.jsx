@@ -27,7 +27,7 @@ function Sidebar() {
     goToProfile,
     goToSettings,
     selectedWidget,
-    profileImage
+    profileImage,
   } = useDashboard();
   const { user } = useContext(AuthContext);
   const { logout, isAuthenticated } = useAuthLayout();
@@ -53,12 +53,12 @@ function Sidebar() {
           </p>
         </div>
 
-        <input
+        {/* <input
           type="search"
           name="dashboardSearch"
           className="dashboardSearch"
           placeholder={`Search`}
-        />
+        /> */}
       </div>
       <div className="midSidebarSection">
         <div className="linksContainer">

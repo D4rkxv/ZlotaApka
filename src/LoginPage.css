@@ -97,8 +97,11 @@ body {
   font-size: 12px;
   color: var(--textColor-50);
 }
-
+#rememberCheckbox {
+  cursor: pointer;
+}
 .underlineLink {
+  cursor: pointer;
   display: inline-block;
   position: relative;
   color: var(--primary);
