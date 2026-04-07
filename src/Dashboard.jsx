@@ -21,7 +21,7 @@ ChartJS.register(
   LineElement,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 import Sidebar from "./Sidebar.jsx";
 import "./Dashboard.css";
@@ -33,8 +33,6 @@ import WelcomePopup from "./WelcomePopup.jsx";
 import WeightUpdatePopup from "./WeightUpdatePopup.jsx";
 
 const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-const weightValues = [84, 79.8, 79.5, 76.2, 79, 78.9, 75.7];
 
 const deficit = [0, -50, 120, 80, 0, -30, -100];
 
@@ -48,6 +46,7 @@ export function Dashboard() {
     weekMinutes,
     sleepWeekMinutes,
     getSleepComparison,
+    getWeightComparison,
     weekFood,
     caloriesGoal,
     currentWeight,
@@ -58,10 +57,36 @@ export function Dashboard() {
     setCurrentChallenge,
     isChecked2,
     weightUpdated,
-    setWeightUpdated
+    setWeightUpdated,
+    weightWeekData,
   } = useDashboard();
 
+  const weightValues = (() => {
+    const result = [null, null, null, null, null, null, null];
+    (weightWeekData || []).forEach((entry) => {
+      const date = new Date(entry.date);
+      const dayIndex = date.getDay();
+      const mapped = dayIndex === 0 ? 6 : dayIndex - 1;
+      result[mapped] = entry.weight;
+    });
+    return result;
+  })();
+
+  const weightWeekSubtitle = (() => {
+    const entries = (weightWeekData || []).filter((e) => e.weight > 0);
+    if (entries.length < 2) return "No data yet";
+    const sorted = [...entries].sort(
+      (a, b) => new Date(a.date) - new Date(b.date),
+    );
+    const diff = (sorted[sorted.length - 1].weight - sorted[0].weight).toFixed(
+      1,
+    );
+    return diff > 0 ? `+${diff}Kg this Week` : `${diff}Kg this Week`;
+  })();
+
   const sleepComparison = getSleepComparison();
+  const weightComparison = getWeightComparison();
+
   const sleepValues = sleepWeekMinutes;
   const activityValues = weekMinutes;
   const activityOptions = {
@@ -102,7 +127,7 @@ export function Dashboard() {
         label: "Calories vs Goal",
         data: weekFood,
         backgroundColor: deficit.map((d) =>
-          d <= 0 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)"
+          d <= 0 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)",
         ),
         borderRadius: 6,
         borderSkipped: false,
@@ -150,7 +175,7 @@ export function Dashboard() {
         label: "Sleep This Week",
         data: sleepValues,
         backgroundColor: sleepValues.map((v) =>
-          v >= 7 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)"
+          v >= 7 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)",
         ),
         borderRadius: 6,
         borderSkipped: false,
@@ -193,11 +218,13 @@ export function Dashboard() {
 
   return (
     <>
-      {!weightUpdated && !showWelcomePopup? <WeightUpdatePopup setDailyWeightUpdated={setWeightUpdated}/>:null}
+      {!weightUpdated && !showWelcomePopup ? (
+        <WeightUpdatePopup setDailyWeightUpdated={setWeightUpdated} />
+      ) : null}
       {showWelcomePopup ? (
         <WelcomePopup setPopupVisibility={setShowWelcomePopup} />
       ) : null}
-    
+
       <div className="dashboardContainer siteContainer">
         <Sidebar />
 
@@ -217,7 +244,7 @@ export function Dashboard() {
                     style={{
                       width: `${Math.min(
                         ((caloriesCount / caloriesGoal) * 100).toFixed(0),
-                        100
+                        100,
                       )}%`,
                     }}
                   />
@@ -245,9 +272,16 @@ export function Dashboard() {
             <div className="smallWidget">
               <p className="smallWidgetTitle">Weight</p>
               <div className="descLine">
-                <p className="smalWidgetDesc">{currentWeight}Kg</p>
-                <img src={TrendUp} alt="trend up" />
-                <p className="smallWidgetDesc2">0.2%</p>
+                <p className="smalWidgetDesc">
+                  {currentWeight ? `${currentWeight}Kg` : "No data"}
+                </p>
+                <img
+                  src={weightComparison?.isIncrease ? TrendUp : TrendDown}
+                  alt="trend"
+                />
+                <p className="smallWidgetDesc2">
+                  {weightComparison?.percentChange ?? 0}%
+                </p>
               </div>
               <p className="smallWidgetGrayDesc">
                 Goal: {goalWeight} Kg (
@@ -339,8 +373,8 @@ export function Dashboard() {
             <LineChart
               title="Weight Trend"
               values={weightValues}
-              min={65}
-              max={90}
+              options={sleepOptions}
+              subtitle={weightWeekSubtitle}
             />
             <div className="smallWaterContainer" onClick={goToWater}>
               <p className="caloriesTitle">Water</p>

@@ -26,7 +26,7 @@ db.serialize(() => {
       if (err) {
         console.error("Error creating users table:", err.message);
       }
-    }
+    },
   );
 
   db.run(
@@ -41,7 +41,7 @@ db.serialize(() => {
       current_weight REAL,
       goal_weight REAL,
       gender TEXT,
-      daily_activity TEXT DEFAULT 'moderate',
+      daily_activity TEXT DEFAULT '50',
       weekly_workouts INTEGER DEFAULT 3,
       current_height INTEGER,
       current_age INTEGER,
@@ -55,7 +55,7 @@ db.serialize(() => {
       } else {
         console.log("User profiles table ready");
       }
-    }
+    },
   );
 
   db.run(
@@ -74,7 +74,7 @@ db.serialize(() => {
       } else {
         console.log("Water logs table ready");
       }
-    }
+    },
   );
 
   db.run(
@@ -95,7 +95,26 @@ db.serialize(() => {
       } else {
         console.log("Sleep logs table ready");
       }
-    }
+    },
+  );
+
+  db.run(
+    `CREATE TABLE IF NOT EXISTS weight_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    date DATE NOT NULL DEFAULT (DATE('now', 'localtime')),
+    weight REAL NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, date),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  );`,
+    (err) => {
+      if (err) {
+        console.error("Error creating weight_logs table:", err.message);
+      } else {
+        console.log("Weight logs table ready");
+      }
+    },
   );
 
   db.run(
@@ -116,7 +135,7 @@ db.serialize(() => {
       } else {
         console.log("Workouts table ready");
       }
-    }
+    },
   );
 
   db.run(
@@ -139,7 +158,7 @@ db.serialize(() => {
       } else {
         console.log("Meals table ready");
       }
-    }
+    },
   );
 
   console.log("Database setup complete.");

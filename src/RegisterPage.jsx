@@ -2,6 +2,7 @@ import Diving from "./assets/Diving2.png";
 import React, { useState, useEffect } from "react";
 import Logo from "./assets/Ellipse4.png";
 import Google from "./assets/Google.svg";
+import Github from "./assets/Github.svg";
 import "./LoginPage.css";
 import { useAuthLayout } from "./AuthContext";
 
@@ -12,9 +13,13 @@ function RegisterPage() {
     password: "",
     confirmPassword: "",
   });
+
+  const [ localError , setLocalError ] = useState("");
+
   const { goToLanding, goToLogin, register, isLoading, error } =
     useAuthLayout();
   const handleChange = (e) => {
+    setLocalError("");
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -30,17 +35,17 @@ function RegisterPage() {
       !formData.password ||
       !formData.confirmPassword
     ) {
-      console.log("Please fill in all fields");
+      setLocalError("All fields are required");
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      console.log("Passwords do not match");
+      setLocalError("Passwords do not match");
       return;
     }
-
     if (formData.password.length < 8) {
-      console.log("Password must be at least 8 characters long");
+      setLocalError("Password must be at least 8 characters long");
+
       return;
     }
 
@@ -113,6 +118,7 @@ function RegisterPage() {
               />
               <label>Confirm Password</label>
             </div>
+            <p className="errorHandler">{localError}</p>
             <button type="submit" className="logInBtn">
               {isLoading ? "Creating account..." : "Sign Up"}
             </button>
@@ -126,7 +132,7 @@ function RegisterPage() {
               <p>Google</p>
             </button>
             <button>
-              <img src={Google} />
+              <img src={Github} />
               <p>GitHub</p>
             </button>
           </div>

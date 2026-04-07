@@ -241,3 +241,10 @@ body {
   font-weight: 300;
   margin-left: 4px;
 }
+.errorHandler{
+  color: red;
+  font-size: 14px;
+}
+.errorHandler1{
+  padding-top: 16px;
+}

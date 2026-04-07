@@ -42,7 +42,7 @@ export const DashboardProvider = ({ children }) => {
   const [sleepTimeInput, setSleepTimeInput] = useState(240);
   const [sleepTime, setSleepTime] = useState([0, 0]);
   const [caloriesGoal, setCaloriesGoal] = useState(1000);
-  const [dailyActivity, setDailyActivity] = useState(10);
+  const [dailyActivity, setDailyActivity] = useState(50);
   const [weeklyWorkouts, setWeeklyWorkouts] = useState(1);
   const [currentWeight, setCurrentWeight] = useState(null);
   const [goalWeight, setGoalWeight] = useState(null);
@@ -483,113 +483,157 @@ export const DashboardProvider = ({ children }) => {
   const [sleepGoal, setSleepGoal] = useState([8, 0]);
   const [lastNightSleep, setLastNightSleep] = useState([0, 0]);
   const [todaySleep, setTodaySleep] = useState(null);
-  const [sleepWeekData, setSleepWeekData] = useState(Array(7).fill({ hours: 0, score: 0, quality: null }));
+  const [sleepWeekData, setSleepWeekData] = useState(
+    Array(7).fill({ hours: 0, score: 0, quality: null }),
+  );
   const [profileInBedTime, setProfileInBedTime] = useState("");
   const [profileOutOfBedTime, setProfileOutOfBedTime] = useState("");
   const [profileSleepQuality, setProfileSleepQuality] = useState(null);
   const EMPTYSLEEPWEEK = [0, 0, 0, 0, 0, 0, 0];
   const [sleepWeekMinutes, setSleepWeekMinutes] = useState(EMPTYSLEEPWEEK);
+  const [weightWeekData, setWeightWeekData] = useState([]);
+
+  const fetchWeightData = useCallback(async () => {
+    if (!token) return;
+    try {
+      const statsResponse = await api.get("/weight/stats");
+      if (statsResponse.data.status === "success") {
+        const { weekly } = statsResponse.data.data;
+        setWeightWeekData(weekly);
+      }
+    } catch (error) {
+      console.error("Error fetching weight data:", error);
+    }
+  }, [token]);
+
+  const getWeightComparison = useCallback(() => {
+    if (!weightWeekData || weightWeekData.length < 2) return null;
+
+    const daysWithData = weightWeekData.filter((day) => day.weight > 0);
+    if (daysWithData.length < 2) return null;
+
+    const sorted = [...daysWithData].sort(
+      (a, b) => new Date(b.date) - new Date(a.date),
+    );
+
+    const today = sorted[0];
+    const yesterday = sorted[1];
+
+    const diffWeight = today.weight - yesterday.weight;
+    const percentChange =
+      yesterday.weight > 0
+        ? ((diffWeight / yesterday.weight) * 100).toFixed(1)
+        : 0;
+
+    return {
+      todayWeight: today.weight,
+      yesterdayWeight: yesterday.weight,
+      diffWeight,
+      percentChange: parseFloat(percentChange),
+      isIncrease: diffWeight > 0,
+    };
+  }, [weightWeekData]);
 
   const fetchSleepData = useCallback(async () => {
-  if (!token) return;
+    if (!token) return;
 
-  try {
-    const today = new Date().toISOString().split("T")[0];
+    try {
+      const today = new Date().toISOString().split("T")[0];
 
-    const statsResponse = await api.get("/sleep/stats");
-    if (statsResponse.data.status === "success") {
-      const { today: todayData, weekly } = statsResponse.data.data;
-      
-      setTodaySleep(todayData);
-      setSleepWeekData(weekly);
-      
-      if (todayData) {
-        setProfileInBedTime(todayData.in_bed_time);
-        setProfileOutOfBedTime(todayData.out_of_bed_time);
-        setInBedTime(todayData.in_bed_time || "")
-        setOutOfBedTime(todayData.out_of_bed_time || "")
-        setProfileSleepQuality(todayData.sleep_quality);
-        setSleepQuality(todayData.sleep_quality || "")
-        setScore(todayData.sleep_score || 0);
-        setLastNightSleep([
-          Math.floor(todayData.duration_hours || 0),
-          Math.round(((todayData.duration_hours || 0) % 1) * 60)
-        ]);
+      const statsResponse = await api.get("/sleep/stats");
+      if (statsResponse.data.status === "success") {
+        const { today: todayData, weekly } = statsResponse.data.data;
+
+        setTodaySleep(todayData);
+        setSleepWeekData(weekly);
+
+        if (todayData) {
+          setProfileInBedTime(todayData.in_bed_time);
+          setProfileOutOfBedTime(todayData.out_of_bed_time);
+          setInBedTime(todayData.in_bed_time || "");
+          setOutOfBedTime(todayData.out_of_bed_time || "");
+          setProfileSleepQuality(todayData.sleep_quality);
+          setSleepQuality(todayData.sleep_quality || "");
+          setScore(todayData.sleep_score || 0);
+          setLastNightSleep([
+            Math.floor(todayData.duration_hours || 0),
+            Math.round(((todayData.duration_hours || 0) % 1) * 60),
+          ]);
+        }
+
+        const weekMinutes = weekly.map((day) => (day.hours || 0) * 60);
+        setSleepWeekMinutes(weekMinutes);
       }
-      
-      const weekMinutes = weekly.map(day => (day.hours || 0) * 60);
-      setSleepWeekMinutes(weekMinutes);
+    } catch (error) {
+      console.error("Error fetching sleep data:", error);
     }
-  } catch (error) {
-    console.error("Error fetching sleep data:", error);
-  }
-}, [token]);
+  }, [token]);
 
-const logSleep = useCallback(async () => {
-  if (!inBedTime || !outOfBedTime || !sleepQuality) {
-    console.error("All fields are required");
-    return { success: false, message: "All fields are required" };
-  }
+  const logSleep = useCallback(async () => {
+    if (!inBedTime || !outOfBedTime || !sleepQuality) {
+      console.error("All fields are required");
+      return { success: false, message: "All fields are required" };
+    }
 
-  try {
-    const payload = {
-      in_bed_time: inBedTime,
-      out_of_bed_time: outOfBedTime,
-      sleep_quality: sleepQuality,
-      date: new Date().toISOString().split("T")[0],
+    try {
+      const payload = {
+        in_bed_time: inBedTime,
+        out_of_bed_time: outOfBedTime,
+        sleep_quality: sleepQuality,
+        date: new Date().toISOString().split("T")[0],
+      };
+
+      const response = await api.post("/sleep", payload);
+
+      if (response.data.status === "success") {
+        await fetchSleepData();
+        return { success: true };
+      }
+    } catch (error) {
+      console.error("Error logging sleep:", error);
+      return { success: false, error };
+    }
+  }, [inBedTime, outOfBedTime, sleepQuality, fetchSleepData]);
+
+  const getSleepComparison = useCallback(() => {
+    if (!sleepWeekData || sleepWeekData.length < 2) {
+      return null;
+    }
+
+    const daysWithData = sleepWeekData.filter((day) => day.hours > 0);
+
+    if (daysWithData.length < 2) {
+      return null;
+    }
+
+    const sorted = [...daysWithData].sort(
+      (a, b) => new Date(b.date) - new Date(a.date),
+    );
+
+    const today = sorted[0];
+    const yesterday = sorted[1];
+
+    const todayMinutes = (today.hours || 0) * 60;
+    const yesterdayMinutes = (yesterday.hours || 0) * 60;
+
+    const diffMinutes = todayMinutes - yesterdayMinutes;
+
+    const percentChange =
+      yesterdayMinutes > 0
+        ? ((diffMinutes / yesterdayMinutes) * 100).toFixed(1)
+        : 0;
+
+    return {
+      todayMinutes,
+      yesterdayMinutes,
+      diffMinutes,
+      percentChange: parseFloat(percentChange),
+      isIncrease: diffMinutes > 0,
     };
+  }, [sleepWeekData]);
 
-    const response = await api.post("/sleep", payload);
-    
-    if (response.data.status === "success") {
-      await fetchSleepData();
-      return { success: true };
-    }
-  } catch (error) {
-    console.error("Error logging sleep:", error);
-    return { success: false, error };
-  }
-}, [inBedTime, outOfBedTime, sleepQuality, fetchSleepData]);
+  //workout
 
-const getSleepComparison = useCallback(() => {
-  if (!sleepWeekData || sleepWeekData.length < 2) {
-    return null;
-  }
-  
-  const daysWithData = sleepWeekData.filter(day => day.hours > 0);
-  
-  if (daysWithData.length < 2) {
-    return null;
-  }
-  
-  const sorted = [...daysWithData].sort(
-    (a, b) => new Date(b.date) - new Date(a.date)
-  );
-  
-  const today = sorted[0];
-  const yesterday = sorted[1];
-
-  const todayMinutes = (today.hours || 0) * 60;
-  const yesterdayMinutes = (yesterday.hours || 0) * 60;
-
-  const diffMinutes = todayMinutes - yesterdayMinutes;
-
-  const percentChange = yesterdayMinutes > 0
-    ? ((diffMinutes / yesterdayMinutes) * 100).toFixed(1)
-    : 0;
-    
-  return {
-    todayMinutes,
-    yesterdayMinutes,
-    diffMinutes,
-    percentChange: parseFloat(percentChange),
-    isIncrease: diffMinutes > 0,
-  };
-}, [sleepWeekData]);
-  
-
-  //workout 
-  
   const saveWithWeeklyReset = useCallback(
     (key, value, serializer = JSON.stringify) => {
       const now = new Date();
@@ -744,7 +788,6 @@ const getSleepComparison = useCallback(() => {
       [],
     );
 
-
     const savedHistory = localStorage.getItem("fitnessWorkouts");
     if (savedHistory) setActivityHistory(JSON.parse(savedHistory));
 
@@ -845,14 +888,33 @@ const getSleepComparison = useCallback(() => {
   );
   //daily weight update
   const getWeightUpdated = () => {
-    const value = localStorage.getItem("dailyWeightUpdate");
-    return value ? JSON.parse(value) : false;
+    try {
+      const saved = localStorage.getItem("dailyWeightUpdate");
+      if (!saved) return false;
+      const data = JSON.parse(saved);
+      const today = new Date().toISOString().split("T")[0];
+      if (typeof data === "boolean") {
+        localStorage.removeItem("dailyWeightUpdate");
+        return false;
+      }
+      if (data.date !== today) {
+        localStorage.removeItem("dailyWeightUpdate");
+        return false;
+      }
+      return data.updated;
+    } catch {
+      return false;
+    }
   };
 
   const [weightUpdated, setWeightUpdated] = useState(getWeightUpdated);
 
   useEffect(() => {
-    localStorage.setItem("dailyWeightUpdate", JSON.stringify(weightUpdated));
+    const today = new Date().toISOString().split("T")[0];
+    localStorage.setItem(
+      "dailyWeightUpdate",
+      JSON.stringify({ updated: weightUpdated, date: today }),
+    );
   }, [weightUpdated]);
 
   //food
@@ -1045,6 +1107,7 @@ const getSleepComparison = useCallback(() => {
       fetchWaterData();
       fetchSleepData();
       fetchWorkoutData();
+      fetchWeightData();
     }
   }, [token]);
 
@@ -1213,12 +1276,15 @@ const getSleepComparison = useCallback(() => {
         sleepWeekMinutes,
         setSleepWeekMinutes,
         getSleepComparison,
+        getWeightComparison,
         showWelcomePopup,
         setShowWelcomePopup,
         profileImage,
         saveNewProfileImage,
         weightUpdated,
         setWeightUpdated,
+        weightWeekData,
+        fetchWeightData,
       }}
     >
       {children}

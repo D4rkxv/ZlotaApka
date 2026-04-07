@@ -2,6 +2,7 @@ import Diving from "./assets/Swimming2.png";
 import React, { useState, useEffect } from "react";
 import Logo from "./assets/Ellipse4.png";
 import Google from "./assets/Google.svg";
+import Github from "./assets/Github.svg";
 
 import "./LoginPage.css";
 import { useAuthLayout } from "./AuthContext";
@@ -16,19 +17,20 @@ function LoginPage() {
       [e.target.name]: e.target.value,
     });
   };
+  const [ localError , setLocalError ] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      console.log("Please fill in all fields");
+      setLocalError("Please fill in all fields");
       return;
     }
 
     const result = await login(formData.email, formData.password);
 
     if (!result.success) {
-      console.log(result.error || "Login failed");
+      setLocalError(result.error || "Login failed");
     }
   };
 
@@ -71,6 +73,7 @@ function LoginPage() {
               />
               <label>Password</label>
             </div>
+            <p className="errorHandler">{localError}</p>
             <div className="underLogin">
               <div className="rememberMeContainer">
                 <input
@@ -99,7 +102,7 @@ function LoginPage() {
               <p>Google</p>
             </button>
             <button>
-              <img src={Google} />
+              <img src={Github} />
               <p>GitHub</p>
             </button>
           </div>

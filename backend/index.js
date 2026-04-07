@@ -9,6 +9,7 @@ const waterRoutes = require("./routes/water");
 const workoutsRoutes = require("./routes/workouts");
 const sleepRoutes = require("./routes/sleep");
 const mealsRoutes = require("./routes/meals");
+const weightRoutes = require("./routes/weight");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -35,6 +36,7 @@ app.use("/api/water", waterRoutes);
 app.use("/api/workouts", workoutsRoutes);
 app.use("/api/sleep", sleepRoutes);
 app.use("/api/meals", mealsRoutes);
+app.use("/api/weight", weightRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ status: "error", message: "Endpoint not found" });
