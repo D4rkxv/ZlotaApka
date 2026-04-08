@@ -24,7 +24,9 @@ function Profile() {
     waterProgressWidth,
     allSeconds,
     profileImage,
-    saveNewProfileImage
+    saveNewProfileImage,
+    saveMetrics,
+    saveGoals,
   } = useDashboard();
   const {
     user,
@@ -53,19 +55,16 @@ function Profile() {
   setSelectedImageFile(null);
 };
 
-  const saveProfileChanges = () => {
-  if(!newName) return;
-  setName(newName);
-
-  if (tempProfileImage) {
-    saveNewProfileImage(selectedImageFile)
+const saveProfileChanges = async () => {
+  if (!newName) return;
+  await setName(newName, selectedImageFile);
+  if (selectedImageFile) {
+    saveNewProfileImage(selectedImageFile);
   }
-
   setTempProfileImage(null);
   setSelectedImageFile(null);
   setModifyingProfile(false);
 };
-
 
   const handleImageClick = () => {
   if (modifyingProfile) {
@@ -80,11 +79,10 @@ function Profile() {
   setTempProfileImage(URL.createObjectURL(file));
 };
 
-const saveNewMetrics = () =>{
+const saveNewMetrics = async () => {
   if(!newHeight || !newWeight) return;
-  setCurrentHeight(newHeight)
-  setCurrentWeight(newWeight)
-  setModifyingMetrics(false)
+  await saveMetrics(newHeight, newWeight);
+  setModifyingMetrics(false);
 }
 const cancelModifyingMetrics = () =>{
   setModifyingMetrics(false)
@@ -105,13 +103,11 @@ const cancelModifyingGoals = () =>{
   setNewActivityGoal(dailyActivity)
 }
 
-const saveNewGoals = () =>{
+const saveNewGoals = async () => {
   if(!newGoalWeight || !newWaterGoal || !newActivityGoal) return;
-  setGoalWeight(newGoalWeight)
-  setHydrationGoal((newWaterGoal*1).toFixed(1))
-  setDailyActivity(newActivityGoal)
-  setModifyingGoals(false)
-}
+  await saveGoals(newGoalWeight, parseFloat(newWaterGoal), parseInt(newActivityGoal));
+  setModifyingGoals(false);
+};
 
 const getPercentOfWeightGoalCompletion = () =>{
   if(currentWeight < goalWeight){

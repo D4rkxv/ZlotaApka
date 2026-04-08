@@ -1069,27 +1069,57 @@ export const DashboardProvider = ({ children }) => {
       console.error("Error deleting meal:", error);
     }
   };
-  //profile picture
+  //profile
   const [profileImage, setProfileImage] = useState(profilePic);
 
-  useEffect(() => {
-    const savedImage = localStorage.getItem("profileImage");
 
-    if (savedImage) {
-      setProfileImage(savedImage);
+const saveNewProfileImage = (newImageFile) => {
+  if (!newImageFile) return;
+  setProfileImage(URL.createObjectURL(newImageFile));
+};
+
+useEffect(() => {
+  if (!token) return;
+  const fetchProfileImage = async () => {
+    try {
+      const response = await api.get("/profile/image", {
+        responseType: "blob",
+      });
+      setProfileImage(URL.createObjectURL(response.data));
+    } catch {
+      // nothing happens, app will use the base profilePic
     }
-  }, []);
-
-  const saveNewProfileImage = (newImageFile) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      localStorage.setItem("profileImage", reader.result);
-      setProfileImage(reader.result);
-    };
-
-    reader.readAsDataURL(newImageFile);
   };
+  fetchProfileImage();
+}, [token])
+
+const saveMetrics = async (height, weight) => {
+  try {
+    await api.put("/profile", {
+      current_height: height,
+      current_weight: weight,
+    });
+    setCurrentHeight(height);
+    setCurrentWeight(weight);
+  } catch (error) {
+    console.error("Error saving metrics:", error);
+  }
+};
+
+const saveGoals = async (goalWeight, hydrationGoal, dailyActivity) => {
+  try {
+    await api.put("/profile/goals", {
+      goal_weight: goalWeight,
+      hydration_goal: hydrationGoal,
+      daily_activity: dailyActivity,
+    });
+    setGoalWeight(goalWeight);
+    setHydrationGoal(hydrationGoal);
+    setDailyActivity(dailyActivity);
+  } catch (error) {
+    console.error("Error saving goals:", error);
+  }
+};
   //new token, data update
   useEffect(() => {
     if (token) {
@@ -1153,6 +1183,8 @@ export const DashboardProvider = ({ children }) => {
         cycleStart,
         saveProfileData,
         deleteWaterEntry,
+        saveMetrics,
+        saveGoals,
         //Welcome popup
         sleepTimeInput,
         setSleepTimeInput,

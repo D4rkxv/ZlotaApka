@@ -193,9 +193,21 @@ export const AuthProvider = ({ children }) => {
     setCurrentPage("landing");
     localStorage.removeItem("token");
   };
-  const setName = (newName) => {
+  const setName = async (newName, imageFile = null) => {
+  try {
+    const formData = new FormData();
+    formData.append("name", newName);
+    if (imageFile) formData.append("image", imageFile);
+
+    await api.put("/profile/name", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
     setUser({ ...user, name: newName });
-  };
+  } catch (error) {
+    console.error("Error updating name:", error);
+  }
+}
   const switchPage = (page) => {
     setCurrentPage(page);
   };
