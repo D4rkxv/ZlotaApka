@@ -179,6 +179,7 @@ export const DashboardProvider = ({ children }) => {
   const goToSleep = useCallback(() => setSelectedWidget("sleep"), []);
   const goToProfile = useCallback(() => setSelectedWidget("profile"), []);
   const goToSettings = useCallback(() => setSelectedWidget("settings"), []);
+  const goToHelp = useCallback(() => setSelectedWidget("help"), []);
 
   const getListFromStorage = (key) => {
     try {
@@ -247,86 +248,116 @@ export const DashboardProvider = ({ children }) => {
   }, [token]);
 
   const allWorkouts = [
-    [
-      { id: "w1-1", name: "Squats - 3x12" },
-      { id: "w1-2", name: "Elevated push-ups 3x8" },
-      { id: "w1-3", name: "One-arm dumbbell row 3x10" },
-      { id: "w1-4", name: "Dumbbell overhead press 3x10" },
-      { id: "w1-5", name: "Plank 3x40s" },
-      { id: "w1-6", name: "Glute bridge 3x12" },
-    ],
-    [
-      { id: "w2-1", name: "Bodyweight squats - 3x15" },
-      { id: "w2-2", name: "Push-ups - 3x10" },
-      { id: "w2-3", name: "Superman hold - 3x30s" },
-      { id: "w2-4", name: "Pike push-ups - 3x8" },
-      { id: "w2-5", name: "Lunges per leg - 3x12" },
-      { id: "w2-6", name: "Dead bug - 3x12/side" },
-    ],
-    [
-      { id: "w3-1", name: "Goblet squats - 3x12" },
-      { id: "w3-2", name: "Dumbbell bench press- 3x10" },
-      { id: "w3-3", name: "Single-arm rows - 3x12/arm" },
-      { id: "w3-4", name: "Dumbbell lunges - 3x10/leg" },
-      { id: "w3-5", name: "Russian twists - 3x20" },
-      { id: "w3-6", name: "Side plank - 3x30s/side" },
-    ],
-    [
-      { id: "w4-1", name: "Bulgarian split squats - 3x10/leg" },
-      { id: "w4-2", name: "Diamond push-ups - 3x8" },
-      { id: "w4-3", name: "Inverted rows (table) - 3x12" },
-      { id: "w4-4", name: "Dumbbell deadlifts - 3x12" },
-      { id: "w4-5", name: "Bicycle crunches - 3x15/side" },
-      { id: "w4-6", name: "Wall sit - 3x40s" },
-    ],
-    [
-      { id: "w5-1", name: "Reverse lunges - 3x12/leg" },
-      { id: "w5-2", name: "Wide push-ups - 3x10" },
-      { id: "w5-3", name: "Dumbbell rows - 3x10" },
-      { id: "w5-4", name: "Chair dips - 3x12" },
-      { id: "w5-5", name: "Leg raises - 3x12" },
-      { id: "w5-6", name: "Plank shoulder taps - 3x20" },
-    ],
-    [
-      { id: "w6-1", name: "Sumo squats - 3x15" },
-      { id: "w6-2", name: "Floor press dumbbells - 3x12" },
-      { id: "w6-3", name: "Bent-over rows - 3x12" },
-      { id: "w6-4", name: "Lateral raises - 3x12" },
-      { id: "w6-5", name: "Overhead tricep ext - 3x12" },
-      { id: "w6-6", name: "Bird dog - 3x10/side" },
-    ],
-    [
-      { id: "w7-1", name: "Air squats - 3x15" },
-      { id: "w7-2", name: "Wall push-ups - 3x12" },
-      { id: "w7-3", name: "Prone cobra - 3x30s" },
-      { id: "w7-4", name: "Step-ups (chair) - 3x12/leg" },
-      { id: "w7-5", name: "Seated twists - 3x20" },
-      { id: "w7-6", name: "Bridge march - 3x20" },
-    ],
-    [
-      { id: "w8-1", name: "Jump squats - 3x10" },
-      { id: "w8-2", name: "Archer push-ups - 3x8/side" },
-      { id: "w8-3", name: "Australian rows - 3x12" },
-      { id: "w8-4", name: "Pistol squat assist - 3x8/leg" },
-      { id: "w8-5", name: "Mountain climbers - 3x30s" },
-      { id: "w8-6", name: "Hollow hold - 3x30s" },
-    ],
-    [
-      { id: "w9-1", name: "Single-leg deadlift - 3x10/leg" },
-      { id: "w9-2", name: "Incline push-ups - 3x12" },
-      { id: "w9-3", name: "Face pulls (band) - 3x15" },
-      { id: "w9-4", name: "Calf raises - 3x15" },
-      { id: "w9-5", name: "Windmill - 3x10/side" },
-      { id: "w9-6", name: "Side plank dips - 3x12/side" },
-    ],
-    [
-      { id: "w10-1", name: "Thrusters (dumbbell) - 3x10" },
-      { id: "w10-2", name: "Renegade rows - 3x8/arm" },
-      { id: "w10-3", name: "Burpee push-ups - 3x8" },
-      { id: "w10-4", name: "Goblet lunges - 3x10/leg" },
-      { id: "w10-5", name: "V-ups - 3x12" },
-      { id: "w10-6", name: "Bear crawl hold - 3x40s" },
-    ],
+    {
+      name: "Full Body Starter",
+      exercises: [
+        { id: "w1-1", name: "Squats - 3x12" },
+        { id: "w1-2", name: "Elevated push-ups 3x8" },
+        { id: "w1-3", name: "One-arm dumbbell row 3x10" },
+        { id: "w1-4", name: "Dumbbell overhead press 3x10" },
+        { id: "w1-5", name: "Plank 3x40s" },
+        { id: "w1-6", name: "Glute bridge 3x12" },
+      ],
+    },
+    {
+      name: "Bodyweight Blast",
+      exercises: [
+        { id: "w2-1", name: "Bodyweight squats - 3x15" },
+        { id: "w2-2", name: "Push-ups - 3x10" },
+        { id: "w2-3", name: "Superman hold - 3x30s" },
+        { id: "w2-4", name: "Pike push-ups - 3x8" },
+        { id: "w2-5", name: "Lunges per leg - 3x12" },
+        { id: "w2-6", name: "Dead bug - 3x12/side" },
+      ],
+    },
+    {
+      name: "Dumbbell Power",
+      exercises: [
+        { id: "w3-1", name: "Goblet squats - 3x12" },
+        { id: "w3-2", name: "Dumbbell bench press- 3x10" },
+        { id: "w3-3", name: "Single-arm rows - 3x12/arm" },
+        { id: "w3-4", name: "Dumbbell lunges - 3x10/leg" },
+        { id: "w3-5", name: "Russian twists - 3x20" },
+        { id: "w3-6", name: "Side plank - 3x30s/side" },
+      ],
+    },
+    {
+      name: "Strength Builder",
+      exercises: [
+        { id: "w4-1", name: "Bulgarian split squats - 3x10/leg" },
+        { id: "w4-2", name: "Diamond push-ups - 3x8" },
+        { id: "w4-3", name: "Inverted rows (table) - 3x12" },
+        { id: "w4-4", name: "Dumbbell deadlifts - 3x12" },
+        { id: "w4-5", name: "Bicycle crunches - 3x15/side" },
+        { id: "w4-6", name: "Wall sit - 3x40s" },
+      ],
+    },
+    {
+      name: "Push & Pull",
+      exercises: [
+        { id: "w5-1", name: "Reverse lunges - 3x12/leg" },
+        { id: "w5-2", name: "Wide push-ups - 3x10" },
+        { id: "w5-3", name: "Dumbbell rows - 3x10" },
+        { id: "w5-4", name: "Chair dips - 3x12" },
+        { id: "w5-5", name: "Leg raises - 3x12" },
+        { id: "w5-6", name: "Plank shoulder taps - 3x20" },
+      ],
+    },
+    {
+      name: "Sumo & Press",
+      exercises: [
+        { id: "w6-1", name: "Sumo squats - 3x15" },
+        { id: "w6-2", name: "Floor press dumbbells - 3x12" },
+        { id: "w6-3", name: "Bent-over rows - 3x12" },
+        { id: "w6-4", name: "Lateral raises - 3x12" },
+        { id: "w6-5", name: "Overhead tricep ext - 3x12" },
+        { id: "w6-6", name: "Bird dog - 3x10/side" },
+      ],
+    },
+    {
+      name: "Easy Movement",
+      exercises: [
+        { id: "w7-1", name: "Air squats - 3x15" },
+        { id: "w7-2", name: "Wall push-ups - 3x12" },
+        { id: "w7-3", name: "Prone cobra - 3x30s" },
+        { id: "w7-4", name: "Step-ups (chair) - 3x12/leg" },
+        { id: "w7-5", name: "Seated twists - 3x20" },
+        { id: "w7-6", name: "Bridge march - 3x20" },
+      ],
+    },
+    {
+      name: "Advanced Challenge",
+      exercises: [
+        { id: "w8-1", name: "Jump squats - 3x10" },
+        { id: "w8-2", name: "Archer push-ups - 3x8/side" },
+        { id: "w8-3", name: "Australian rows - 3x12" },
+        { id: "w8-4", name: "Pistol squat assist - 3x8/leg" },
+        { id: "w8-5", name: "Mountain climbers - 3x30s" },
+        { id: "w8-6", name: "Hollow hold - 3x30s" },
+      ],
+    },
+    {
+      name: "Balance & Stability",
+      exercises: [
+        { id: "w9-1", name: "Single-leg deadlift - 3x10/leg" },
+        { id: "w9-2", name: "Incline push-ups - 3x12" },
+        { id: "w9-3", name: "Face pulls (band) - 3x15" },
+        { id: "w9-4", name: "Calf raises - 3x15" },
+        { id: "w9-5", name: "Windmill - 3x10/side" },
+        { id: "w9-6", name: "Side plank dips - 3x12/side" },
+      ],
+    },
+    {
+      name: "MetCon Circuit",
+      exercises: [
+        { id: "w10-1", name: "Thrusters (dumbbell) - 3x10" },
+        { id: "w10-2", name: "Renegade rows - 3x8/arm" },
+        { id: "w10-3", name: "Burpee push-ups - 3x8" },
+        { id: "w10-4", name: "Goblet lunges - 3x10/leg" },
+        { id: "w10-5", name: "V-ups - 3x12" },
+        { id: "w10-6", name: "Bear crawl hold - 3x40s" },
+      ],
+    },
   ];
 
   const dailyChallenges = [
@@ -675,7 +706,7 @@ export const DashboardProvider = ({ children }) => {
       try {
         const payload = {
           activity_type: workoutData.type || "strength_training",
-          activity_name: workoutData.name || "Workout",
+          activity_name: workoutData.name || currentWorkout?.name || "Workout", // ← zmiana
           duration_minutes: workoutData.time || Math.floor(seconds / 60),
           calories_burned: workoutData.calories || 0,
           date: new Date().toISOString().split("T")[0],
@@ -815,77 +846,112 @@ export const DashboardProvider = ({ children }) => {
   }, [weekMinutes, saveWithWeeklyReset]);
 
   useEffect(() => {
-    const loadDailyWorkout = () => {
-      const now = new Date();
-      const today = now.toISOString().split("T")[0];
-      const savedHistory = localStorage.getItem("fitnessWorkouts");
+    if (!token) return;
+    const loadDailyWorkout = async () => {
+      const today = new Date().toISOString().split("T")[0];
 
-      if (savedHistory) {
-        try {
-          const parsedHistory = JSON.parse(savedHistory);
-          if (parsedHistory[0]?.date !== today) {
-            localStorage.removeItem("fitnessWorkouts");
-            setActivityHistory([]);
-          }
-        } catch (e) {}
+      try {
+        const res = await api.get(`/daily-workout?date=${today}`);
+        console.log("daily-workout GET response:", res.data);
+
+        if (res.data.status === "success" && res.data.data) {
+          setCurrentWorkout(res.data.data.workout);
+        } else {
+          const randomWorkout =
+            allWorkouts[Math.floor(Math.random() * allWorkouts.length)];
+
+          await api.post("/daily-workout", {
+            workout: randomWorkout,
+            date: today,
+          });
+          setCurrentWorkout(randomWorkout);
+        }
+      } catch (error) {
+        console.error("Error loading daily workout:", error);
+        const saved = localStorage.getItem("dailyWorkout");
+        const parsed = saved ? JSON.parse(saved) : null;
+        if (parsed?.date === today) {
+          setCurrentWorkout(parsed.workout);
+        } else {
+          const randomWorkout =
+            allWorkouts[Math.floor(Math.random() * allWorkouts.length)];
+          localStorage.setItem(
+            "dailyWorkout",
+            JSON.stringify({ workout: randomWorkout, date: today }),
+          );
+          setCurrentWorkout(randomWorkout);
+        }
       }
 
-      const saved = localStorage.getItem("dailyWorkout");
-      const parsed = saved ? JSON.parse(saved) : null;
-      if (parsed?.date !== today) {
-        const randomWorkout =
-          allWorkouts[Math.floor(Math.random() * allWorkouts.length)];
-        const toSave = { workout: randomWorkout, date: today };
-        localStorage.setItem("dailyWorkout", JSON.stringify(toSave));
-        setCurrentWorkout(randomWorkout);
-      } else {
-        setCurrentWorkout(parsed.workout);
-      }
       setTodayKey(today);
+
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const timeout = midnight.getTime() - Date.now();
+      return setTimeout(loadDailyWorkout, timeout);
     };
 
-    loadDailyWorkout();
-    const midnight = new Date();
-    midnight.setHours(24, 0, 0, 0);
-    const timeout = midnight.getTime() - Date.now();
-    const timer = setTimeout(loadDailyWorkout, timeout);
+    let timer;
+    loadDailyWorkout().then((t) => {
+      timer = t;
+    });
     return () => clearTimeout(timer);
-  }, []);
+  }, [token]);
 
   useEffect(() => {
-    const loadDailyChallenge = () => {
-      const now = new Date();
-      const today = now.toISOString().split("T")[0];
+    if (!token) return;
 
-      const saved = localStorage.getItem("dailyChallengeData");
-      const parsed = saved ? JSON.parse(saved) : null;
+    const loadDailyChallenge = async () => {
+      const today = new Date().toISOString().split("T")[0];
 
-      if (parsed?.date !== today) {
-        const randomChallenge =
-          dailyChallenges[Math.floor(Math.random() * dailyChallenges.length)];
+      try {
+        const res = await api.get(`/daily-challenge?date=${today}`);
 
-        const toSave = { challenge: randomChallenge, date: today };
-
-        localStorage.setItem("dailyChallengeData", JSON.stringify(toSave));
-        setCurrentChallenge(randomChallenge);
-      } else {
-        setCurrentChallenge(parsed.challenge);
+        if (res.data.status === "success" && res.data.data) {
+          setCurrentChallenge(res.data.data.challenge);
+        } else {
+          const randomChallenge =
+            dailyChallenges[Math.floor(Math.random() * dailyChallenges.length)];
+          await api.post("/daily-challenge", {
+            challenge: randomChallenge,
+            date: today,
+          });
+          setCurrentChallenge(randomChallenge);
+        }
+      } catch (error) {
+        console.error("Error loading daily challenge:", error);
+        const saved = localStorage.getItem("dailyChallengeData");
+        const parsed = saved ? JSON.parse(saved) : null;
+        if (parsed?.date === today) {
+          setCurrentChallenge(parsed.challenge);
+        } else {
+          const randomChallenge =
+            dailyChallenges[Math.floor(Math.random() * dailyChallenges.length)];
+          localStorage.setItem(
+            "dailyChallengeData",
+            JSON.stringify({ challenge: randomChallenge, date: today }),
+          );
+          setCurrentChallenge(randomChallenge);
+        }
       }
+
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const timeout = midnight.getTime() - Date.now();
+      return setTimeout(loadDailyChallenge, timeout);
     };
 
-    loadDailyChallenge();
-
-    const midnight = new Date();
-    midnight.setHours(24, 0, 0, 0);
-    const timeout = midnight.getTime() - Date.now();
-    const timer = setTimeout(loadDailyChallenge, timeout);
-
+    let timer;
+    loadDailyChallenge().then((t) => {
+      timer = t;
+    });
     return () => clearTimeout(timer);
-  }, []);
+  }, [token]);
 
   const workoutProgressWidth = ((workoutsDone / weeklyWorkouts) * 100).toFixed(
     1,
   );
+
   //daily weight update
   const getWeightUpdated = () => {
     try {
@@ -1072,54 +1138,53 @@ export const DashboardProvider = ({ children }) => {
   //profile
   const [profileImage, setProfileImage] = useState(profilePic);
 
+  const saveNewProfileImage = (newImageFile) => {
+    if (!newImageFile) return;
+    setProfileImage(URL.createObjectURL(newImageFile));
+  };
 
-const saveNewProfileImage = (newImageFile) => {
-  if (!newImageFile) return;
-  setProfileImage(URL.createObjectURL(newImageFile));
-};
+  useEffect(() => {
+    if (!token) return;
+    const fetchProfileImage = async () => {
+      try {
+        const response = await api.get("/profile/image", {
+          responseType: "blob",
+        });
+        setProfileImage(URL.createObjectURL(response.data));
+      } catch {
+        // nothing happens, app will use the base profilePic
+      }
+    };
+    fetchProfileImage();
+  }, [token]);
 
-useEffect(() => {
-  if (!token) return;
-  const fetchProfileImage = async () => {
+  const saveMetrics = async (height, weight) => {
     try {
-      const response = await api.get("/profile/image", {
-        responseType: "blob",
+      await api.put("/profile", {
+        current_height: height,
+        current_weight: weight,
       });
-      setProfileImage(URL.createObjectURL(response.data));
-    } catch {
-      // nothing happens, app will use the base profilePic
+      setCurrentHeight(height);
+      setCurrentWeight(weight);
+    } catch (error) {
+      console.error("Error saving metrics:", error);
     }
   };
-  fetchProfileImage();
-}, [token])
 
-const saveMetrics = async (height, weight) => {
-  try {
-    await api.put("/profile", {
-      current_height: height,
-      current_weight: weight,
-    });
-    setCurrentHeight(height);
-    setCurrentWeight(weight);
-  } catch (error) {
-    console.error("Error saving metrics:", error);
-  }
-};
-
-const saveGoals = async (goalWeight, hydrationGoal, dailyActivity) => {
-  try {
-    await api.put("/profile/goals", {
-      goal_weight: goalWeight,
-      hydration_goal: hydrationGoal,
-      daily_activity: dailyActivity,
-    });
-    setGoalWeight(goalWeight);
-    setHydrationGoal(hydrationGoal);
-    setDailyActivity(dailyActivity);
-  } catch (error) {
-    console.error("Error saving goals:", error);
-  }
-};
+  const saveGoals = async (goalWeight, hydrationGoal, dailyActivity) => {
+    try {
+      await api.put("/profile/goals", {
+        goal_weight: goalWeight,
+        hydration_goal: hydrationGoal,
+        daily_activity: dailyActivity,
+      });
+      setGoalWeight(goalWeight);
+      setHydrationGoal(hydrationGoal);
+      setDailyActivity(dailyActivity);
+    } catch (error) {
+      console.error("Error saving goals:", error);
+    }
+  };
   //new token, data update
   useEffect(() => {
     if (token) {
@@ -1220,6 +1285,7 @@ const saveGoals = async (goalWeight, hydrationGoal, dailyActivity) => {
         goToSleep,
         goToProfile,
         goToSettings,
+        goToHelp,
         //workout
         fetchWorkoutData,
         logWorkout,

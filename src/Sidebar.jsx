@@ -26,6 +26,7 @@ function Sidebar() {
     goToSleep,
     goToProfile,
     goToSettings,
+    goToHelp,
     selectedWidget,
     profileImage,
   } = useDashboard();
@@ -41,6 +42,10 @@ function Sidebar() {
   };
   const handleLogoutClick = () => {
     logout();
+    setOpen(false);
+  };
+  const handleHelpClick = () => {
+    goToHelp();
     setOpen(false);
   };
   return (
@@ -110,7 +115,13 @@ function Sidebar() {
         </div>
       </div>
       <div className="botSidebarSection">
-        <div className="helpSidebarContainer">
+        <div
+          className="helpSidebarContainer"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleHelpClick();
+          }}
+        >
           <img src={help} />
           <p>Help</p>
         </div>

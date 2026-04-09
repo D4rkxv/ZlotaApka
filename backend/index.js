@@ -10,6 +10,9 @@ const workoutsRoutes = require("./routes/workouts");
 const sleepRoutes = require("./routes/sleep");
 const mealsRoutes = require("./routes/meals");
 const weightRoutes = require("./routes/weight");
+const dailyWorkoutRouter = require("./routes/dailyWorkout");
+const dailyChallengeRouter = require("./routes/dailyChallenge");
+const userRouter = require("./routes/user");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -37,6 +40,9 @@ app.use("/api/workouts", workoutsRoutes);
 app.use("/api/sleep", sleepRoutes);
 app.use("/api/meals", mealsRoutes);
 app.use("/api/weight", weightRoutes);
+app.use("/api/daily-workout", dailyWorkoutRouter);
+app.use("/api/daily-challenge", dailyChallengeRouter);
+app.use("/api/user", userRouter);
 
 app.use((req, res) => {
   res.status(404).json({ status: "error", message: "Endpoint not found" });

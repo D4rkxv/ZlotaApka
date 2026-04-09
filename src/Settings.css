@@ -13,52 +13,52 @@
   --pureWhite: #fefefe;
 }
 
-.resetDataContainer, .deleteAccountContainer{
-    border: var(--primary-10) 1px solid;
-    border-radius: 12px;
-    padding: 12px 32px;
-    width: 100%;
-    margin-bottom: 6vh;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-content: center;
+.resetDataContainer,
+.deleteAccountContainer {
+  border: var(--primary-10) 1px solid;
+  border-radius: 12px;
+  padding: 12px 32px;
+  width: 100%;
+  margin-bottom: 6vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
 }
 
+.settingsContainer .sectionTitle {
+  margin-bottom: 0px;
+}
+.settingsContainer .divider {
+  justify-self: space-between;
+  align-content: space-between;
+}
+.sectionDescription {
+  font-size: 14px;
+  color: var(--textColor-50);
+  margin-top: 0px;
+}
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  padding: 20px;
+}
 
-.settingsContainer .sectionTitle{
-    margin-bottom: 0px; 
+.settingsContainer button {
+  font-size: 16px;
+  padding: 6px 28px;
+  border-radius: 24px;
+  text-align: center;
+  background-color: transparent;
+  border: crimson 1px solid;
+  color: crimson;
+  width: 10vw;
+  transition: all 0.3s ease;
 }
-.settingsContainer .divider{
-    justify-self: space-between;
-    align-content: space-between;
-}
-.sectionDescription{
-    font-size: 14px;
-    color: var(--textColor-50);
-    margin-top: 0px;
-}
-.buttonContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-content: center;
-    padding: 20px;
-}
-
-.settingsContainer button{
-    font-size: 16px;
-    padding: 6px 28px;
-    border-radius: 24px;
-    text-align: center;
-    background-color: transparent;
-    border: crimson 1px solid;
-    color: crimson;
-    width: 10vw;
-    transition: all 0.3s ease;
-}
-.settingsContainer button:hover{
-    background-color: crimson;
-    color: var(--pureWhite);
-    cursor: pointer;
+.settingsContainer button:hover {
+  background-color: crimson;
+  color: var(--pureWhite);
+  cursor: pointer;
 }

@@ -88,8 +88,7 @@ function Workouts() {
     weeklyWorkouts,
   } = useDashboard();
   const [showWorkoutPopup, setShowWorkoutPopup] = useState(false);
-  const [currentWorkoutName, setCurrentWorkoutName] =
-    useState("Full Body Workout");
+  const [currentWorkoutName, setCurrentWorkoutName] = useState("Full Body aa");
   const [exerciseDone, setExerciseDone] = useState(0);
   const [selectedTip, setSelectedTip] = useState("");
 
@@ -126,7 +125,7 @@ function Workouts() {
     setIsDisabled(!isDisabled);
     setIsChecked(true);
     setWorkoutStatus("running");
-    setCurrentWorkoutName("Full Body Workout");
+    setCurrentWorkoutName(currentWorkout?.name ?? "Full Body Workout");
   };
   const handleStop = () => {
     setSeconds(0);
@@ -145,7 +144,7 @@ function Workouts() {
     }
 
     const workoutData = {
-      name: currentWorkoutName || "Full Body Workout",
+      name: currentWorkout?.name ?? "Full Body Workout",
       type: "strength_training",
       time: workoutMins,
       calories: Math.round(workoutMins * 5),
@@ -275,14 +274,17 @@ function Workouts() {
                     <div className="todaysWorkoutLeft">
                       <div className="topTodaysWorkoutP">
                         <p className="leftTodaysWorkoutTitle">
-                          Full Body Workout • 45min
+                          {currentWorkout?.name || "Full Body Workout"}•{" "}
+                          {currentWorkout?.exercises?.length * 5 || 45}min
                         </p>
                         <p className="todaysWorkoutProgress">
-                          {exerciseDone}/6 exercises done
+                          {exerciseDone}/
+                          {currentWorkout?.exercises?.length || 6} exercises
+                          done
                         </p>
                       </div>
                       <form>
-                        {currentWorkout?.map((workout, index) => (
+                        {currentWorkout?.exercises?.map((workout, index) => (
                           <div key={workout.id} className="workoutGroup">
                             <input
                               type="checkbox"

@@ -13,6 +13,8 @@ import Workouts from "./Workouts.jsx";
 import SleepTracker from "./SleepTracker.jsx";
 import Profile from "./Profile.jsx";
 import Settings from "./Settings.jsx";
+import Help from "./Help.jsx";
+
 function AuthenticatedApp() {
   const { selectedWidget } = useDashboard();
   const renderWidget = () => {
@@ -31,6 +33,8 @@ function AuthenticatedApp() {
         return <Profile />;
       case "settings":
         return <Settings />;
+      case "help":
+        return <Help />;
       default:
         return <Dashboard />;
     }

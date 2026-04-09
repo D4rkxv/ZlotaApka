@@ -162,6 +162,29 @@ db.serialize(() => {
     },
   );
 
+  db.run(`
+  CREATE TABLE IF NOT EXISTS daily_workout (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    workout_name TEXT NOT NULL,
+    workout_json TEXT NOT NULL,
+    date TEXT NOT NULL,
+    UNIQUE(user_id, date),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  )
+`);
+
+  db.run(`
+  CREATE TABLE IF NOT EXISTS daily_challenge (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    challenge_json TEXT NOT NULL,
+    date TEXT NOT NULL,
+    UNIQUE(user_id, date),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  )
+`);
+
   console.log("Database setup complete.");
 });
 
