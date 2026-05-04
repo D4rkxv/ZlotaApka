@@ -13,14 +13,48 @@
   --pureWhite: #fefefe;
 }
 
+.waterManagementContainer.widgetContainer,
+.waterManagementContainer .widgetContainer {
+  flex-wrap: nowrap !important;
+  height: auto !important;
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.waterManagementContainer .divider {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.leftSide {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.rightSide {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
 .hydrationTrackerContainer {
   padding: 12px 32px;
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
+  box-sizing: border-box;
 }
 .sectionTitle {
   font-size: 16px;
   color: var(--textColor);
+  margin: 0 0 4px 0;
 }
 .centeredContainer {
   display: flex;
@@ -42,6 +76,8 @@
   justify-content: center;
   align-content: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 .wideBtn {
   margin: 0 12px;
@@ -73,10 +109,10 @@
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
   margin-top: 10px;
-  height: 16.5vh;
+  box-sizing: border-box;
 }
 .waterManagementContainer ul {
-  margin: 26px 0px;
+  margin: 16px 0;
   color: var(--textColor);
   list-style-type: disc;
   padding-left: 12px;
@@ -90,29 +126,41 @@
 }
 
 .intakeTrendsContainer {
-  width: 50vw;
+  width: 100%;
   padding: 12px;
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
-  margin-bottom: 60px;
+  box-sizing: border-box;
 }
 .barChartContainer {
   height: 260px;
   width: 100%;
 }
 
+.waterManagementContainer .rightSide .divider {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: stretch;
+  margin-bottom: 40px;
+}
+
 .usefulTipsContainer {
-  width: 60%;
+  flex: 6;
   padding: 12px 32px;
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .waterLogContainer {
-  width: 40%;
+  flex: 4;
   padding: 12px 20px;
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
+  box-sizing: border-box;
+  min-width: 0;
 }
 .waterLog {
   margin-top: 20px;
@@ -124,38 +172,47 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.waterLog::-webkit-scrollbar{
+.waterLog::-webkit-scrollbar {
   display: none;
 }
+
 .logEntry {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-content: center;
   font-size: 16px;
-  margin: 0px;
-  width: 90%;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
-.entryDescription, .entryOptions{
+.entryDescription,
+.entryOptions {
   display: flex;
   flex-direction: row;
 }
-.waterLog .entryDescription, .waterLog .entryOptions{
+.waterLog .entryDescription,
+.waterLog .entryOptions {
   align-items: center;
 }
-.waterLog .entryDescription{
-  width: 60%;
-  margin-right: 80px;
-  justify-content: space-evenly;
+.waterLog .entryDescription {
+  flex: 1;
+  margin-right: 16px;
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
 }
-.waterLog .entryDescription p{
+.waterLog .entryDescription p {
   margin-left: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.waterLog .entryOptions{
-  width: 20%;
-  justify-content: left;
+.waterLog .entryOptions {
+  flex-shrink: 0;
+  justify-content: flex-end;
 }
-.entryOptions button{
+.entryOptions button {
   background-color: var(--pureWhite);
   border: var(--primary) 1px solid;
   border-radius: 12px;
@@ -164,6 +221,205 @@
   align-items: center;
   transition: all 0.3s ease-in;
 }
-.entryOptions button:hover{
+.entryOptions button:hover {
   background-color: var(--primary);
+}
+
+.popupBackground {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.popupContainer {
+  background: var(--pureWhite);
+  border-radius: 16px;
+  padding: 28px 32px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+  box-sizing: border-box;
+  animation: popupIn 0.2s ease;
+}
+
+@keyframes popupIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.popupTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--textColor);
+  margin: 0 0 20px 0;
+}
+
+.popupSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.inputContainer label {
+  font-size: 14px;
+  color: var(--textColor-50);
+}
+.inputContainer input {
+  padding: 8px 12px;
+  border: 1px solid var(--primary-10);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: Poppins;
+  outline: none;
+  transition: border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+.inputContainer input:focus {
+  border-color: var(--primary);
+}
+
+.popupButtonContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.popupButtonContainer button,
+.waterPopup button {
+  padding: 8px 24px;
+  border-radius: 24px;
+  font-size: 15px;
+  font-family: Poppins;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+@media (max-width: 1200px) {
+  .leftSide {
+    flex: 0 0 260px;
+  }
+
+  .hydrationTrackerContainer {
+    padding: 12px 20px;
+  }
+
+  .wideBtn {
+    padding: 6px 20px;
+    margin: 0 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  .waterManagementContainer .widgetContainer {
+    padding: 60px 12px 40px 12px !important;
+  }
+  .waterManagementContainer .divider {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .leftSide {
+    flex: unset;
+    width: 100%;
+  }
+
+  .rightSide {
+    width: 100%;
+  }
+
+  .donutChartContainer {
+    margin: 24px 20px 12px 20px;
+  }
+  .completion {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+
+  .hydrationSummaryContainer {
+    height: auto;
+  }
+
+  .barChartContainer {
+    height: 200px;
+  }
+
+  .waterManagementContainer .rightSide .divider {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .usefulTipsContainer,
+  .waterLogContainer {
+    flex: unset;
+    width: 100%;
+  }
+
+  .waterLog {
+    height: auto;
+    max-height: 40vh;
+  }
+
+  .logEntry {
+    font-size: 14px;
+  }
+
+  .buttonsContainer {
+    gap: 8px;
+  }
+  .wideBtn {
+    padding: 6px 16px;
+    font-size: 14px;
+    margin: 0 4px;
+  }
+
+  .popupContainer {
+    padding: 20px 20px;
+    max-width: 100%;
+    border-radius: 12px;
+  }
+  .popupTitle {
+    font-size: 16px;
+  }
+  .popupButtonContainer {
+    justify-content: stretch;
+  }
+  .popupButtonContainer button,
+  .waterPopup button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .completion {
+    font-size: 18px;
+  }
+  .waterManagementContainer ul {
+    font-size: 14px;
+  }
+  .sectionTitle {
+    font-size: 15px;
+  }
 }

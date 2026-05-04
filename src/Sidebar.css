@@ -12,14 +12,32 @@
   --textColor-50: rgba(15, 23, 42, 0.5);
   --pureWhite: #fefefe;
 }
+
 .sidebar {
-  width: 12.598vw;
+  width: 200px;
+  min-width: 200px;
   height: 100vh;
   background-color: var(--background);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  overflow-y: auto;
+  scrollbar-width: none;
 }
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.siteContainer {
+  padding-left: 200px;
+  box-sizing: border-box;
+}
+
 .vitaLogoDashboard {
   margin: 0;
   color: var(--textColor);
@@ -61,6 +79,7 @@
 .botSidebarSection {
   margin-top: auto;
 }
+
 .dashboardSidebarContainer,
 .waterSidebarContainer,
 .foodSidebarContainer,
@@ -92,7 +111,6 @@
   color: var(--textColor);
   padding-left: 12px;
 }
-
 .waterSidebarContainer:hover,
 .dashboardSidebarContainer:hover,
 .foodSidebarContainer:hover,
@@ -119,40 +137,7 @@
   padding-left: 12px;
   margin-right: 28px;
 }
-.acountContainer {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 9.449vw;
-  background-color: var(--pureWhite);
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-left: 18px;
-}
-.leftAccountSide {
-  height: 4.233vh;
-  width: 2.1vw;
-  border-radius: 4px;
-}
-.middleAccountSide {
-  margin-left: 8px;
-  display: flex;
-  flex-direction: column;
-}
-.middleAccountSide p {
-  margin: 0;
-  padding: 0;
-}
-.sidebarName {
-  font-size: 12px;
-  font-weight: 300;
-  color: var(--textColor);
-}
-.sidebarEmail {
-  font-size: 10px;
-  color: var(--textColor-50);
-}
+
 .accountCard {
   background-color: #f5f9ff;
   border-radius: 16px;
@@ -161,6 +146,7 @@
   transition: all 0.25s ease;
   overflow: hidden;
   position: relative;
+  margin: 0 12px 16px 12px;
 }
 .accountCard.open {
   transform: translateY(-4px);
@@ -190,12 +176,12 @@
   gap: 10px;
   padding: 8px 10px;
   border: none;
-  background: transparent;
   background: rgba(255, 255, 255, 0.6);
   border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
   backdrop-filter: blur(10px);
+  width: 100%;
 }
 .accountItem:hover {
   background: rgba(255, 255, 255, 0.8);
@@ -204,84 +190,293 @@
   width: 40px;
   height: 40px;
 }
+.leftAccountSide {
+  height: 4.233vh;
+  width: 2.1vw;
+  border-radius: 4px;
+}
+.middleAccountSide {
+  margin-left: 8px;
+  display: flex;
+  flex-direction: column;
+}
+.middleAccountSide p {
+  margin: 0;
+  padding: 0;
+}
+.sidebarName {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--textColor);
+}
+.sidebarEmail {
+  font-size: 10px;
+  color: var(--textColor-50);
+}
 
-@media (max-width: 1653px) {
+.hamburgerBtn {
+  display: none;
+}
+
+.mobileOverlay {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .sidebar {
+    width: 64px;
+    min-width: 64px;
+  }
+  .siteContainer {
+    padding-left: 64px;
+  }
+
   .vitaLogoDashboard {
+    justify-content: center;
+    margin-left: 0;
     margin-top: 16px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    justify-items: center;
-    margin-left: 0px;
-  }
-  .topSidebarSection {
-    display: flex;
-    margin-left: 0px;
-  }
-  .midSidebarSection {
-    margin-left: 0px;
-  }
-  .botSidebarSection {
-    margin-left: 0px;
-  }
-  .accountCard {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    justify-items: center;
-    margin-left: 0px;
-  }
-  .profilePicture {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-  }
-  .accountCard p,
-  .arrowCard {
-    display: none;
-  }
-  .dashboardSearch {
-    margin-top: 20px;
-    width: 2vw;
   }
   .logoName {
     display: none;
   }
-  .sidebar {
-    width: 5vw;
-  }
-  .dashboardSidebarContainer p,
-  .waterSidebarContainer p,
-  .workoutSidebarContainer p,
-  .foodSidebarContainer p,
-  .sleepSidebarContainer p,
-  .helpSidebarContainer p {
+  .dashboardSearch {
     display: none;
+  }
+  .topSidebarSection {
+    margin-left: 0;
+    align-items: center;
+  }
+  .midSidebarSection {
+    margin-left: 0;
+  }
+  .linksContainer {
+    margin-left: 0;
+    align-items: center;
   }
 
   .dashboardSidebarContainer,
   .waterSidebarContainer,
-  .workoutSidebarContainer,
   .foodSidebarContainer,
-  .sleepSidebarContainer,
-  .helpSidebarContainer {
+  .workoutSidebarContainer,
+  .sleepSidebarContainer {
     justify-content: center;
-    padding-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
   }
   .dashboardSidebarContainer.selected,
   .waterSidebarContainer.selected,
-  .workoutSidebarContainer.selected,
   .foodSidebarContainer.selected,
-  .sleepSidebarContainer.selected,
-  .helpSidebarContainer.selected {
-    padding-left: 0px;
-    width: 60%;
+  .workoutSidebarContainer.selected,
+  .sleepSidebarContainer.selected {
+    padding-left: 0;
+    width: 44px;
   }
-  .linksContainer {
-    display: flex;
+  .dashboardSidebarContainer p,
+  .waterSidebarContainer p,
+  .foodSidebarContainer p,
+  .workoutSidebarContainer p,
+  .sleepSidebarContainer p {
+    display: none;
+  }
 
-    margin-left: 25%;
+  .helpSidebarContainer {
+    margin-left: 0;
+    padding-left: 0;
+    margin-right: 0;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+  }
+  .helpSidebarContainer p {
+    display: none;
+  }
+
+  .botSidebarSection {
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .accountCard {
+    margin: 0 4px 16px 4px;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .accountCard .middleAccountSide,
+  .accountCard .rightAccountSide,
+  .accountCard p,
+  .arrowCard {
+    display: none;
+  }
+  .accountMenu {
+    display: none;
+  }
+  .profilePicture {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .siteContainer {
+    padding-left: 0;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    width: 260px;
+    min-width: 260px;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+  }
+
+  .sidebar.mobileOpen {
+    transform: translateX(0);
+    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar.mobileOpen .vitaLogoDashboard {
+    margin-left: 18px;
+    justify-content: flex-start;
+  }
+  .sidebar.mobileOpen .logoName {
+    display: inline;
+  }
+  .sidebar.mobileOpen .topSidebarSection {
+    align-items: flex-start;
+  }
+  .sidebar.mobileOpen .linksContainer {
+    align-items: flex-start;
+    margin-left: 18px;
+  }
+  .sidebar.mobileOpen .dashboardSidebarContainer,
+  .sidebar.mobileOpen .waterSidebarContainer,
+  .sidebar.mobileOpen .foodSidebarContainer,
+  .sidebar.mobileOpen .workoutSidebarContainer,
+  .sidebar.mobileOpen .sleepSidebarContainer {
+    justify-content: flex-start;
+    padding-left: 8px;
+    margin-right: 28px;
+    width: auto;
+    height: 4.233vh;
+  }
+  .sidebar.mobileOpen .dashboardSidebarContainer.selected,
+  .sidebar.mobileOpen .waterSidebarContainer.selected,
+  .sidebar.mobileOpen .foodSidebarContainer.selected,
+  .sidebar.mobileOpen .workoutSidebarContainer.selected,
+  .sidebar.mobileOpen .sleepSidebarContainer.selected {
+    width: auto;
+  }
+  .sidebar.mobileOpen .dashboardSidebarContainer p,
+  .sidebar.mobileOpen .waterSidebarContainer p,
+  .sidebar.mobileOpen .foodSidebarContainer p,
+  .sidebar.mobileOpen .workoutSidebarContainer p,
+  .sidebar.mobileOpen .sleepSidebarContainer p {
+    display: block;
+  }
+  .sidebar.mobileOpen .helpSidebarContainer {
+    padding-left: 8px;
+    margin-left: 18px;
+    margin-right: 28px;
+    justify-content: flex-start;
+    width: auto;
+    height: 4.233vh;
+  }
+  .sidebar.mobileOpen .helpSidebarContainer p {
+    display: block;
+  }
+  .sidebar.mobileOpen .botSidebarSection {
+    align-items: flex-start;
+  }
+  .sidebar.mobileOpen .accountCard {
+    margin: 0 12px 16px 12px;
+    padding: 12px 14px;
+    justify-content: flex-start;
+  }
+  .sidebar.mobileOpen .accountCard .middleAccountSide {
+    display: flex;
+  }
+  .sidebar.mobileOpen .accountCard .rightAccountSide {
+    display: flex;
+  }
+  .sidebar.mobileOpen .accountCard p {
+    display: block;
+  }
+  .sidebar.mobileOpen .accountMenu {
+    display: block;
+  }
+
+  .hamburgerBtn {
+    display: flex;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1100;
+    width: 40px;
+    height: 40px;
+    background: var(--pureWhite);
+    border: 1px solid var(--primary-10);
+    border-radius: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+  }
+  .hamburgerBtn:hover {
+    background: var(--background);
+  }
+
+  .hamburgerBar {
+    width: 20px;
+    height: 2px;
+    background: var(--textColor);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+
+  .hamburgerBtn.active .hamburgerBar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .hamburgerBtn.active .hamburgerBar:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .hamburgerBtn.active .hamburgerBar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .mobileOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+  .mobileOverlay.visible {
+    opacity: 1;
+    pointer-events: all;
   }
 }

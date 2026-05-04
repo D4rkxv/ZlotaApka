@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDashboard } from "./DashboardContext.jsx";
 import { api } from "./AuthContext.jsx";
+import "./Popups.css";
 
 const WeightUpdatePopup = ({ setDailyWeightUpdated }) => {
   const { currentWeight, setCurrentWeight, fetchWeightData } = useDashboard();
@@ -14,23 +15,17 @@ const WeightUpdatePopup = ({ setDailyWeightUpdated }) => {
           onSubmit={async (e) => {
             e.preventDefault();
             setIsLoading(true);
-
             try {
               const parsed = parseFloat(newWeight);
 
-              // 1. zapisz do weight_logs → historia do % porównania
               await api.post("/weight", {
                 weight: parsed,
                 date: new Date().toISOString().split("T")[0],
               });
 
-              // 2. zapisz do user_profiles → naprawa resetu po userProfile refresh
               await api.put("/profile", { current_weight: parsed });
 
-              // 3. lokalny stan od razu
               setCurrentWeight(parsed);
-
-              // 4. odśwież weightWeekData
               await fetchWeightData();
             } catch (error) {
               console.error("Error saving weight:", error);
@@ -43,10 +38,10 @@ const WeightUpdatePopup = ({ setDailyWeightUpdated }) => {
           <p className="popupTitle">Daily weight update</p>
           <div className="popupSection">
             <div className="inputContainer">
-              <label htmlFor="mealName">Today's weight in kg:</label>
+              <label htmlFor="weightInput">Today's weight in kg:</label>
               <input
                 type="number"
-                id="mealName"
+                id="weightInput"
                 value={newWeight}
                 onChange={(e) => setNewWeight(e.target.value)}
                 required

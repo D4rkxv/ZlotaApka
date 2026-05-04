@@ -26,8 +26,7 @@ const WaterManagement = () => {
     const nonZeroDays = waterWeek.filter((day) => day > 0);
     if (nonZeroDays.length === 0) return 0;
     const sum = nonZeroDays.reduce((acc, val) => acc + val, 0);
-    const average = sum / nonZeroDays.length;
-    return average.toFixed(1);
+    return (sum / nonZeroDays.length).toFixed(1);
   };
 
   const getBestDay = () => {
@@ -54,38 +53,30 @@ const WaterManagement = () => {
       "Nov",
       "Dec",
     ];
-
     const { cycleStart } = useDashboard();
 
     if (!cycleStart) {
       const labels = [];
       const today = new Date();
-
       for (let i = 0; i < 12; i++) {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
-        const day = date.getDate();
-        const month = mS[date.getMonth()];
-        labels.push(`${day} ${month}`);
+        labels.push(`${date.getDate()} ${mS[date.getMonth()]}`);
       }
       return labels;
     }
 
     const labels = [];
     const startDate = new Date(cycleStart);
-
     for (let i = 0; i < 12; i++) {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
-      const day = date.getDate();
-      const month = mS[date.getMonth()];
-      labels.push(`${day} ${month}`);
+      labels.push(`${date.getDate()} ${mS[date.getMonth()]}`);
     }
-
     return labels;
   };
 
-  const [tips, setTips] = useState([
+  const [tips] = useState([
     "Drink a glass of water first thing in the morning to rehydrate your body.",
     "Carry a reusable water bottle to remind yourself to drink throughout the day.",
     "Add lemon, cucumber, or mint to your water for a refreshing taste.",
@@ -130,41 +121,28 @@ const WaterManagement = () => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: true,
-      },
+      legend: { display: false },
+      tooltip: { enabled: true },
     },
     scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-      },
+      x: { grid: { display: false } },
       y: {
         min: 0,
         beginAtZero: true,
         suggestedMax: 4000,
-        ticks: {
-          font: { size: 12, family: "Poppins" },
-        },
-        grid: {
-          display: false,
-        },
+        ticks: { font: { size: 12, family: "Poppins" } },
+        grid: { display: false },
       },
     },
   };
 
   useEffect(() => {
-    setSelectedTips([]);
-    for (let i = 0; i < 5; i++) {
-      const randomIndex = Math.floor(Math.random() * tips.length);
-      if (!selectedTips.includes(tips[randomIndex])) {
-        setSelectedTips((prev) => [...prev, tips[randomIndex]]);
-      }
+    const picked = [];
+    const shuffled = [...tips].sort(() => Math.random() - 0.5);
+    for (let i = 0; i < 5 && i < shuffled.length; i++) {
+      picked.push(shuffled[i]);
     }
+    setSelectedTips(picked);
   }, []);
 
   const addCustomAmountOfWater = (amount) => {
@@ -173,17 +151,20 @@ const WaterManagement = () => {
 
   return (
     <>
-      {showCustomAdd ? (
+      {showCustomAdd && (
         <WaterPopup
           setShowWaterCustomAddPopup={setShowCustomAdd}
           addCustomAmount={addCustomAmountOfWater}
         />
-      ) : null}
+      )}
+
       <div className="waterManagementContainer siteContainer">
         <Sidebar />
         <div className="widgetContainer">
           <p className="siteTitle">Water Management</p>
+
           <div className="divider">
+            {/* ── LEFT SIDE ── */}
             <div className="leftSide">
               <div className="hydrationTrackerContainer">
                 <p className="sectionTitle">Hydration Tracker</p>
@@ -203,9 +184,7 @@ const WaterManagement = () => {
                     <button
                       className="wideBtn transparentBtn"
                       onClick={() => {
-                        if (waterLog.length > 0) {
-                          deleteWaterEntry(0);
-                        }
+                        if (waterLog.length > 0) deleteWaterEntry(0);
                       }}
                     >
                       -100ml
@@ -225,6 +204,7 @@ const WaterManagement = () => {
                   </div>
                 </div>
               </div>
+
               <div className="hydrationSummaryContainer">
                 <p className="sectionTitle">Hydration summary</p>
                 <ul>
@@ -233,6 +213,8 @@ const WaterManagement = () => {
                 </ul>
               </div>
             </div>
+
+            {/* ── RIGHT SIDE ── */}
             <div className="rightSide">
               <div className="intakeTrendsContainer">
                 <p className="sectionTitle">Intake trends</p>
@@ -240,30 +222,29 @@ const WaterManagement = () => {
                   <Bar data={data} options={options} key={location.pathname} />
                 </div>
               </div>
+
               <div className="divider">
                 <div className="waterLogContainer">
                   <p className="sectionTitle">Water log</p>
                   <div className="waterLog">
-                    {waterLog.map((entry, index) => {
-                      return (
-                        <div className="logEntry" key={index}>
-                          <div className="entryDescription">
-                            <img src={WaterGlass} alt="Glass of water" />
-                            <p>
-                              {entry.time} • {(entry.amount * 1000).toFixed(0)}
-                              ml
-                            </p>
-                          </div>
-                          <div className="entryOptions">
-                            <button onClick={() => deleteWaterEntry(index)}>
-                              <img src={Trashcan} alt="Delete entry" />
-                            </button>
-                          </div>
+                    {waterLog.map((entry, index) => (
+                      <div className="logEntry" key={index}>
+                        <div className="entryDescription">
+                          <img src={WaterGlass} alt="Glass of water" />
+                          <p>
+                            {entry.time} • {(entry.amount * 1000).toFixed(0)}ml
+                          </p>
                         </div>
-                      );
-                    })}
+                        <div className="entryOptions">
+                          <button onClick={() => deleteWaterEntry(index)}>
+                            <img src={Trashcan} alt="Delete entry" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
+
                 <div className="usefulTipsContainer">
                   <p className="sectionTitle">Useful tips</p>
                   <ul>

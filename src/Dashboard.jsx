@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { useDashboard } from "./DashboardContext.jsx";
 import {
@@ -33,10 +33,34 @@ import WelcomePopup from "./WelcomePopup.jsx";
 import WeightUpdatePopup from "./WeightUpdatePopup.jsx";
 
 const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
 const deficit = [0, -50, 120, 80, 0, -30, -100];
 
+// Hook to get container width for responsive Chart.js sizing
+function useContainerWidth(ref) {
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setWidth(entry.contentRect.width);
+      }
+    });
+    observer.observe(ref.current);
+    setWidth(ref.current.offsetWidth);
+    return () => observer.disconnect();
+  }, [ref]);
+  return width;
+}
+
 export function Dashboard() {
+  const caloriesRef = useRef(null);
+  const sleepBarRef = useRef(null);
+  const caloriesWidth = useContainerWidth(caloriesRef);
+  const sleepBarWidth = useContainerWidth(sleepBarRef);
+
+  const chartWidth = (containerWidth) =>
+    containerWidth > 0 ? Math.max(containerWidth - 40, 200) : 450;
+
   const {
     currentHydration,
     hydrationGoal,
@@ -89,8 +113,9 @@ export function Dashboard() {
 
   const sleepValues = sleepWeekMinutes;
   const activityValues = weekMinutes;
+
   const activityOptions = {
-    responsive: false,
+    responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
@@ -120,6 +145,7 @@ export function Dashboard() {
 
   const { goToDashboard, goToWater, goToFood, goToWorkouts, goToSleep } =
     useDashboard();
+
   const caloriesData = {
     labels,
     datasets: [
@@ -137,13 +163,11 @@ export function Dashboard() {
   };
 
   const caloriesOptions = {
-    responsive: false,
+    responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: {
-        enabled: true,
-      },
+      tooltip: { enabled: true },
     },
     scales: {
       x: {
@@ -185,13 +209,11 @@ export function Dashboard() {
   };
 
   const sleepOptions = {
-    responsive: false,
+    responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: {
-        enabled: true,
-      },
+      tooltip: { enabled: true },
     },
     scales: {
       x: {
@@ -230,7 +252,6 @@ export function Dashboard() {
 
         <div className="widgetContainer">
           <p className="siteTitle">Dashboard</p>
-
           <div className="topWidgets">
             <div className="smallWidget" onClick={goToFood}>
               <p className="smallWidgetTitle">Calories</p>
@@ -255,7 +276,6 @@ export function Dashboard() {
             <div className="smallWidget" onClick={goToWater}>
               <p className="smallWidgetTitle">Water</p>
               <p className="smalWidgetDesc">
-                {" "}
                 {currentHydration.toFixed(1)} L /{" "}
                 {(hydrationGoal * 1).toFixed(1)} L
               </p>
@@ -320,7 +340,11 @@ export function Dashboard() {
           </div>
 
           <div className="midWidgets">
-            <div className="caloriesWidgetBar" onClick={goToFood}>
+            <div
+              className="caloriesWidgetBar"
+              onClick={goToFood}
+              ref={caloriesRef}
+            >
               <p className="caloriesTitle">Calories vs Goal</p>
               <div className="barContainer">
                 <div className="lineTarget" />
@@ -328,7 +352,7 @@ export function Dashboard() {
                   <Bar
                     data={caloriesData}
                     options={caloriesOptions}
-                    width={450}
+                    width={chartWidth(caloriesWidth)}
                     height={180}
                   />
                 </div>
@@ -353,7 +377,12 @@ export function Dashboard() {
                 ))}
               </form>
             </div>
-            <div className="caloriesWidgetBar" onClick={goToSleep}>
+
+            <div
+              className="caloriesWidgetBar"
+              onClick={goToSleep}
+              ref={sleepBarRef}
+            >
               <p className="caloriesTitle">Sleep This Week</p>
               <div className="barContainer">
                 <div className="lineTarget" />
@@ -361,7 +390,7 @@ export function Dashboard() {
                   <Bar
                     data={sleepData}
                     options={sleepOptions}
-                    width={450}
+                    width={chartWidth(sleepBarWidth)}
                     height={180}
                   />
                 </div>

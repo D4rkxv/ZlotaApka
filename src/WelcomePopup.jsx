@@ -104,12 +104,6 @@ const WelcomePopup = ({ setPopupVisibility }) => {
               />
               <label>Current Age</label>
             </div>
-            {/* <input
-                type="date"
-                id="birthdayInput"
-                placeholder="Date of birth"
-                required
-              /> */}
             <div className="popupSubSection">
               <p>Gender</p>
               <div className="divider">
@@ -118,7 +112,6 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                     type="radio"
                     name="gender"
                     id="maleGender"
-                    // required
                     value={"Male"}
                     onChange={handleGenderChange}
                     checked={gender === "Male"}
@@ -130,7 +123,6 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                     type="radio"
                     name="gender"
                     id="femaleGender"
-                    // required
                     value={"Female"}
                     onChange={handleGenderChange}
                     checked={gender === "Female"}

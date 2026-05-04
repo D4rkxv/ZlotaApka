@@ -13,19 +13,41 @@
   --pureWhite: #fefefe;
 }
 
-.widgetContainer {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+/* ── Global overflow guard ── */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
+/* ── Override App.css widgetContainer ──
+   App.css sets: height:100vh, flex-wrap:wrap
+   Both must be overridden — wrap causes columns, 100vh hides overflow
+*/
+.widgetContainer {
+  /* Keep column direction from App.css but fix wrap + height */
+  flex-wrap: nowrap !important;
+  height: auto !important;
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0 24px 40px 24px !important;
+  box-sizing: border-box;
+}
+
+/* ── Misc shared ── */
 .onTarget {
   margin-top: 16px;
   text-align: center;
 }
+
 .data {
   position: relative;
   z-index: 2;
+  width: 100%;
 }
 .lineTarget {
   position: absolute;
@@ -39,10 +61,13 @@
   width: 100%;
   height: 180px;
   position: relative;
+  overflow: hidden;
 }
 .caloriesTitle {
   font-size: 16px;
+  margin: 0 0 4px 0;
 }
+
 .progressWrapper {
   margin-top: 12px;
   width: 100%;
@@ -61,18 +86,24 @@
   border-radius: 999px;
   transition: width 0.25s ease-out;
 }
+
+.topWidgets {
+  display: flex;
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: 16px;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
 .smallWidget {
   cursor: pointer;
-  width: 15.748vw;
-  margin-left: 24px;
-  height: 10.582vh;
+  flex: 1;
+  min-width: 0;
   padding: 12px 20px;
   border: 1px solid var(--primary-10);
   border-radius: 12px;
-}
-
-.smallWidget:nth-child(2) {
-  margin-left: 32px;
+  box-sizing: border-box;
 }
 .smallWidget p {
   margin: 0;
@@ -85,56 +116,106 @@
 .smalWidgetDesc {
   font-size: 20px;
 }
-.descLine {
-  display: flex;
-}
-.descLine img {
-  margin-left: 12px;
-}
 .smallWidgetGrayDesc {
   color: var(--textColor-50);
   font-size: 14px;
 }
-.topWidgets {
+.descLine {
   display: flex;
-  flex: auto;
-  width: 100%;
+  align-items: center;
 }
-.midWidgets:not(:first-child) {
-  width: 100%;
-  display: flex;
-  margin-top: 32px;
+.descLine img {
+  margin-left: 12px;
 }
+
 .midWidgets {
   display: flex;
-  flex: auto;
-}
-.botWidgets {
+  flex-shrink: 0;
   width: 100%;
-  display: flex;
-  flex: auto;
   margin-top: 32px;
+  gap: 16px;
+  align-items: stretch;
+  box-sizing: border-box;
 }
+
 .dailyChallenges {
   border: 1px solid var(--primary-10);
   border-radius: 12px;
-  margin-left: 36px;
-  width: 13.386vw;
-  height: 33.862vh;
+  /* flex: 0 0 220px; */
   display: flex;
   flex-direction: column;
-  padding: 0px 32px;
+  padding: 0 28px 16px 28px;
+  box-sizing: border-box;
 }
+
+.caloriesWidgetBar {
+  cursor: pointer;
+  border: 1px solid var(--primary-10);
+  background-color: #fefefe;
+  border-radius: 12px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+}
+
+.botWidgets {
+  display: flex;
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: 32px;
+  gap: 16px;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+.botWidgetBar {
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--primary-10);
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.smallWaterContainer {
+  cursor: pointer;
+  padding: 12px 20px;
+  border-radius: 12px;
+  flex: 0 0 220px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--primary-10);
+}
+
+.lineChartContainer {
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+}
+
+.donutDashboardChartContainer {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+.waterTarget {
+  font-size: 16px;
+  text-align: center;
+  margin: 4px 0 0 0;
+}
+
 .inputGroup2:not(:first-child) {
-  margin-top: 36px;
+  margin-top: 28px;
 }
 .inputGroup2:first-child {
-  margin-top: 24px;
+  margin-top: 20px;
 }
 form {
   display: flex;
   flex-direction: column;
 }
+
 .circleCheckbox {
   position: absolute;
   opacity: 0;
@@ -143,7 +224,7 @@ form {
   position: relative;
   padding-left: 32px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   transition: all 0.3s ease;
 }
 .circleLabel::after {
@@ -171,79 +252,127 @@ form {
   background: transparent;
   box-sizing: border-box;
 }
-
 .circleCheckbox:checked + .circleLabel::before {
   background: var(--primary);
 }
-
 .circleCheckbox:checked + .circleLabel::after {
   transform: translateY(-50%) scaleX(1);
 }
-.circleCheckbox:checked + .circleLabel::after p {
-  transform: translateY(-50%) scaleX(1);
-}
-.smallWaterContainer {
-  cursor: pointer;
-  padding: 0px 2.2%;
-  border-radius: 12px;
-  width: 13.386vw;
-  display: flex;
-  flex-direction: column;
-  margin-left: 36px;
-  border: 1px solid var(--primary-10);
-}
-.donutDashboardChartContainer {
-  display: flex;
-  justify-content: center;
-}
-.waterTarget {
-  font-size: 20px;
-  text-align: center;
-}
-.botWidgetBar {
-  padding: 12px 32px;
-  height: 31.958vh;
-  border-radius: 12px;
-  border: 1px solid var(--primary-10);
-}
-.botWidgetBar:first-of-type {
-  margin-left: 24px;
-}
-.botWidgetBar:last-of-type {
-  margin-left: 36px;
-}
-.caloriesWidgetBar {
-  cursor: pointer;
-  border: 1px solid var(--primary-10);
-  height: 33.862vh;
-  background-color: #fefefe;
-  border-radius: 12px;
-  padding: 12px 32px;
-  box-sizing: border-box;
-}
-.caloriesWidgetBar:first-of-type {
-  margin-left: 24px;
-}
-.caloriesWidgetBar:last-of-type {
-  margin-left: 36px;
-}
-.lineChartContainer {
-  cursor: pointer;
-}
-
 .circleCheckbox:disabled {
   pointer-events: none;
 }
-
 .circleCheckbox:disabled + .circleLabel {
   color: #999;
   pointer-events: none;
 }
-
 .circleCheckbox:disabled:checked + .circleLabel::before {
   background: #ccc !important;
 }
 
-.circleCheckbox:checked + .circleLabel::before {
-  background: var(--primary);
+@media (max-width: 1200px) {
+  .widgetContainer {
+    padding: 0 16px 40px 16px !important;
+  }
+
+  .topWidgets {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .smallWidget {
+    flex: 1 1 calc(50% - 6px);
+    max-width: calc(50% - 6px);
+  }
+
+  .midWidgets {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .caloriesWidgetBar {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 0;
+  }
+  .dailyChallenges {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .botWidgets {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .botWidgetBar {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 0;
+  }
+  .lineChartContainer {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 0;
+  }
+  .smallWaterContainer {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .widgetContainer {
+    padding: 60px 12px 40px 12px !important;
+    min-height: 100vh;
+  }
+
+  .topWidgets {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .smallWidget {
+    flex: 1 1 calc(50% - 5px);
+    max-width: calc(50% - 5px);
+  }
+  .smallWidgetTitle {
+    font-size: 14px;
+  }
+  .smalWidgetDesc {
+    font-size: 16px;
+  }
+  .smallWidgetGrayDesc {
+    font-size: 12px;
+  }
+
+  .midWidgets {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .caloriesWidgetBar,
+  .dailyChallenges {
+    flex: unset !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+  .dailyChallenges {
+    padding: 0 20px 16px 20px;
+  }
+  .inputGroup2:not(:first-child) {
+    margin-top: 20px;
+  }
+
+  .botWidgets {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .botWidgetBar,
+  .smallWaterContainer,
+  .lineChartContainer {
+    flex: unset !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+  .smallWaterContainer {
+    padding: 12px 20px;
+  }
+
+  .barContainer {
+    height: 160px;
+  }
 }
