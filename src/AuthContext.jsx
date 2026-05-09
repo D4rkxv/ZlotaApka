@@ -15,9 +15,12 @@ const api = axios.create({
   },
 });
 
+const getStoredToken = () =>
+  localStorage.getItem("token") || sessionStorage.getItem("token") || null;
+
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = getStoredToken();
     if (token) {
       config.headers["Authorization"] = token;
     }
@@ -30,9 +33,7 @@ api.interceptors.request.use(
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(
-    () => localStorage.getItem("token") || null
-  );
+  const [token, setToken] = useState(() => getStoredToken());
   const [currentPage, setCurrentPage] = useState("landing");
   const [isLoading, setIsLoading] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
@@ -41,15 +42,16 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      localStorage.setItem("token", token);
+      
     } else {
       localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
     }
   }, [token]);
 
   useEffect(() => {
     const initAuth = async () => {
-      const savedToken = localStorage.getItem("token");
+      const savedToken = getStoredToken();
 
       if (savedToken) {
         setIsLoading(true);
@@ -62,12 +64,14 @@ export const AuthProvider = ({ children }) => {
             setCurrentPage("dashboard");
           } else {
             localStorage.removeItem("token");
+            sessionStorage.removeItem("token");
             setToken(null);
             setCurrentPage("landing");
           }
         } catch (err) {
           console.error("Auth error:", err);
           localStorage.removeItem("token");
+          sessionStorage.removeItem("token");
           setToken(null);
           setCurrentPage("landing");
         } finally {
@@ -127,16 +131,24 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (email, password, rememberMe = false) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await api.post("/auth/login", { email, password });
+      const response = await api.post("/auth/login", { email, password, rememberMe });
 
       if (response.data.status === "success") {
+        const { token, rememberMe: rm } = response.data.data;
+        if (rm) {
+          localStorage.setItem("token", token);
+          sessionStorage.removeItem("token");
+        } else {
+          sessionStorage.setItem("token", token);
+          localStorage.removeItem("token");
+        }
         setUser(response.data.data.user);
-        setToken(response.data.data.token);
+        setToken(token);
         setCurrentPage("dashboard");
         return { success: true };
       } else {
@@ -192,6 +204,7 @@ export const AuthProvider = ({ children }) => {
     setUserProfile(null);
     setCurrentPage("landing");
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
   };
   const setName = async (newName, imageFile = null) => {
   try {

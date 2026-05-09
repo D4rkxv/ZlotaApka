@@ -7,7 +7,10 @@ router.get("/stats", authenticateToken, (req, res) => {
   const userId = req.user.userId;
   const today = new Date().toISOString().split("T")[0];
   const weekStart = new Date();
-  weekStart.setDate(weekStart.getDate() - 6);
+  const dayOfWeek = weekStart.getDay();
+  const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  weekStart.setDate(weekStart.getDate() - daysFromMonday);
+  weekStart.setHours(0, 0, 0, 0);
   const weekStartStr = weekStart.toISOString().split("T")[0];
 
   db.get(

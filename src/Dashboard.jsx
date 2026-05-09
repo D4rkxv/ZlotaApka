@@ -35,7 +35,7 @@ import WeightUpdatePopup from "./WeightUpdatePopup.jsx";
 const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const deficit = [0, -50, 120, 80, 0, -30, -100];
 
-// Hook to get container width for responsive Chart.js sizing
+
 function useContainerWidth(ref) {
   const [width, setWidth] = useState(0);
   useEffect(() => {
@@ -79,7 +79,7 @@ export function Dashboard() {
     setShowWelcomePopup,
     currentChallenge,
     setCurrentChallenge,
-    isChecked2,
+    toggleChallengeItem,
     weightUpdated,
     setWeightUpdated,
     weightWeekData,
@@ -112,7 +112,7 @@ export function Dashboard() {
   const weightComparison = getWeightComparison();
 
   const sleepValues = sleepWeekMinutes;
-  const activityValues = weekMinutes;
+  const activityValues = weekMinutes.map((v) => (v === 0 ? null : v));
 
   const activityOptions = {
     responsive: true,
@@ -371,15 +371,21 @@ export function Dashboard() {
             <div className="dailyChallenges">
               <p className="widgetTitle">Daily Challenges</p>
               <form>
-                {currentChallenge?.map((workout, index) => (
-                  <div key={workout.id} className="inputGroup2">
+                {currentChallenge?.map((item) => (
+                  <div key={item.id} className="inputGroup2">
                     <input
                       type="checkbox"
-                      id={workout.id}
+                      id={item.id}
                       className="circleCheckbox"
+                      checked={item.completed ?? false}
+                      onChange={() => toggleChallengeItem(item.id)}
                     />
-                    <label htmlFor={workout.id} className="circleLabel">
-                      {workout.name}
+                    <label
+                      htmlFor={item.id}
+                      className="circleLabel"
+                      style={item.completed ? { textDecoration: "line-through", opacity: 0.5 } : {}}
+                    >
+                      {item.name}
                     </label>
                   </div>
                 ))}

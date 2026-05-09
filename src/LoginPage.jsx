@@ -11,6 +11,9 @@ function LoginPage() {
   const { goToLanding, goToRegister, login, isLoading, error } =
     useAuthLayout();
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [rememberMe, setRememberMe] = useState(
+    () => localStorage.getItem("rememberMe") === "true"
+  );
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -27,7 +30,8 @@ function LoginPage() {
       return;
     }
 
-    const result = await login(formData.email, formData.password);
+    localStorage.setItem("rememberMe", rememberMe);
+    const result = await login(formData.email, formData.password, rememberMe);
 
     if (!result.success) {
       setLocalError(result.error || "Login failed");
@@ -80,8 +84,10 @@ function LoginPage() {
                   type="checkbox"
                   name="rememberCheckbox"
                   id="rememberCheckbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                 />
-                <label htmlFor="rememberCheckbox" id="rememberCheckbox">
+                <label htmlFor="rememberCheckbox">
                   Remember me?
                 </label>
               </div>

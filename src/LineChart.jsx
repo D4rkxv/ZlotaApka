@@ -10,6 +10,20 @@ function LineChart({ title, values, min, max, subtitle }) {
   const chartWidth =
     containerWidth > 0 ? Math.max(containerWidth - 40, 200) : 450;
 
+  const validValues = values.filter((v) => v !== null && v !== undefined);
+  const computedMax =
+    max !== undefined
+      ? max
+      : validValues.length > 0
+        ? Math.max(...validValues) + 1
+        : undefined;
+  const computedMin =
+    min !== undefined
+      ? min
+      : validValues.length > 0
+        ? Math.min(...validValues) - 1
+        : undefined;
+
   const data = {
     labels,
     datasets: [
@@ -18,7 +32,8 @@ function LineChart({ title, values, min, max, subtitle }) {
         data: values,
         borderColor: "#0ea5e9",
         fill: false,
-        pointRadius: 3,
+        spanGaps: false,
+        pointRadius: values.map((v) => (v === null ? 0 : 3)),
         pointBackgroundColor: "#0ea5e9",
       },
     ],
@@ -42,8 +57,8 @@ function LineChart({ title, values, min, max, subtitle }) {
       },
       y: {
         display: true,
-        min,
-        max,
+        min: computedMin,
+        max: computedMax,
         ticks: {
           stepSize: 5,
           color: "#9ca3af",

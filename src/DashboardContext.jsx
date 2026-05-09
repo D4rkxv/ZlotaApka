@@ -908,15 +908,24 @@ export const DashboardProvider = ({ children }) => {
         const res = await api.get(`/daily-challenge?date=${today}`);
 
         if (res.data.status === "success" && res.data.data) {
-          setCurrentChallenge(res.data.data.challenge);
+          // Zachowaj completed z bazy, dodaj false jeśli brakuje pola
+          const challenge = res.data.data.challenge.map((item) => ({
+            ...item,
+            completed: item.completed ?? false,
+          }));
+          setCurrentChallenge(challenge);
         } else {
           const randomChallenge =
             dailyChallenges[Math.floor(Math.random() * dailyChallenges.length)];
+          const challengeWithCompletion = randomChallenge.map((item) => ({
+            ...item,
+            completed: false,
+          }));
           await api.post("/daily-challenge", {
-            challenge: randomChallenge,
+            challenge: challengeWithCompletion,
             date: today,
           });
-          setCurrentChallenge(randomChallenge);
+          setCurrentChallenge(challengeWithCompletion);
         }
       } catch (error) {
         console.error("Error loading daily challenge:", error);
@@ -927,11 +936,15 @@ export const DashboardProvider = ({ children }) => {
         } else {
           const randomChallenge =
             dailyChallenges[Math.floor(Math.random() * dailyChallenges.length)];
+          const challengeWithCompletion = randomChallenge.map((item) => ({
+            ...item,
+            completed: false,
+          }));
           localStorage.setItem(
             "dailyChallengeData",
-            JSON.stringify({ challenge: randomChallenge, date: today }),
+            JSON.stringify({ challenge: challengeWithCompletion, date: today }),
           );
-          setCurrentChallenge(randomChallenge);
+          setCurrentChallenge(challengeWithCompletion);
         }
       }
 
@@ -947,6 +960,33 @@ export const DashboardProvider = ({ children }) => {
     });
     return () => clearTimeout(timer);
   }, [token]);
+
+  const toggleChallengeItem = useCallback(async (itemId) => {
+    const today = new Date().toISOString().split("T")[0];
+
+    // Optimistic update
+    let previousChallenge;
+    setCurrentChallenge((prev) => {
+      previousChallenge = prev;
+      return prev.map((item) =>
+        item.id === itemId ? { ...item, completed: !item.completed } : item
+      );
+    });
+
+    const targetItem = previousChallenge?.find((item) => item.id === itemId);
+    const newCompleted = !(targetItem?.completed ?? false);
+
+    try {
+      await api.patch(`/daily-challenge/${itemId}`, {
+        date: today,
+        completed: newCompleted,
+      });
+    } catch (error) {
+      console.error("Error toggling challenge item:", error);
+      // Rollback przy błędzie
+      setCurrentChallenge(previousChallenge);
+    }
+  }, []);
 
   const workoutProgressWidth = ((workoutsDone / weeklyWorkouts) * 100).toFixed(
     1,
@@ -1232,9 +1272,11 @@ export const DashboardProvider = ({ children }) => {
           setWeekMinutes(EMPTYWORKOUTWEEK);
           setSleepWeekMinutes(EMPTYSLEEPWEEK);
           setWaterWeek(Array(7).fill(0));
+          setWeightWeekData([]);
           fetchMealsData();
           fetchWaterData();
           fetchWorkoutData();
+          fetchWeightData();
         }
       }
     }, 60000);
@@ -1273,8 +1315,7 @@ export const DashboardProvider = ({ children }) => {
         setCurrentAge,
         currentChallenge,
         setCurrentChallenge,
-        isChecked2,
-        setIsChecked2,
+        toggleChallengeItem,
         //switching
         selectedWidget,
         switchWidget: switchWidget,

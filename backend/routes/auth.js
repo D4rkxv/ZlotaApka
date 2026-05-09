@@ -85,7 +85,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({
@@ -121,13 +121,14 @@ router.post("/login", (req, res) => {
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       process.env.JWTSECRET,
-      { expiresIn: "30d" }
+      { expiresIn: rememberMe ? "30d" : "6h" }
     );
 
     res.json({
       status: "success",
       data: {
         token,
+        rememberMe: !!rememberMe,
         user: {
           id: user.id,
           email: user.email,
