@@ -5,10 +5,10 @@ import "./Workouts.css";
 import "./FoodDiary.css";
 import "./Dashboard.css";
 import { useDashboard } from "./DashboardContext";
-import running from "./assets/running.svg";
 import WorkoutPopup from "./WorkoutPopup";
+
 function Workouts() {
-  const [tips, setTips] = useState([
+    const [tips, setTips] = useState([
     "Plan one “non-negotiable” 20-minute activity today – schedule it in your calendar like a meeting and treat it as something you can’t cancel.",
     "Commit to one “non-negotiable” 15-minute walk after breakfast – add it to your phone and do it rain or shine.",
     "Set one “non-negotiable” 10-minute stretch session tonight – calendar it like an important call.",
@@ -64,7 +64,6 @@ function Workouts() {
     logWorkout,
     activityHistory = [],
     workoutsDone,
-    setWorkoutsDone,
     workoutProgressWidth,
     isActive,
     setIsActive,
@@ -77,56 +76,61 @@ function Workouts() {
     isDisabled,
     setIsDisabled,
     allSeconds,
-    setAllSeconds,
     quickActivities,
     allCalories,
-    addCalories,
-    addTime,
     currentWorkout,
     weekMinutes,
-    addWorkoutMinutes,
     weeklyWorkouts,
   } = useDashboard();
+
   const [showWorkoutPopup, setShowWorkoutPopup] = useState(false);
-  const [currentWorkoutName, setCurrentWorkoutName] = useState("Full Body aa");
   const [exerciseDone, setExerciseDone] = useState(0);
   const [selectedTip, setSelectedTip] = useState("");
 
-  const checkIfCompleted = () => {
-    if (exerciseDone == 5) {
-      setWorkoutStatus("final");
-    } else {
-      setWorkoutStatus("running");
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * tips.length);
+    setSelectedTip(tips[randomIndex]);
+  }, []);
+
+  useEffect(() => {
+    let interval = null;
+    if (isActive) {
+      interval = setInterval(() => {
+        setSeconds((prev) => prev + 1);
+      }, 1000);
     }
+    return () => clearInterval(interval);
+  }, [isActive]);
+
+  const checkIfCompleted = () => {
+    if (exerciseDone === 5) setWorkoutStatus("final");
+    else setWorkoutStatus("running");
   };
+
   const handleExersiceClick = (index) => {
     checkIfCompleted();
     setIsChecked((prev) => {
       const current = Array.isArray(prev) ? prev : Array(6).fill(false);
       const wasChecked = current[index];
-      setExerciseDone((prevCount) =>
-        wasChecked ? prevCount - 1 : prevCount + 1,
-      );
+      setExerciseDone((prevCount) => wasChecked ? prevCount - 1 : prevCount + 1);
       const newChecked = [...current];
       newChecked[index] = !newChecked[index];
       return newChecked;
     });
   };
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * tips.length);
-    setSelectedTip(tips[randomIndex]);
-  }, []);
+
   const handlePause = () => {
     setIsActive(!isActive);
     setIsDisabled(!isDisabled);
   };
+
   const handleClick = () => {
     setIsActive(!isActive);
     setIsDisabled(!isDisabled);
     setIsChecked(true);
     setWorkoutStatus("running");
-    setCurrentWorkoutName(currentWorkout?.name ?? "Full Body Workout");
   };
+
   const handleStop = () => {
     setSeconds(0);
     setIsActive(false);
@@ -135,25 +139,17 @@ function Workouts() {
     setExerciseDone(0);
     setWorkoutStatus("idle");
   };
+
   const handleFinalClick = async () => {
-    console.log("⏱️ [Workouts] Licznik sekund:", seconds);
-
     let workoutMins = Math.floor(seconds / 60);
-    if (seconds > 0 && workoutMins === 0) {
-      workoutMins = 1;
-    }
-
+    if (seconds > 0 && workoutMins === 0) workoutMins = 1;
     const workoutData = {
       name: currentWorkout?.name ?? "Full Body Workout",
       type: "strength_training",
       time: workoutMins,
       calories: Math.round(workoutMins * 5),
     };
-
-    console.log("button clicked", workoutData);
-
     await logWorkout(workoutData);
-
     setWorkoutStatus("idle");
     setIsChecked(Array(6).fill(false));
     setIsDisabled(true);
@@ -161,6 +157,7 @@ function Workouts() {
     setIsActive(false);
     setExerciseDone(0);
   };
+
   const handleWorkoutItemClick = async (quickItem) => {
     const workoutData = {
       name: quickItem.name,
@@ -168,72 +165,69 @@ function Workouts() {
       time: Number(quickItem.time),
       calories: Number(quickItem.calories),
     };
-
     await logWorkout(workoutData);
   };
 
-  useEffect(() => {
-    let interval = null;
-    if (isActive) {
-      interval = setInterval(() => {
-        setSeconds((prevSeconds) => prevSeconds + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isActive]);
   const workoutData = {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    datasets: [
-      {
-        label: "Workout",
-        data: weekMinutes,
-        backgroundColor: weekMinutes.map((val) =>
-          val > 40 ? "#00A8FF" : "rgba(0,168,255,0.25)",
-        ),
-        borderRadius: 6,
-        barThickness: 32,
-      },
-    ],
+    datasets: [{
+      label: "Workout",
+      data: weekMinutes,
+      backgroundColor: weekMinutes.map((val) =>
+        val > 40 ? "#00A8FF" : "rgba(0,168,255,0.25)"
+      ),
+      borderRadius: 6,
+      barThickness: 32,
+    }],
   };
 
   const caloriesOptions = {
-    responsive: false,
+    responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: {
-        enabled: true,
-      },
+      tooltip: { enabled: true },
     },
     scales: {
       x: {
         offset: true,
         grid: { display: false },
-        ticks: {
-          color: "#9ca3af",
-          font: { size: 12, family: "Poppins" },
-        },
+        ticks: { color: "#9ca3af", font: { size: 12, family: "Poppins" } },
       },
-      y: {
-        display: false,
-        min: 0,
-        beginAtZero: true,
-        suggestedMax: 60,
-      },
-    },
-    datasets: {
-      bar: {
-        categoryPercentage: 0.3,
-        barPercentage: 0.3,
-      },
+      y: { display: false, min: 0, beginAtZero: true, suggestedMax: 60 },
     },
   };
 
+  const renderLogActivity = () => (
+    <>
+      <div className="workoutManagerTop">
+        <p className="sectionTitle">Log activity</p>
+        <p className="addActivity" onClick={() => setShowWorkoutPopup(true)}>
+          Add Activity
+        </p>
+      </div>
+      <div className="workoutList">
+        {quickActivities.map((item) => (
+          <div key={item.id} className="workoutItem"
+            onClick={() => handleWorkoutItemClick(item)}>
+            <div className="workoutImgContainer">
+              <img src={item.icon} alt={item.name} />
+            </div>
+            <div className="workoutRightDesc">
+              <p className="activityType">{item.name} • {item.time} min</p>
+              <p className="calories">~{item.calories}kcal</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+
   return (
     <>
-      {showWorkoutPopup ? (
+      {showWorkoutPopup && (
         <WorkoutPopup setPopupVisibility={setShowWorkoutPopup} />
-      ) : null}
+      )}
       <div className="workoutsContainer">
         <Sidebar />
         <div className="widgetContainer">
@@ -244,43 +238,33 @@ function Workouts() {
                 <div className="caloriesGoalContainer">
                   <p className="sectionTitle">Workout Summary</p>
                   <p className="caloriesCompletion">
-                    {workoutsDone > 0 ? workoutsDone : "0"} / {weeklyWorkouts}{" "}
-                    workouts this week
+                    {workoutsDone > 0 ? workoutsDone : "0"} / {weeklyWorkouts} workouts this week
                   </p>
                   <p className="caloriesLeft">
-                    Total time: {(allSeconds / 60).toFixed(1)} min •{" "}
-                    {allCalories > 0 ? allCalories : "0"}kcal burned
+                    Total time: {(allSeconds / 60).toFixed(1)} min • {allCalories > 0 ? allCalories : "0"}kcal burned
                   </p>
                   <div className="progressTrack">
-                    <div
-                      className="progressFill"
-                      style={{ width: `${workoutProgressWidth}%` }}
-                    />
+                    <div className="progressFill" style={{ width: `${workoutProgressWidth}%` }} />
                   </div>
                 </div>
                 <div className="workoutsGoalStreakContainer">
-                  <Bar
-                    data={workoutData}
-                    options={caloriesOptions}
-                    width={450}
-                    height={180}
-                  />
+                  <Bar data={workoutData} options={caloriesOptions} />
                 </div>
+              </div>
+              <div className="rightTopWorkoutContainer rightTopInline">
+                {renderLogActivity()}
               </div>
               <div className="leftBotWorkoutContainer">
                 <div className="todayWorkoutContainer">
-                  <p className="sectionTitle">Today’s workout</p>
+                  <p className="sectionTitle">Today's workout</p>
                   <div className="todaysWorkoutInsideContainer">
                     <div className="todaysWorkoutLeft">
                       <div className="topTodaysWorkoutP">
                         <p className="leftTodaysWorkoutTitle">
-                          {currentWorkout?.name || "Full Body Workout"}•{" "}
-                          {currentWorkout?.exercises?.length * 5 || 45}min
+                          {currentWorkout?.name || "Full Body Workout"}• {currentWorkout?.exercises?.length * 5 || 45}min
                         </p>
                         <p className="todaysWorkoutProgress">
-                          {exerciseDone}/
-                          {currentWorkout?.exercises?.length || 6} exercises
-                          done
+                          {exerciseDone}/{currentWorkout?.exercises?.length || 6} exercises done
                         </p>
                       </div>
                       <form>
@@ -301,68 +285,32 @@ function Workouts() {
                         ))}
                       </form>
                       <div className="todaysWorkoutProgressP">
-                        <p className="todaysWorkoutProgress">
-                          Estimated calories: ~280 kcal
-                        </p>
+                        <p className="todaysWorkoutProgress">Estimated calories: ~280 kcal</p>
                       </div>
                     </div>
                     <div className="todaysWorkoutRight">
                       <p className="timer">Timer</p>
                       <div className="timerContainer">
                         <svg viewBox="0 0 120 120" className="timerSvg">
-                          <circle
-                            cx="60"
-                            cy="60"
-                            r="50"
-                            fill="none"
-                            stroke="#00a8ff"
-                            strokeWidth="15"
-                            strokeDasharray="314"
-                            pathLength="1"
-                            className="progressCircle"
-                          />
+                          <circle cx="60" cy="60" r="50" fill="none" stroke="#00a8ff"
+                            strokeWidth="15" strokeDasharray="314" pathLength="1"
+                            className="progressCircle" />
                           <foreignObject x="30" y="45" width="60" height="30">
-                            <div className="timerText">
-                              {seconds > 0 ? seconds : "00"}s
-                            </div>
+                            <div className="timerText">{seconds > 0 ? seconds : "00"}s</div>
                           </foreignObject>
-                          <circle
-                            cx="108"
-                            cy="12"
-                            r="6"
-                            isCompleted
-                            fill="#000000"
-                            className="dot"
-                          />
+                          <circle cx="108" cy="12" r="6" fill="#000000" className="dot" />
                         </svg>
                       </div>
                       <div className="todaysWorkoutRightBot">
                         {workoutStatus === "idle" ? (
-                          <button className="workoutBtn1" onClick={handleClick}>
-                            Start Workout
-                          </button>
+                          <button className="workoutBtn1" onClick={handleClick}>Start Workout</button>
                         ) : workoutStatus === "running" ? (
                           <>
-                            <button
-                              className="workoutBtn2"
-                              onClick={handlePause}
-                            >
-                              {"Pause"}
-                            </button>
-                            <button
-                              className="workoutBtn1"
-                              onClick={handleStop}
-                            >
-                              {"Stop workout"}
-                            </button>
+                            <button className="workoutBtn2" onClick={handlePause}>Pause</button>
+                            <button className="workoutBtn1" onClick={handleStop}>Stop workout</button>
                           </>
                         ) : (
-                          <button
-                            className="workoutBtn1"
-                            onClick={handleFinalClick}
-                          >
-                            Finish Workout
-                          </button>
+                          <button className="workoutBtn1" onClick={handleFinalClick}>Finish Workout</button>
                         )}
                       </div>
                     </div>
@@ -380,39 +328,11 @@ function Workouts() {
                 </div>
               </div>
             </div>
-            <div className="rightTopWorkoutContainer">
-              <div className="workoutManagerTop">
-                <p className="sectionTitle">Log activity</p>
-                <p
-                  className="addActivity"
-                  onClick={() => {
-                    setShowWorkoutPopup(true);
-                  }}
-                >
-                  Add Activity
-                </p>
-              </div>
-              <div className="workoutList">
-                {quickActivities.map((item) => (
-                  <div
-                    key={item.id}
-                    className="workoutItem"
-                    onClick={() => handleWorkoutItemClick(item)}
-                  >
-                    <div className="workoutImgContainer">
-                      <img src={item.icon} alt={item.name} />
-                    </div>
-                    <div className="workoutRightDesc">
-                      <p className="activityType">
-                        {item.name} • {item.time} min
-                      </p>
-                      <p className="calories">~{item.calories}kcal</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="rightTopWorkoutContainer rightTopSide">
+              {renderLogActivity()}
             </div>
           </div>
+
           <div className="botWorkoutContainer">
             <div className="workoutTip">
               <p className="sectionTitle">Tip of the day</p>
@@ -424,4 +344,5 @@ function Workouts() {
     </>
   );
 }
+
 export default Workouts;

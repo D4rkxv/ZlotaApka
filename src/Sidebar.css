@@ -12,10 +12,9 @@
   --textColor-50: rgba(15, 23, 42, 0.5);
   --pureWhite: #fefefe;
 }
-
-.sidebar {
-  width: 200px;
-  min-width: 200px;
+ .sidebar {
+  width: 240px;
+  min-width: 240px;
   height: 100vh;
   background-color: var(--background);
   display: flex;
@@ -27,17 +26,18 @@
   left: 0;
   z-index: 100;
   overflow-y: auto;
+  overflow-x: hidden;
   scrollbar-width: none;
 }
 .sidebar::-webkit-scrollbar {
   display: none;
 }
-
+ 
 .siteContainer {
-  padding-left: 200px;
+  padding-left: 240px;
   box-sizing: border-box;
 }
-
+ 
 .vitaLogoDashboard {
   margin: 0;
   color: var(--textColor);
@@ -52,6 +52,7 @@
   width: 32px;
   margin-right: 8px;
 }
+ 
 .dashboardSearch {
   width: 10.079vw;
   margin-left: 18px;
@@ -61,12 +62,14 @@
   border: 1px solid var(--textColor);
   color: var(--textColor);
 }
+ 
 .linksContainer {
   display: flex;
   flex-direction: column;
   margin-top: 3.386vh;
   margin-left: 18px;
 }
+ 
 .topSidebarSection {
   height: 10vh;
   display: flex;
@@ -79,7 +82,7 @@
 .botSidebarSection {
   margin-top: auto;
 }
-
+ 
 .dashboardSidebarContainer,
 .waterSidebarContainer,
 .foodSidebarContainer,
@@ -103,6 +106,15 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
   transition: all 0.2s ease;
 }
+.dashboardSidebarContainer img,
+.waterSidebarContainer img,
+.foodSidebarContainer img,
+.workoutSidebarContainer img,
+.sleepSidebarContainer img {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
 .dashboardSidebarContainer p,
 .waterSidebarContainer p,
 .foodSidebarContainer p,
@@ -121,7 +133,7 @@
   border-radius: 8px;
   transition: all 0.2s ease;
 }
-
+ 
 .helpSidebarContainer {
   cursor: pointer;
   height: 4.233vh;
@@ -132,12 +144,18 @@
   margin-right: 28px;
   border-radius: 4px;
 }
+.helpSidebarContainer img {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: block;
+}
 .helpSidebarContainer p {
   color: var(--textColor);
   padding-left: 12px;
   margin-right: 28px;
 }
-
+ 
 .accountCard {
   background-color: #f5f9ff;
   border-radius: 16px;
@@ -147,6 +165,8 @@
   overflow: hidden;
   position: relative;
   margin: 0 12px 16px 12px;
+  display: flex;
+  flex-direction: column;
 }
 .accountCard.open {
   transform: translateY(-4px);
@@ -157,6 +177,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+  overflow: hidden;
 }
 .accountMenu {
   margin-top: 12px;
@@ -166,7 +188,7 @@
   transition: all 0.25s ease;
 }
 .accountCard.open .accountMenu {
-  max-height: 21.164vh;
+  max-height: 200px;
   opacity: 1;
   margin-top: 16px;
 }
@@ -182,6 +204,7 @@
   font-size: 14px;
   backdrop-filter: blur(10px);
   width: 100%;
+  box-sizing: border-box;
 }
 .accountItem:hover {
   background: rgba(255, 255, 255, 0.8);
@@ -189,16 +212,19 @@
 .profilePicture {
   width: 40px;
   height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 .leftAccountSide {
-  height: 4.233vh;
-  width: 2.1vw;
-  border-radius: 4px;
+  flex-shrink: 0;
 }
 .middleAccountSide {
   margin-left: 8px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  flex: 1;
 }
 .middleAccountSide p {
   margin: 0;
@@ -208,20 +234,24 @@
   font-size: 12px;
   font-weight: 300;
   color: var(--textColor);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .sidebarEmail {
   font-size: 10px;
   color: var(--textColor-50);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
+ 
 .hamburgerBtn {
   display: none;
 }
-
 .mobileOverlay {
   display: none;
 }
-
 @media (max-width: 1200px) {
   .sidebar {
     width: 64px;
@@ -282,6 +312,19 @@
     display: none;
   }
 
+  .dashboardSidebarContainer img,
+  .waterSidebarContainer img,
+  .foodSidebarContainer img,
+  .workoutSidebarContainer img,
+  .sleepSidebarContainer img,
+  .helpSidebarContainer img {
+    width: 24px;
+    height: 24px;
+    display: block;
+    flex-shrink: 0;
+    min-width: 24px;
+  }
+
   .helpSidebarContainer {
     margin-left: 0;
     padding-left: 0;
@@ -308,6 +351,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: visible;
   }
   .accountCard .middleAccountSide,
   .accountCard .rightAccountSide,
@@ -315,16 +359,41 @@
   .arrowCard {
     display: none;
   }
+
   .accountMenu {
     display: none;
   }
+  .accountCard.open .accountMenu {
+    display: block;
+    position: fixed;
+    bottom: 60px;
+    left: 68px;
+    max-height: none;
+    opacity: 1;
+    margin-top: 0;
+    background: var(--pureWhite);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(15, 23, 42, 0.15);
+    padding: 8px;
+    min-width: 160px;
+    z-index: 200;
+  }
+
   .profilePicture {
     width: 36px;
     height: 36px;
   }
+  .leftAccountSide {
+    width: auto;
+  }
 }
 
 @media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
   .siteContainer {
     padding-left: 0;
   }
@@ -336,8 +405,9 @@
     height: 100vh;
     height: 100dvh;
     overflow-y: auto;
-    width: 260px;
-    min-width: 260px;
+    overflow-x: hidden;
+    width: min(260px, 88vw);
+    min-width: unset;
     z-index: 1000;
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -379,7 +449,7 @@
   .sidebar.mobileOpen .foodSidebarContainer.selected,
   .sidebar.mobileOpen .workoutSidebarContainer.selected,
   .sidebar.mobileOpen .sleepSidebarContainer.selected {
-    width: auto;
+    width: 70%;
   }
   .sidebar.mobileOpen .dashboardSidebarContainer p,
   .sidebar.mobileOpen .waterSidebarContainer p,
@@ -402,22 +472,62 @@
   .sidebar.mobileOpen .botSidebarSection {
     align-items: flex-start;
   }
+
   .sidebar.mobileOpen .accountCard {
     margin: 0 12px 16px 12px;
     padding: 12px 14px;
     justify-content: flex-start;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: calc(100% - 24px);
+    max-width: calc(100% - 24px);
   }
   .sidebar.mobileOpen .accountCard .middleAccountSide {
     display: flex;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
   }
   .sidebar.mobileOpen .accountCard .rightAccountSide {
     display: flex;
+    flex-shrink: 0;
   }
   .sidebar.mobileOpen .accountCard p {
     display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
+
   .sidebar.mobileOpen .accountMenu {
     display: block;
+    position: static;
+    bottom: auto;
+    left: auto;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    min-width: unset;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .sidebar.mobileOpen .accountCard.open .accountMenu {
+    max-height: 200px;
+    opacity: 1;
+    margin-top: 16px;
+  }
+  .sidebar.mobileOpen .accountItem {
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  .sidebar:not(.mobileOpen) .accountMenu {
+    display: none;
   }
 
   .hamburgerBtn {

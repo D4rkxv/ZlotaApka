@@ -93,6 +93,8 @@ function SleepTracker() {
   };
 
   const sleepScoreOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
     rotation: -90,
     circumference: 180,
     cutout: "75%",
@@ -148,6 +150,13 @@ function SleepTracker() {
       },
     },
   };
+   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+useEffect(() => {
+  const handleResize = () => setWindowWidth(window.innerWidth);
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   return (
     <div className="sleepContainer siteContainer">
@@ -189,7 +198,7 @@ function SleepTracker() {
             <p className="sectionTitle">Sleep Score</p>
             <div className="divider">
               <div className="chartContainer">
-                <Doughnut data={sleepScoreData} options={sleepScoreOptions} />
+                <Doughnut data={sleepScoreData} options={sleepScoreOptions} key={windowWidth} />
               </div>
               <div className="sleepScoreDetails">
                 <p>
@@ -204,7 +213,6 @@ function SleepTracker() {
                 <p>Sleep score: {score > 0 ? score : "0"}%</p>
               </div>
             </div>
-            <p className="sleepScore">{score > 0 ? score : "0"}/100</p>
           </div>
         </div>
         <div className="divider">
@@ -294,7 +302,7 @@ function SleepTracker() {
           <div className="sleepWeekChartContainer">
             <p className="sectionTitle">Sleep This Week</p>
             <div className="chartContainer">
-              <Bar data={sleepThisWeekData} options={sleepThisWeekOptions} />
+              <Bar data={sleepThisWeekData} options={sleepThisWeekOptions} key={windowWidth}/>
             </div>
           </div>
         </div>

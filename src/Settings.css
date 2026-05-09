@@ -2,15 +2,23 @@
   font-family: Poppins;
   --primary-10: rgba(14, 165, 233, 0.1);
   --primary: #0ea5e9;
-  --blueGradient: linear-gradient(
-    90deg,
-    rgba(34, 211, 238, 1) 0%,
-    rgba(14, 165, 233, 1) 100%
-  );
   --background: #f0f9ff;
   --textColor: #0f172a;
   --textColor-50: rgba(15, 23, 42, 0.5);
   --pureWhite: #fefefe;
+}
+
+.settingsContainer {
+  display: flex;
+  min-height: 100vh;
+}
+
+.settingsContent {
+  flex: 1;
+  padding: 32px 28px;
+  padding-left: calc(240px + 28px);
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .resetDataContainer,
@@ -23,30 +31,31 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .settingsContainer .sectionTitle {
   margin-bottom: 0px;
 }
-.settingsContainer .divider {
-  justify-self: space-between;
-  align-content: space-between;
-}
+
 .sectionDescription {
   font-size: 14px;
   color: var(--textColor-50);
   margin-top: 0px;
 }
+
 .buttonContainer {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   padding: 20px;
+  flex-shrink: 0;
 }
 
-.settingsContainer button {
+.resetDataButton,
+.deleteAccountButton {
   font-size: 16px;
   padding: 6px 28px;
   border-radius: 24px;
@@ -55,10 +64,58 @@
   border: crimson 1px solid;
   color: crimson;
   width: 10vw;
+  min-width: 140px;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
-.settingsContainer button:hover {
+.resetDataButton:hover,
+.deleteAccountButton:hover {
   background-color: crimson;
   color: var(--pureWhite);
-  cursor: pointer;
+}
+@media (max-width: 1200px) {
+  .settingsContent {
+    padding-left: calc(80px + 24px);
+    padding-right: 24px;
+    padding-top: 24px;
+  }
+
+  .resetDataButton,
+  .deleteAccountButton {
+    width: auto;
+    min-width: 140px;
+  }
+
+  .resetDataContainer,
+  .deleteAccountContainer {
+    padding: 16px 24px;
+  }
+}
+@media (max-width: 768px) {
+  .settingsContent {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 72px;
+  }
+
+  .resetDataContainer,
+  .deleteAccountContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .buttonContainer {
+    padding: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .resetDataButton,
+  .deleteAccountButton {
+    width: 100%;
+    min-width: unset;
+  }
 }

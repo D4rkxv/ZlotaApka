@@ -12,25 +12,38 @@
   --textColor-50: rgba(15, 23, 42, 0.5);
   --pureWhite: #fefefe;
 }
+
 .workoutsContainer {
   display: flex;
   height: 100vh;
+  padding-left: 240px;
+  box-sizing: border-box;
 }
-.workoutsGoalStreakContainer {
-  border: var(--primary-10) 1px solid;
-  border-radius: 12px;
-  padding: 12px 32px;
-  width: 50%;
+
+.leftTopContainer {
+  flex: 1;
+  min-width: 0;
 }
+
 .leftTopWorkoutContainer {
   display: flex;
   gap: 24px;
 }
+
 .leftBotWorkoutContainer {
   margin-top: 36px;
   display: flex;
   gap: 24px;
 }
+
+.workoutsGoalStreakContainer {
+  border: var(--primary-10) 1px solid;
+  border-radius: 12px;
+  padding: 12px 32px;
+  width: 50%;
+  min-height: 180px;
+}
+
 .todayWorkoutContainer {
   width: 27.541vw;
   height: 41.693vh;
@@ -38,9 +51,11 @@
   border-radius: 12px;
   padding: 12px 32px;
 }
+
 .todaysWorkoutInsideContainer {
   display: flex;
 }
+
 .activityOneLog {
   color: var(--textColor);
   display: flex;
@@ -89,8 +104,10 @@
 .todaysWorkoutRightBot {
   margin-top: 3vh;
   display: flex;
-  justify-content: right;
+  justify-content: center;
+  gap: 8px;
 }
+
 .activityHistory {
   max-height: 41.693vh;
   padding: 12px 32px;
@@ -101,6 +118,7 @@
   -ms-overflow-style: none;
   border-radius: 12px;
 }
+.activityHistory::-webkit-scrollbar { display: none; }
 
 .timerContainer {
   width: 200px;
@@ -116,43 +134,48 @@
   text-align: center;
 }
 .progressCircle {
-  transition: stroke-dashoffset 0.8 cubic-bezier(0.4, 0, 0.2, 1);
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.dot {
-  animation: pulse 2s infinite;
-}
+.dot { animation: pulse 2s infinite; }
 @keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
+
 .topWorkoutContainer {
   color: var(--textColor);
   display: flex;
+  gap: 24px;
 }
-.rightTopWorkoutContainer {
-  padding: 0px 28px;
 
+.rightTopWorkoutContainer {
+  padding: 0 28px;
   border: 1px solid var(--primary-10);
   border-radius: 12px;
-  margin-left: 24px;
   width: 20.21vw;
+  flex-shrink: 0;
 }
+.rightTopInline {
+  display: none;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 24px;
+}
+.rightTopSide {
+  display: block;
+}
+
 .workoutManagerTop {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .addActivity {
   color: var(--primary);
   cursor: pointer;
 }
-.addActivity:hover {
-  text-decoration: underline;
-}
+.addActivity:hover { text-decoration: underline; }
+
 .workoutList {
   color: var(--textColor);
   max-height: 60vh;
@@ -160,6 +183,8 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+.workoutList::-webkit-scrollbar { display: none; }
+
 .workoutItem {
   cursor: pointer;
   padding: 24px 32px;
@@ -173,25 +198,19 @@
   align-items: center;
   justify-content: center;
 }
-.workoutRightDesc p {
-  margin: 0;
-  padding: 0;
-}
-.workoutRightDesc {
-  margin-left: 20px;
-}
+.workoutRightDesc p { margin: 0; padding: 0; }
+.workoutRightDesc { margin-left: 20px; }
+.calories { color: var(--textColor-50); }
 
-.calories {
-  color: var(--textColor-50);
-}
+.botWorkoutContainer { margin-top: 36px; }
 .workoutTip {
-  margin-top: 36px;
   color: var(--textColor);
   width: 95%;
   border: 1px solid var(--primary-10);
   border-radius: 12px;
-  padding: 0px 32px;
+  padding: 0 32px;
 }
+
 .workoutBtn1 {
   font-size: 16px;
   padding: 6px 12px;
@@ -222,23 +241,222 @@
   justify-content: center;
   align-items: center;
 }
-.btn.shake {
-  animation: shake1 0.4s;
-}
+.btn.shake { animation: shake1 0.4s; }
 @keyframes shake1 {
-  0% {
-    transform: translateX(0);
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
+@media (max-width: 1500px) {
+  .rightTopSide {
+    display: none;
   }
-  25% {
-    transform: translateX(-4px);
+  .rightTopInline {
+    display: block;
   }
-  50% {
-    transform: translateX(4px);
+
+  .workoutsContainer .topWorkoutContainer {
+    flex-direction: column;
+    gap: 0;
   }
-  75% {
-    transform: translateX(-4px);
+
+  .workoutsContainer .leftTopWorkoutContainer {
+    flex-wrap: nowrap;
+    gap: 16px;
   }
-  100% {
-    transform: translateX(0);
+
+  .workoutsContainer .caloriesGoalContainer {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .workoutsContainer .workoutsGoalStreakContainer {
+    flex: 1.5;
+    min-width: 0;
+    width: auto;
+    box-sizing: border-box;
+  }
+
+  .workoutsContainer .leftBotWorkoutContainer {
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+
+  .workoutsContainer .todayWorkoutContainer {
+    width: auto !important;
+    height: auto !important;
+    min-height: unset;
+    flex: 1;
+    box-sizing: border-box;
+  }
+  .workoutsContainer .todaysWorkoutInsideContainer {
+    flex-direction: row;
+  }
+  .workoutsContainer .activityHistory {
+    width: 180px !important;
+    flex-shrink: 0;
+    max-height: 40vh;
+  }
+  .workoutsContainer .rightTopInline {
+    width: 100%;
+    box-sizing: border-box;
+    margin-left: 0;
+  }
+  .workoutsContainer .workoutTip {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+@media (max-width: 1200px) {
+  .workoutsContainer {
+    padding-left: 60px;
+  }
+  .rightTopSide {
+    display: none;
+  }
+  .rightTopInline {
+    display: block;
+  }
+
+  .workoutsContainer .topWorkoutContainer {
+    flex-direction: column;
+    gap: 0;
+  }
+  .workoutsContainer .leftTopWorkoutContainer {
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+  .workoutsContainer .caloriesGoalContainer {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .workoutsContainer .workoutsGoalStreakContainer {
+    flex: 1.5;
+    min-width: 0;
+    width: auto;
+    box-sizing: border-box;
+  }
+  .workoutsContainer .leftBotWorkoutContainer {
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+  .workoutsContainer .todayWorkoutContainer {
+    width: auto !important;
+    height: auto !important;
+    min-height: unset;
+    flex: 1;
+    box-sizing: border-box;
+  }
+  .workoutsContainer .todaysWorkoutInsideContainer {
+    flex-direction: row;
+  }
+  .workoutsContainer .activityHistory {
+    width: 180px !important;
+    flex-shrink: 0;
+    max-height: 40vh;
+  }
+  .workoutsContainer .rightTopInline {
+    width: 100%;
+    box-sizing: border-box;
+    margin-left: 0;
+  }
+  .workoutsContainer .workoutTip {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+@media (max-width: 768px) {
+  .workoutsContainer {
+    padding-left: 0;
+  }
+  .workoutsContainer .widgetContainer {
+    padding-top: 60px !important;
+  }
+  .workoutsContainer .topWorkoutContainer {
+    flex-direction: column;
+  }
+  .workoutsContainer .leftTopWorkoutContainer {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .workoutsContainer .leftBotWorkoutContainer {
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .workoutsContainer .todayWorkoutContainer {
+    width: 100% !important;
+    height: auto !important;
+    min-height: unset;
+    padding: 12px 16px;
+    box-sizing: border-box;
+  }
+  .workoutsContainer .todaysWorkoutInsideContainer {
+    flex-direction: column;
+  }
+  .workoutsContainer .todaysWorkoutLeft {
+    width: 100%;
+  }
+  .workoutsContainer .todaysWorkoutRight {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 16px;
+    align-items: center;
+  }
+  .workoutsContainer .timerContainer {
+    width: 150px;
+    height: 150px;
+  }
+  .workoutsContainer .todaysWorkoutRightBot {
+    justify-content: center;
+    margin-top: 12px;
+  }
+  .workoutsContainer .activityHistory {
+    width: 100% !important;
+    max-height: 35vh;
+    padding: 12px 16px;
+    box-sizing: border-box;
+  }
+  .workoutsContainer .rightTopInline {
+    padding: 0 16px;
+    margin-top: 16px;
+  }
+  .workoutsContainer .workoutItem {
+    padding: 16px;
+  }
+  .workoutsContainer .workoutTip {
+    width: 100%;
+    padding: 0 16px;
+    margin-top: 16px;
+    box-sizing: border-box;
+  }
+  .workoutsContainer .workoutBtn1,
+  .workoutsContainer .workoutBtn2 {
+    font-size: 14px;
+    padding: 6px 10px;
+    margin-left: 4px;
+  }
+  .workoutsContainer .workoutsGoalStreakContainer {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .workoutsContainer .caloriesGoalContainer {
+    height: auto;
+    padding: 12px 16px;
+  }
+  .workoutsContainer .caloriesGoalContainer .progressTrack {
+    width: 100%;
+  }
+  .workoutsContainer .leftTodaysWorkoutTitle {
+    font-size: 16px;
+  }
+  .workoutsContainer .noQuickText {
+    height: 30vh;
+    font-size: 18px;
   }
 }

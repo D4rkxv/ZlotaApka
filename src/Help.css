@@ -2,11 +2,6 @@
   font-family: Poppins;
   --primary-10: rgba(14, 165, 233, 0.1);
   --primary: #0ea5e9;
-  --blueGradient: linear-gradient(
-    90deg,
-    rgba(34, 211, 238, 1) 0%,
-    rgba(14, 165, 233, 1) 100%
-  );
   --background: #f0f9ff;
   --textColor: #0f172a;
   --textColor-50: rgba(15, 23, 42, 0.5);
@@ -21,7 +16,10 @@
 
 .helpContent {
   flex: 1;
-  padding: 32px;
+  padding: 32px 28px;
+  padding-left: calc(240px + 28px);
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .helpCard {
@@ -50,7 +48,36 @@
   text-decoration: none;
   font-weight: 500;
 }
-
 .helpMail:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 1200px) {
+  .helpContent {
+    padding-left: calc(80px + 24px);
+    padding-right: 24px;
+    padding-top: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .helpContent {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 72px;
+  }
+
+  .helpCard {
+    padding: 20px;
+    margin-top: 16px;
+    max-width: 100%;
+  }
+
+  .helpCardTitle {
+    font-size: 20px;
+  }
+
+  .helpCardText {
+    font-size: 14px;
+  }
 }

@@ -48,10 +48,10 @@ const FoodDiary = () => {
     weekFood,
     caloriesGoal,
     deleteMeal,
-    updateMeal
+    updateMeal,
   } = useDashboard();
 
-  const [tips, setTips] = useState([
+  const [tips] = useState([
     "Eat regular meals to keep your energy levels stable throughout the day.",
     "Include vegetables or fruit in every meal for essential vitamins and fiber.",
     "Choose whole foods over highly processed products whenever possible.",
@@ -89,6 +89,13 @@ const FoodDiary = () => {
   const [shownMeal, setShownMeal] = useState(null);
   const [modifiedMeal, setModifiedMeal] = useState(null);
   const [showEditMeal, setShowEditMeal] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+useEffect(() => {
+  const handleResize = () => setWindowWidth(window.innerWidth);
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * tips.length);
@@ -100,11 +107,7 @@ const FoodDiary = () => {
     datasets: [
       {
         data: [proteinCount, fatsCount, carbsCount],
-        backgroundColor: [
-          "#5B5FEF", // Protein
-          "#FDB022", // Fat
-          "#22C1A2", // Carbs
-        ],
+        backgroundColor: ["#5B5FEF", "#FDB022", "#22C1A2"],
         borderWidth: 0,
       },
     ],
@@ -115,10 +118,7 @@ const FoodDiary = () => {
     plugins: {
       legend: {
         position: "left",
-        labels: {
-          usePointStyle: true,
-          pointStyle: "circle",
-        },
+        labels: { usePointStyle: true, pointStyle: "circle" },
       },
     },
     maintainAspectRatio: false,
@@ -141,34 +141,21 @@ const FoodDiary = () => {
   };
 
   const caloriesOptions = {
-    responsive: false,
+    responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: {
-        enabled: true,
-      },
+      tooltip: { enabled: true },
     },
     scales: {
       x: {
         grid: { display: false },
-        ticks: {
-          color: "#9ca3af",
-          font: { size: 12, family: "Poppins" },
-        },
+        ticks: { color: "#9ca3af", font: { size: 12, family: "Poppins" } },
       },
-      y: {
-        display: false,
-        min: 0,
-        beginAtZero: true,
-        suggestedMax: 3200,
-      },
+      y: { display: false, min: 0, beginAtZero: true, suggestedMax: 3200 },
     },
     datasets: {
-      bar: {
-        categoryPercentage: 1,
-        barPercentage: 1,
-      },
+      bar: { categoryPercentage: 1, barPercentage: 1 },
     },
   };
 
@@ -177,32 +164,10 @@ const FoodDiary = () => {
     datasets: [
       {
         data: [
-          Math.min(
-            caloriesCount > 0
-              ? ((countCalories(breakfastList) / caloriesCount) * 100).toFixed(
-                  2
-                )
-              : 0,
-            100
-          ),
-          Math.min(
-            caloriesCount > 0
-              ? ((countCalories(lunchList) / caloriesCount) * 100).toFixed(2)
-              : 0,
-            100
-          ),
-          Math.min(
-            caloriesCount > 0
-              ? ((countCalories(dinnerList) / caloriesCount) * 100).toFixed(2)
-              : 0,
-            100
-          ),
-          Math.min(
-            caloriesCount > 0
-              ? ((countCalories(snacksList) / caloriesCount) * 100).toFixed(2)
-              : 0,
-            100
-          ),
+          Math.min(caloriesCount > 0 ? ((countCalories(breakfastList) / caloriesCount) * 100).toFixed(2) : 0, 100),
+          Math.min(caloriesCount > 0 ? ((countCalories(lunchList) / caloriesCount) * 100).toFixed(2) : 0, 100),
+          Math.min(caloriesCount > 0 ? ((countCalories(dinnerList) / caloriesCount) * 100).toFixed(2) : 0, 100),
+          Math.min(caloriesCount > 0 ? ((countCalories(snacksList) / caloriesCount) * 100).toFixed(2) : 0, 100),
         ],
         backgroundColor: "#14A3E3",
         borderRadius: 12,
@@ -214,61 +179,36 @@ const FoodDiary = () => {
   const mealDistributionOptions = {
     indexAxis: "y",
     plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        callbacks: {
-          label: (ctx) => `${ctx.raw}%`,
-        },
-      },
+      legend: { display: false },
+      tooltip: { callbacks: { label: (ctx) => `${ctx.raw}%` } },
     },
     scales: {
       x: {
         min: 0,
         max: 100,
-        grid: {
-          display: false,
-        },
-        ticks: {
-          callback: (value) => `${value}%`,
-          color: "#8A8FA3",
-        },
-        border: {
-          display: false,
-        },
+        grid: { display: false },
+        ticks: { callback: (value) => `${value}%`, color: "#8A8FA3" },
+        border: { display: false },
       },
       y: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          color: "#1E1E2F",
-          font: {
-            weight: "500",
-          },
-        },
-        border: {
-          display: true,
-          color: "#1E1E2F",
-          width: 2,
-        },
+        grid: { display: false },
+        ticks: { color: "#1E1E2F", font: { weight: "500" } },
+        border: { display: true, color: "#1E1E2F", width: 2 },
       },
     },
     maintainAspectRatio: false,
   };
 
   const renderMealPopup = () => {
-    if(popupMealType === "") return null
-    return(
+    if (popupMealType === "") return null;
+    return (
       <MealPopup
         setPopupMealType={setPopupMealType}
         addMeal={addMeal}
         mealType={popupMealType}
       />
-    )
+    );
   };
-
 
   const selectMeal = (meal) => {
     setShownMeal(meal);
@@ -280,17 +220,36 @@ const FoodDiary = () => {
     setModifiedMeal(meal);
   };
 
- 
-
   const renderEditMealPopup = () => {
-    if(!showEditMeal) return null;
+    if (!showEditMeal) return null;
     return (
       <EditMealPopup
-      setPopupMealType={setShowEditMeal}
-      meal={modifiedMeal}
-      updateMeal={updateMeal}/>
-    )
+        setPopupMealType={setShowEditMeal}
+        meal={modifiedMeal}
+        updateMeal={updateMeal}
+      />
+    );
   };
+
+  const renderMealList = (list) =>
+    list.map((meal) => (
+      <div className="mealItem" key={meal.id}>
+        <div className="entryDescription" onClick={() => selectMeal(meal)}>
+          <p className="mealName">{meal.food_name}</p>
+          <p className="mealDescription">
+            {meal.grammage}g • {meal.calories}kcal
+          </p>
+        </div>
+        <div className="entryOptions">
+          <button onClick={() => selectMealToEdit(meal)}>
+            <img src={EditBlack} alt="Edit food" />
+          </button>
+          <button onClick={() => deleteMeal(meal.id)}>
+            <img src={Trashcan} alt="Delete entry" />
+          </button>
+        </div>
+      </div>
+    ));
 
   return (
     <>
@@ -306,7 +265,7 @@ const FoodDiary = () => {
         <Sidebar />
         <div className="widgetContainer">
           <p className="siteTitle">Food Diary</p>
-          <div className="divider">
+          <div className="mainDivider">
             <div className="leftSide">
               <div className="caloriesGoalContainer">
                 <p className="sectionTitle">Calories left</p>
@@ -316,9 +275,7 @@ const FoodDiary = () => {
                 <p className="caloriesLeft">
                   {caloriesGoal - caloriesCount > 0
                     ? `${caloriesGoal - caloriesCount} kcal left`
-                    : `${
-                        -1 * (caloriesGoal - caloriesCount)
-                      } kcal more than your goal`}
+                    : `${-1 * (caloriesGoal - caloriesCount)} kcal more than your goal`}
                 </p>
                 <div className="progressTrack">
                   <div
@@ -336,222 +293,64 @@ const FoodDiary = () => {
                 <div className="mealManagerTop">
                   <div className="mealTitleContainer">
                     <p className="mealTitle">Breakfast•</p>
-                    <p className="mealCaloriesGoal">
-                      {countCalories(breakfastList)} kcal
-                    </p>
+                    <p className="mealCaloriesGoal">{countCalories(breakfastList)} kcal</p>
                   </div>
-                  <p
-                    className="addMeal"
-                    onClick={() => setPopupMealType("breakfast")}
-                  >
-                    Add meal
-                  </p>
+                  <p className="addMeal" onClick={() => setPopupMealType("breakfast")}>Add meal</p>
                 </div>
-                <div className="mealList">
-                  {breakfastList.map((meal) => {
-                    return (
-                      <div className="mealItem" key={meal.id}>
-                        <div
-                          className="entryDescription"
-                          onClick={() => selectMeal(meal)}
-                        >
-                          <p className="mealName">{meal.food_name}</p>
-                          <p className="mealDescription">
-                            {meal.grammage}g • {meal.calories}kcal
-                          </p>
-                        </div>
-                        <div className="entryOptions">
-                          <button
-                            onClick={() =>
-                              selectMealToEdit(meal)
-                            }
-                          >
-                            <img src={EditBlack} alt="Edit food" />
-                          </button>
-                          <button
-                            onClick={() =>
-                              deleteMeal(meal.id)
-                            }
-                          >
-                            <img src={Trashcan} alt="Delete entry" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                <div className="mealList">{renderMealList(breakfastList)}</div>
               </div>
               <div className="mealManagerContainer dinner">
                 <div className="mealManagerTop">
                   <div className="mealTitleContainer">
                     <p className="mealTitle">Dinner•</p>
-                    <p className="mealCaloriesGoal">
-                      {countCalories(dinnerList)} kcal
-                    </p>
+                    <p className="mealCaloriesGoal">{countCalories(dinnerList)} kcal</p>
                   </div>
-                  <p
-                    className="addMeal"
-                    onClick={() => setPopupMealType("dinner")}
-                  >
-                    Add meal
-                  </p>
+                  <p className="addMeal" onClick={() => setPopupMealType("dinner")}>Add meal</p>
                 </div>
-                <div className="mealList">
-                  {dinnerList.map((meal) => {
-                    return (
-                      <div className="mealItem" key={meal.id}>
-                        <div
-                          className="entryDescription"
-                          onClick={() => selectMeal(meal)}
-                        >
-                          <p className="mealName">{meal.food_name}</p>
-                          <p className="mealDescription">
-                            {meal.grammage}g • {meal.calories}kcal
-                          </p>
-                        </div>
-                        <div className="entryOptions">
-                          <button
-                            onClick={() =>
-                              selectMealToEdit(meal)
-                            }
-                          >
-                            <img src={EditBlack} alt="Edit food" />
-                          </button>
-                          <button
-                            onClick={() =>
-                              deleteMeal(meal.id)
-                            }
-                          >
-                            <img src={Trashcan} alt="Delete entry" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                <div className="mealList">{renderMealList(dinnerList)}</div>
               </div>
             </div>
+
             <div className="rightSide">
-              <div className="divider">
+              <div className="divider macrosRow">
                 <div className="macrosContainer">
                   <p className="sectionTitle">Macros</p>
                   <div className="chartContainer">
-                    <Doughnut data={macrosData} options={macrosOptions} />
+                    <Doughnut key={`donut-${windowWidth}`} data={macrosData} options={macrosOptions} />
                   </div>
                 </div>
                 <div className="coloriesGoalStreakContainer">
-                  <Bar data={caloriesData} options={caloriesOptions} />
+                  <Bar key={`bar-${windowWidth}`} data={caloriesData} options={caloriesOptions} />
                 </div>
               </div>
-              <div className="divider">
+              <div className="divider lunchRow">
                 <div className="mealManagerContainer lunch">
                   <div className="mealManagerTop">
                     <div className="mealTitleContainer">
                       <p className="mealTitle">Lunch•</p>
-                      <p className="mealCaloriesGoal">
-                        {countCalories(lunchList)} kcal
-                      </p>
+                      <p className="mealCaloriesGoal">{countCalories(lunchList)} kcal</p>
                     </div>
-                    <p
-                      className="addMeal"
-                      onClick={() => setPopupMealType("lunch")}
-                    >
-                      Add meal
-                    </p>
+                    <p className="addMeal" onClick={() => setPopupMealType("lunch")}>Add meal</p>
                   </div>
-                  <div className="mealList">
-                    {lunchList.map((meal) => {
-                      return (
-                        <div className="mealItem" key={meal.id}>
-                          <div
-                            className="entryDescription"
-                            onClick={() => selectMeal(meal)}
-                          >
-                            <p className="mealName">{meal.food_name}</p>
-                            <p className="mealDescription">
-                              {meal.grammage}g • {meal.calories}kcal
-                            </p>
-                          </div>
-                          <div className="entryOptions">
-                            <button
-                              onClick={() =>
-                                selectMealToEdit(meal)
-                              }
-                            >
-                              <img src={EditBlack} alt="Edit food" />
-                            </button>
-                            <button
-                              onClick={() =>
-                                deleteMeal(meal.id)
-                              }
-                            >
-                              <img src={Trashcan} alt="Delete entry" />
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <div className="mealList">{renderMealList(lunchList)}</div>
                 </div>
                 <div className="mealDistributionContainer">
                   <p className="sectionTitle">Meal Distribution</p>
                   <div className="chartContainer">
-                    <Bar
-                      data={mealDistributionData}
-                      options={mealDistributionOptions}
-                    />
+                    <Bar key={`bar-dist-${windowWidth}`} data={mealDistributionData} options={mealDistributionOptions} />
                   </div>
                 </div>
               </div>
-              <div className="divider">
+              <div className="divider snacksRow">
                 <div className="mealManagerContainer snacks">
                   <div className="mealManagerTop">
                     <div className="mealTitleContainer">
                       <p className="mealTitle">Snacks•</p>
-                      <p className="mealCaloriesGoal">
-                        {countCalories(snacksList)} kcal
-                      </p>
+                      <p className="mealCaloriesGoal">{countCalories(snacksList)} kcal</p>
                     </div>
-                    <p
-                      className="addMeal"
-                      onClick={() => setPopupMealType("snacks")}
-                    >
-                      Add meal
-                    </p>
+                    <p className="addMeal" onClick={() => setPopupMealType("snacks")}>Add meal</p>
                   </div>
-                  <div className="mealList">
-                    {snacksList.map((meal) => {
-                      return (
-                        <div className="mealItem" key={meal.id}>
-                          <div
-                            className="entryDescription"
-                            onClick={() => selectMeal(meal)}
-                          >
-                            <p className="mealName">{meal.food_name}</p>
-                            <p className="mealDescription">
-                              {meal.grammage}g • {meal.calories}kcal
-                            </p>
-                          </div>
-                          <div className="entryOptions">
-                            <button
-                              onClick={() =>
-                                selectMealToEdit(meal)
-                              }
-                            >
-                              <img src={EditBlack} alt="Edit food" />
-                            </button>
-                            <button
-                              onClick={() =>
-                                deleteMeal(meal.id)
-                              }
-                            >
-                              <img src={Trashcan} alt="Delete entry" />
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <div className="mealList">{renderMealList(snacksList)}</div>
                 </div>
                 <div className="dailyTipContainer">
                   <p className="sectionTitle">Daily tip</p>

@@ -14,6 +14,15 @@
 }
 .widgetContainer2 {
   display: flex;
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding-left: 200px;
+}
+.allProfileSectionContainer {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
 }
 .profileContainer {
   position: relative;
@@ -30,7 +39,7 @@
 }
 .topProfileSection {
   display: flex;
-  width: 88vw;
+  width: 100%;
 }
 .topProfileSection .profileContainer > div:last-child {
   position: absolute;
@@ -132,13 +141,17 @@
   display: flex;
   position: relative;
   margin-top: 172px;
+  padding: 0 28px 28px;
+  box-sizing: border-box;
 }
 .bodyMetricData {
   padding: 0px 32px;
-  width: 31.446vw;
+  flex: 1;
+  min-width: 0;
   height: 37.354vh;
   border: 1px solid var(--primary-10);
   border-radius: 12px;
+  box-sizing: border-box;
 }
 .topMetric {
   display: flex;
@@ -186,10 +199,12 @@
 }
 .bodyGoals {
   padding: 0px 32px;
-  width: 37.831vw;
+  flex: 1;
+  min-width: 0;
   height: 37.354vh;
   border: 1px solid var(--primary-10);
   border-radius: 12px;
+  box-sizing: border-box;
 }
 .goalItem {
   font-size: 24px;
@@ -201,4 +216,177 @@
 .goalItem p {
   padding: 0;
   margin: 0;
+}
+
+@media (max-width: 1200px) {
+  .widgetContainer2 {
+    padding-left: 64px;
+  }
+  .profile .editProfileContainer {
+    width: auto;
+    flex: 1;
+  }
+  .profile .bodyMetricData {
+    height: auto;
+    min-height: 30vh;
+  }
+  .profile .bodyGoals {
+    height: auto;
+    min-height: 40vh;
+  }
+  .profile .bigProfilePic {
+    width: 150px;
+    height: 150px;
+  }
+  .profile .profileEditActions {
+    width: auto;
+    gap: 12px;
+  }
+  .profile .bodyGoals input {
+    width: 20%;
+  }
+  .profile .metricItem p:first-child,
+  .profile .metricItem p:last-child {
+    font-size: 18px;
+  }
+  .profile .goalItem {
+    font-size: 18px;
+  }
+  .profile .userGoals {
+    font-size: 18px;
+  }
+  .profile .bodyMetricData input {
+    width: 18%;
+  }
+}
+@media (max-width: 900px) {
+  .profile .botWidgetContainers {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .profile .bodyMetricData,
+  .profile .bodyGoals {
+    width: 100%;
+    min-height: unset;
+    box-sizing: border-box;
+  }
+  .profile .metricItem p:first-child,
+  .profile .metricItem p:last-child {
+    font-size: 16px;
+  }
+  .profile .goalItem {
+    font-size: 16px;
+    margin-top: 16px;
+  }
+  .profile .userGoals {
+    font-size: 16px;
+  }
+  .profile .bodyGoals input,
+  .profile .bodyMetricData input {
+    width: 25%;
+  }
+}
+
+@media (max-width: 768px) {
+  .widgetContainer2 {
+    padding-left: 0;
+    flex-direction: column;
+  }
+  .profile .allProfileSectionContainer {
+    padding-top: 60px;
+  }
+  .profile .topProfileSection {
+    width: 100%;
+    flex-direction: column;
+  }
+  .profile .profileContainer {
+    width: 100%;
+    height: 20vh;
+  }
+  .profile .userData {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 0 12px;
+    box-sizing: border-box;
+  }
+  .profile .bigProfilePic {
+    width: 120px;
+    height: 120px;
+  }
+  .profile .editProfileContainer {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .profile .editNameContainer {
+    justify-content: center;
+  }
+  .profile .userName {
+    font-size: 24px;
+    text-align: center;
+  }
+  .profile .userGoals {
+    font-size: 16px;
+    text-align: center;
+  }
+  .profile .userData input {
+    font-size: 24px;
+    text-align: center;
+  }
+  .profile .profileEditActions {
+    width: auto;
+    gap: 12px;
+    justify-content: center;
+  }
+  .profile .botProfileSection {
+    margin-top: 140px;
+    padding: 0 12px;
+    box-sizing: border-box;
+  }
+  .profile .botWidgetContainers {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .profile .bodyMetricData {
+    width: 100%;
+    height: auto;
+    min-height: unset;
+    padding: 0 16px;
+  }
+  .profile .bodyGoals {
+    width: 100%;
+    height: auto;
+    min-height: unset;
+    padding: 0 16px;
+  }
+  .profile .bodyMetricData input {
+    width: 20%;
+  }
+  .profile .bodyGoals input {
+    width: 25%;
+  }
+  .profile .metricItem p:first-child,
+  .profile .metricItem p:last-child {
+    font-size: 18px;
+  }
+  .profile .goalItem {
+    font-size: 18px;
+    margin-top: 16px;
+  }
+  .profile .progressTrackProfile {
+    margin-top: 8px;
+  }
+  .profile .topProfileSection .profileContainer > div:last-child {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    box-sizing: border-box;
+  }
 }

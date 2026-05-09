@@ -39,9 +39,9 @@ const Settings = () => {
   };
 
   return (
-    <div className="settingsContainer siteContainer">
+    <div className="settingsContainer">
       <Sidebar />
-      <div className="widgetContainer">
+      <div className="settingsContent">
         <p className="siteTitle">Settings</p>
         <div className="resetDataContainer">
           <div className="descriptionContainer">
@@ -65,7 +65,7 @@ const Settings = () => {
             <p className="sectionTitle">Delete your account</p>
             <p className="sectionDescription">
               Delete your account and all of your data permanently.
-            </p>
+            </p> 
           </div>
           <div className="buttonContainer">
             <button

@@ -149,6 +149,14 @@ const WaterManagement = () => {
     addWater(amount / 1000);
   };
 
+   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+useEffect(() => {
+  const handleResize = () => setWindowWidth(window.innerWidth);
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
   return (
     <>
       {showCustomAdd && (
@@ -157,14 +165,12 @@ const WaterManagement = () => {
           addCustomAmount={addCustomAmountOfWater}
         />
       )}
-
       <div className="waterManagementContainer siteContainer">
         <Sidebar />
         <div className="widgetContainer">
           <p className="siteTitle">Water Management</p>
 
           <div className="divider">
-            {/* ── LEFT SIDE ── */}
             <div className="leftSide">
               <div className="hydrationTrackerContainer">
                 <p className="sectionTitle">Hydration Tracker</p>
@@ -213,8 +219,6 @@ const WaterManagement = () => {
                 </ul>
               </div>
             </div>
-
-            {/* ── RIGHT SIDE ── */}
             <div className="rightSide">
               <div className="intakeTrendsContainer">
                 <p className="sectionTitle">Intake trends</p>
@@ -222,7 +226,6 @@ const WaterManagement = () => {
                   <Bar data={data} options={options} key={location.pathname} />
                 </div>
               </div>
-
               <div className="divider">
                 <div className="waterLogContainer">
                   <p className="sectionTitle">Water log</p>
@@ -244,7 +247,6 @@ const WaterManagement = () => {
                     ))}
                   </div>
                 </div>
-
                 <div className="usefulTipsContainer">
                   <p className="sectionTitle">Useful tips</p>
                   <ul>

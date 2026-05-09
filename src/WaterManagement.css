@@ -280,6 +280,7 @@
   gap: 6px;
 }
 .inputContainer label {
+  width: auto;
   font-size: 14px;
   color: var(--textColor-50);
 }
@@ -331,7 +332,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   .waterManagementContainer .widgetContainer {
     padding: 60px 12px 40px 12px !important;
   }

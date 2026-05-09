@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import { createPortal } from "react-dom";
 import { AuthContext } from "./AuthContext.jsx";
 import "./Sidebar.css";
 import Logo from "./assets/Ellipse4.png";
@@ -19,6 +20,12 @@ import { useAuthLayout } from "./AuthContext.jsx";
 function Sidebar() {
   const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [popupPos, setPopupPos] = useState({ top: 0, left: 0 });
+  const accountCardRef = useRef(null);
+
+  const isTablet = windowWidth > 768 && windowWidth <= 1200;
+  const isMobile = windowWidth <= 768;
 
   const {
     goToDashboard,
@@ -37,18 +44,55 @@ function Sidebar() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) setMobileOpen(false);
+      const w = window.innerWidth;
+      setWindowWidth(w);
+      if (w > 768) setMobileOpen(false);
+      setOpen(false);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.overflowX = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.overflowX = "";
+    }
     return () => {
       document.body.style.overflow = "";
+      document.body.style.overflowX = "";
     };
   }, [mobileOpen]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClickOutside = (e) => {
+      if (
+        accountCardRef.current &&
+        !accountCardRef.current.contains(e.target)
+      ) {
+        const portal = document.getElementById("account-popup-portal");
+        if (portal && portal.contains(e.target)) return;
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+      const handleAccountCardClick = () => {
+    if (isTablet && accountCardRef.current) {
+      const rect = accountCardRef.current.getBoundingClientRect();
+      setPopupPos({
+        bottom: window.innerHeight - rect.bottom,
+        left: 88,
+      });
+    }
+    setOpen((prev) => !prev);
+  };
 
   const closeMobile = () => setMobileOpen(false);
   const handleNav = (fn) => {
@@ -76,6 +120,60 @@ function Sidebar() {
     setOpen(false);
     closeMobile();
   };
+  const TabletPopup = () =>
+    isTablet && open
+      ? createPortal(
+          <div
+            id="account-popup-portal"
+            style={{
+              position: "fixed",
+              bottom: popupPos.bottom,
+              left: popupPos.left,
+              zIndex: 9999,
+              background: "var(--pureWhite)",
+              borderRadius: "20px",
+              boxShadow: "0 8px 32px rgba(15, 23, 42, 0.15)",
+              padding: "12px",
+              minWidth: "210px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px",
+            }}
+          >
+            <div
+              className="accountItem"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleProfileClick();
+              }}
+            >
+              <img src={profile} alt="" width={24} height={24} />
+              <p style={{ margin: 0, fontSize: 16, color: "var(--textColor)" }}>Profile</p>
+            </div>
+            <div
+              className="accountItem"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSettingsClick();
+              }}
+            >
+              <img src={settings} alt="" width={24} height={24} />
+              <p style={{ margin: 0, fontSize: 16, color: "var(--textColor)" }}>Settings</p>
+            </div>
+            <div
+              className="accountItem"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLogoutClick();
+              }}
+            >
+              <img src={logoutImg} alt="" width={24} height={24} />
+              <p style={{ margin: 0, fontSize: 16, color: "var(--textColor)" }}>Logout</p>
+            </div>
+          </div>,
+          document.body
+        )
+      : null;
 
   return (
     <>
@@ -113,35 +211,35 @@ function Sidebar() {
               className={`dashboardSidebarContainer ${selectedWidget === "dashboard" ? "selected" : ""}`}
               onClick={() => handleNav(goToDashboard)}
             >
-              <img src={dashboard} alt="Dashboard" />
+              <img src={dashboard} alt="Dashboard" width={24} height={24} title="Dashboard" style={{ display: "block" }} />
               <p>Dashboard</p>
             </div>
             <div
               className={`waterSidebarContainer ${selectedWidget === "water" ? "selected" : ""}`}
               onClick={() => handleNav(goToWater)}
             >
-              <img src={water} alt="Water" />
+              <img src={water} alt="Water" width={24} height={24} title="Water" style={{ display: "block" }} />
               <p>Water</p>
             </div>
             <div
               className={`foodSidebarContainer ${selectedWidget === "food" ? "selected" : ""}`}
               onClick={() => handleNav(goToFood)}
             >
-              <img src={food} alt="Food" />
+              <img src={food} alt="Food Diary" width={24} height={24} title="Food Diary" style={{ display: "block" }} />
               <p>Food Diary</p>
             </div>
             <div
               className={`workoutSidebarContainer ${selectedWidget === "workouts" ? "selected" : ""}`}
               onClick={() => handleNav(goToWorkouts)}
             >
-              <img src={workout} alt="Workouts" />
+              <img src={workout} alt="Workouts" width={24} height={24} title="Workouts" style={{ display: "block" }} />
               <p>Workouts</p>
             </div>
             <div
               className={`sleepSidebarContainer ${selectedWidget === "sleep" ? "selected" : ""}`}
               onClick={() => handleNav(goToSleep)}
             >
-              <img src={sleep} alt="Sleep" />
+              <img src={sleep} alt="Sleep Tracker" width={24} height={24} title="Sleep Tracker" style={{ display: "block" }} />
               <p>Sleep Tracker</p>
             </div>
           </div>
@@ -155,13 +253,14 @@ function Sidebar() {
               handleHelpClick();
             }}
           >
-            <img src={help} alt="Help" />
+            <img src={help} alt="Help" width={24} height={24} title="Help" style={{ display: "block" }} />
             <p>Help</p>
           </div>
 
           <div
-            className={`accountCard ${open ? "open" : ""}`}
-            onClick={() => setOpen((prev) => !prev)}
+            ref={accountCardRef}
+            className={`accountCard ${open && !isTablet ? "open" : ""}`}
+            onClick={handleAccountCardClick}
           >
             <div className="accountHeader">
               <div className="leftAccountSide">
@@ -179,41 +278,44 @@ function Sidebar() {
                 <img src={arrowUp} className="arrowCard" alt="" />
               </div>
             </div>
-            <div className="accountMenu">
-              <div
-                className="accountItem"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleProfileClick();
-                }}
-              >
-                <img src={profile} alt="" />
-                <p>Profile</p>
+            {!isTablet && (
+              <div className="accountMenu">
+                <div
+                  className="accountItem"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleProfileClick();
+                  }}
+                >
+                  <img src={profile} alt="" />
+                  <p>Profile</p>
+                </div>
+                <div
+                  className="accountItem"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSettingsClick();
+                  }}
+                >
+                  <img src={settings} alt="" />
+                  <p>Settings</p>
+                </div>
+                <div
+                  className="accountItem"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLogoutClick();
+                  }}
+                >
+                  <img src={logoutImg} alt="" />
+                  <p>Logout</p>
+                </div>
               </div>
-              <div
-                className="accountItem"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSettingsClick();
-                }}
-              >
-                <img src={settings} alt="" />
-                <p>Settings</p>
-              </div>
-              <div
-                className="accountItem"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleLogoutClick();
-                }}
-              >
-                <img src={logoutImg} alt="" />
-                <p>Logout</p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
+      <TabletPopup />
     </>
   );
 }

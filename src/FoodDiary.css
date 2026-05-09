@@ -13,11 +13,36 @@
   --pureWhite: #fefefe;
 }
 
+.mainDivider {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+.divider {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+.leftSide {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+
+.rightSide {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1.5;
+}
+
 .caloriesGoalContainer {
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
   padding: 12px 32px;
-  height: 16vh;
 }
 .caloriesGoalContainer .sectionTitle {
   margin: 0;
@@ -43,8 +68,7 @@
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
   padding: 12px 32px;
-  margin-top: 32px;
-  height: 26vh;
+  min-height: 160px;
 }
 .mealManagerTop {
   display: flex;
@@ -76,11 +100,10 @@
 }
 .mealList {
   margin-top: 0px;
-  max-height: 80%;
+  max-height: 200px;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-
 }
 .mealList::-webkit-scrollbar {
   display: none;
@@ -95,24 +118,23 @@
   align-content: center;
   transition: all 0.3s ease-in-out;
 }
-.mealItem:hover{
+.mealItem:hover {
   border-left: 5px solid var(--primary);
 }
-.mealItem .entryDescription{
+.mealItem .entryDescription {
   display: flex;
   flex-direction: column;
   align-content: start;
   width: 70%;
   cursor: pointer;
 }
-.mealItem .entryOptions{
+.mealItem .entryOptions {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
-.mealItem .entryOptions button{
+.mealItem .entryOptions button {
   margin-left: 20px;
-  
 }
 .mealName {
   color: var(--textColor);
@@ -126,49 +148,66 @@
 }
 
 .macrosContainer {
-  height: 16vh;
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
   padding: 12px 32px;
-  width: 50%;
+  flex: 1;
+  min-height: 160px;
 }
 .macrosContainer .chartContainer {
-  margin-top: -6vh;
-  margin-left: -0.5vw;
+  height: 120px;
+  margin-top: 8px;
 }
 
 .coloriesGoalStreakContainer {
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
   padding: 12px 32px;
-  width: 50%;
+  flex: 1;
+  min-height: 160px;
+}
+
+.macrosRow {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
 }
 
 .lunch {
-  width: 60%;
+  flex: 1.5;
 }
 .mealDistributionContainer {
-  width: 40%;
-  height: 26vh;
+  flex: 1;
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
-  margin-top: 32px;
   padding: 12px 32px;
+  min-height: 160px;
+}
+.mealDistributionContainer .chartContainer {
+  height: 120px;
+  margin-top: 8px;
+}
+
+.lunchRow {
   display: flex;
-  justify-content: center;
-  align-content: center;
+  flex-direction: row;
+  gap: 24px;
 }
 
 .snacks {
-  width: 60%;
+  flex: 1.5;
 }
 .dailyTipContainer {
-  width: 40%;
-  height: 26vh;
+  flex: 1;
   padding: 12px 32px;
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
-  margin-top: 32px;
+}
+
+.snacksRow {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
 }
 
 .dailyTipContainer ul {
@@ -181,4 +220,222 @@
 }
 .dailyTipContainer li::marker {
   color: var(--primary);
+}
+@media (max-width: 1400px){
+   .mainDivider {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .foodContainer .leftSide,
+  .foodContainer .rightSide,
+  .foodContainer .lunchRow,
+  .foodContainer .snacksRow {
+    display: contents;
+  }
+
+  .foodContainer .macrosRow {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    order: 2;
+  }
+
+  .foodContainer .caloriesGoalContainer       { order: 1; }
+  .foodContainer .macrosRow                   { order: 2; }
+  .foodContainer .mealDistributionContainer   { order: 3; }
+  .foodContainer .breakfast                   { order: 4; }
+  .foodContainer .lunch                       { order: 5; }
+  .foodContainer .dinner                      { order: 6; }
+  .foodContainer .snacks                      { order: 7; }
+  .foodContainer .dailyTipContainer           { order: 8; }
+
+  .foodContainer .caloriesGoalContainer,
+  .foodContainer .mealManagerContainer,
+  .foodContainer .mealDistributionContainer,
+  .foodContainer .dailyTipContainer,
+  .foodContainer .lunch,
+  .foodContainer .snacks {
+    width: 100%;
+    box-sizing: border-box;
+    flex: unset;
+  }
+
+  .foodContainer .macrosContainer,
+  .foodContainer .coloriesGoalStreakContainer {
+    flex: 1;
+  }
+
+  .foodContainer .caloriesGoalContainer .progressTrack {
+    width: 100%;
+  }
+
+  .foodContainer .macrosContainer .chartContainer {
+    height: 140px;
+    margin-top: 8px;
+    margin-left: 0;
+  }
+
+  .foodContainer .coloriesGoalStreakContainer {
+    min-height: 160px;
+  }
+
+  .foodContainer .mealDistributionContainer .chartContainer {
+    height: 120px;
+  }
+}
+@media (min-width: 769px) and (max-width: 1200px) {
+  .mainDivider {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .foodContainer .leftSide,
+  .foodContainer .rightSide,
+  .foodContainer .lunchRow,
+  .foodContainer .snacksRow {
+    display: contents;
+  }
+
+  .foodContainer .macrosRow {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    order: 2;
+  }
+
+  .foodContainer .caloriesGoalContainer       { order: 1; }
+  .foodContainer .macrosRow                   { order: 2; }
+  .foodContainer .mealDistributionContainer   { order: 3; }
+  .foodContainer .breakfast                   { order: 4; }
+  .foodContainer .lunch                       { order: 5; }
+  .foodContainer .dinner                      { order: 6; }
+  .foodContainer .snacks                      { order: 7; }
+  .foodContainer .dailyTipContainer           { order: 8; }
+
+  .foodContainer .caloriesGoalContainer,
+  .foodContainer .mealManagerContainer,
+  .foodContainer .mealDistributionContainer,
+  .foodContainer .dailyTipContainer,
+  .foodContainer .lunch,
+  .foodContainer .snacks {
+    width: 100%;
+    box-sizing: border-box;
+    flex: unset;
+  }
+
+  .foodContainer .macrosContainer,
+  .foodContainer .coloriesGoalStreakContainer {
+    flex: 1;
+  }
+
+  .foodContainer .caloriesGoalContainer .progressTrack {
+    width: 100%;
+  }
+
+  .foodContainer .macrosContainer .chartContainer {
+    height: 140px;
+    margin-top: 8px;
+    margin-left: 0;
+  }
+
+  .foodContainer .coloriesGoalStreakContainer {
+    min-height: 160px;
+  }
+
+  .foodContainer .mealDistributionContainer .chartContainer {
+    height: 120px;
+  }
+}
+
+@media (max-width: 854px) {
+  .foodContainer.siteContainer .widgetContainer {
+    padding-top: 60px !important;
+  }
+
+  .mainDivider {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .foodContainer .leftSide,
+  .foodContainer .rightSide {
+    display: contents;
+  }
+
+  .foodContainer .macrosRow,
+  .foodContainer .lunchRow,
+  .foodContainer .snacksRow {
+    display: contents;
+  }
+
+  .foodContainer .caloriesGoalContainer       { order: 1; }
+  .foodContainer .macrosContainer             { order: 2; }
+  .foodContainer .coloriesGoalStreakContainer { order: 3; }
+  .foodContainer .mealDistributionContainer   { order: 4; }
+  .foodContainer .breakfast                   { order: 5; }
+  .foodContainer .lunch                       { order: 6; }
+  .foodContainer .dinner                      { order: 7; }
+  .foodContainer .snacks                      { order: 8; }
+  .foodContainer .dailyTipContainer           { order: 9; }
+
+  .foodContainer .caloriesGoalContainer,
+  .foodContainer .mealManagerContainer,
+  .foodContainer .macrosContainer,
+  .foodContainer .coloriesGoalStreakContainer,
+  .foodContainer .mealDistributionContainer,
+  .foodContainer .dailyTipContainer {
+    width: 100%;
+    box-sizing: border-box;
+    height: auto;
+    min-height: unset;
+    margin: 0;
+    flex: unset;
+  }
+
+  .foodContainer .caloriesGoalContainer,
+  .foodContainer .mealManagerContainer,
+  .foodContainer .mealDistributionContainer,
+  .foodContainer .dailyTipContainer {
+    padding: 12px 16px;
+  }
+
+  .foodContainer .caloriesGoalContainer .progressTrack {
+    width: 100%;
+  }
+
+  .foodContainer .coloriesGoalStreakContainer {
+    height: 180px;
+    padding: 12px 16px;
+  }
+
+  .foodContainer .macrosContainer .chartContainer {
+    height: 160px;
+    margin-top: 8px;
+    margin-left: 0;
+  }
+
+  .foodContainer .mealDistributionContainer .chartContainer {
+    height: 120px;
+  }
+
+  .foodContainer .caloriesCompletion { font-size: 20px; }
+  .foodContainer .caloriesLeft       { font-size: 14px; }
+  .foodContainer .mealName           { font-size: 16px; }
+  .foodContainer .mealDescription    { font-size: 12px; }
+  .foodContainer .addMeal            { font-size: 14px; }
+  .foodContainer .mealTitle          { font-size: 14px; }
+  .foodContainer .mealCaloriesGoal   { font-size: 14px; }
+  .foodContainer .dailyTipContainer ul { padding-left: 16px; }
+  .foodContainer .dailyTipContainer li { font-size: 14px; }
+
+  .foodContainer .mealItem .entryDescription    { width: 65%; }
+  .foodContainer .mealItem .entryOptions button { margin-left: 10px; }
 }
