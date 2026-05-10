@@ -6,6 +6,7 @@ import mountains from "./assets/Mountains.png";
 import profilePic from "./assets/BigProfilePic.png";
 import { useDashboard } from "./DashboardContext.jsx";
 import { AuthContext } from "./AuthContext.jsx";
+import { useLanguage } from "./LanguageContext.jsx";
 function Profile() {
   const {
     currentHydration,
@@ -32,6 +33,8 @@ function Profile() {
     user,
     setName
   } = useContext(AuthContext)
+  const { t } = useLanguage();
+  const p = t.profile;
   const [modifyingProfile, setModifyingProfile] = useState(false)
   const [newName, setNewName] = useState(user.name)
   const [tempProfileImage, setTempProfileImage] = useState(null); 
@@ -91,9 +94,9 @@ const cancelModifyingMetrics = () =>{
 }
 
 const writeGoal = () =>{
-  if(currentWeight < goalWeight) return `Gain ${goalWeight-currentWeight} kilos`
-  else if(currentWeight > goalWeight) return `Lose ${currentWeight-goalWeight} kilos`
-  else return `Maintain weight of ${goalWeight} kilos`
+  if(currentWeight < goalWeight) return `${p.gain} ${goalWeight-currentWeight} ${p.kilos}`
+  else if(currentWeight > goalWeight) return `${p.lose} ${currentWeight-goalWeight} ${p.kilos}`
+  else return `${p.maintain} ${goalWeight} ${p.kilos}`
 }
 
 const cancelModifyingGoals = () =>{
@@ -144,14 +147,14 @@ const getPercentOfWeightGoalCompletion = () =>{
                   <div className="editNameContainer">
                     {!modifyingProfile ? <input type="text" value={user.name} disabled/>:<input type="text" value={newName} className="modification" onChange={(e)=>setNewName(e.target.value)} />}
                   </div>
-                  <p className="userGoals">Goal: {writeGoal()} • Intermediate </p>
+                  <p className="userGoals">{p.goalLabel} {writeGoal()} • {p.intermediate} </p>
                 </div>
                 {modifyingProfile ? 
                 <div className="profileEditActions">
-                  <p className="profileEdit" onClick={() => cancelProfileModification()}>Cancel</p>
-                  <p className="profileEdit" onClick={() => saveProfileChanges()}>Save</p>
+                  <p className="profileEdit" onClick={() => cancelProfileModification()}>{p.cancel}</p>
+                  <p className="profileEdit" onClick={() => saveProfileChanges()}>{p.save}</p>
                 </div> : 
-                <p className="profileEdit" onClick={() => setModifyingProfile(true)}>Edit Profile</p>
+                <p className="profileEdit" onClick={() => setModifyingProfile(true)}>{p.editProfile}</p>
                 }
               </div>
             </div>
@@ -161,55 +164,54 @@ const getPercentOfWeightGoalCompletion = () =>{
           <div className="botWidgetContainers">
             <div className="bodyMetricData">
               <div className="topMetric">
-                <p className="sectionTitle">Body & Metrics</p>
-                {!modifyingMetrics ? <p className="editWidget" onClick={()=>setModifyingMetrics(true)}>Edit Metrics</p>: <div className="editWidgetContainer">
-                  <p className="editWidget" onClick={()=>cancelModifyingMetrics()}>Cancel</p>
-                  <p className="editWidget" onClick={()=>saveNewMetrics()}>Save</p>
+                <p className="sectionTitle">{p.bodyMetrics}</p>
+                {!modifyingMetrics ? <p className="editWidget" onClick={()=>setModifyingMetrics(true)}>{p.editMetrics}</p>: <div className="editWidgetContainer">
+                  <p className="editWidget" onClick={()=>cancelModifyingMetrics()}>{p.cancel}</p>
+                  <p className="editWidget" onClick={()=>saveNewMetrics()}>{p.save}</p>
                   </div>}
               </div>
               <div className="metricItem">
-                <p>Height</p>
+                <p>{p.height}</p>
                 {modifyingMetrics ? <input type="number" value={newHeight} className="modification" onChange={(e)=>setNewHeight(parseInt(e.target.value))} />:<p>{currentHeight}cm</p>}
               </div>
               <hr />
               <div className="metricItem">
-                <p>Weight</p>
+                <p>{p.weight}</p>
                 {modifyingMetrics ? <input type="number" value={newWeight} className="modification" onChange={(e)=>setNewWeight(parseInt(e.target.value))} />:<p>{currentWeight}kg</p>}
               </div>
               <hr />
               <div className="metricItem">
-                <p>Age</p>
+                <p>{p.age}</p>
                 <p>{currentAge}</p>
               </div>
               <hr />
               <div className="metricItem">
-                <p>Sex</p>
+                <p>{p.sex}</p>
                 <p>{gender}</p>
               </div>
               <hr />
             </div>
             <div className="bodyGoals">
               <div className="topMetric">
-                <p>Goal Weight</p>
-                {!modifyingGoals ? <p className="editWidget" onClick={()=>setModifyingGoals(true)}>Edit Goals</p>: 
+                <p>{p.goalWeight}</p>
+                {!modifyingGoals ? <p className="editWidget" onClick={()=>setModifyingGoals(true)}>{p.editGoals}</p>: 
                   <div className="editWidgetContainer">
-                    <p className="editWidget" onClick={()=>cancelModifyingGoals()}>Cancel</p>
-                    <p className="editWidget" onClick={()=>saveNewGoals()}>Save</p>
+                    <p className="editWidget" onClick={()=>cancelModifyingGoals()}>{p.cancel}</p>
+                    <p className="editWidget" onClick={()=>saveNewGoals()}>{p.save}</p>
                   </div>
                 }
               </div>
               <div className="goalItem">
                 {modifyingGoals ? 
                 <div className="goalEditionContainer">
-                  <label htmlFor="activityGoal">Daily activity time • </label>
+                  <label htmlFor="activityGoal">{p.dailyActivity} </label>
                   <input type="number" id="activityGoal" className="modification" value={newActivityGoal} onChange={(e)=>setNewActivityGoal(parseInt(e.target.value))}  />
-                  <label htmlFor="activityGoal"> min </label>
+                  <label htmlFor="activityGoal"> {p.min} </label>
                 </div>:
                 <p>
-                  Daily activity time • {(allSeconds / 60).toFixed(1)} / {dailyActivity}min
+                  {p.dailyActivity} {(allSeconds / 60).toFixed(1)} / {dailyActivity}{p.min}
                 </p>
                 }
-                
                 <div className="progressTrack progressTrackProfile">
                   <div className="progressFill" style={{width: `${(((allSeconds/60).toFixed(1) / dailyActivity) * 100).toFixed(1)}%`}}/>
                 </div>
@@ -218,12 +220,12 @@ const getPercentOfWeightGoalCompletion = () =>{
               <div className="goalItem">
                 {modifyingGoals ? 
                 <div className="goalEditionContainer">
-                  <label htmlFor="waterGoal">Daily water intake • </label>
+                  <label htmlFor="waterGoal">{p.dailyWater} </label>
                   <input type="number" id="waterGoal" className="modification" value={newWaterGoal} onChange={(e)=>setNewWaterGoal(parseFloat(e.target.value))}  />
-                  <label htmlFor="waterGoal"> L </label>
+                  <label htmlFor="waterGoal"> {p.litres} </label>
                 </div>:
                 <p>
-                  Daily water intake • {currentHydration.toFixed(1)} L / {(hydrationGoal * 1).toFixed(1)} L
+                  {p.dailyWater} {currentHydration.toFixed(1)} {p.litres} / {(hydrationGoal * 1).toFixed(1)} {p.litres}
                 </p>
                 }
                 <div className="progressTrack progressTrackProfile">
@@ -237,12 +239,12 @@ const getPercentOfWeightGoalCompletion = () =>{
               <div className="goalItem">
                 {modifyingGoals ? 
                 <div className="goalEditionContainer">
-                  <label htmlFor="weightGoal">Weight Goal • </label>
+                  <label htmlFor="weightGoal">{p.weightGoal} </label>
                   <input type="number" id="weightGoal" className="modification" value={newGoalWeight} onChange={(e)=>setNewGoalWeight(parseInt(e.target.value))}  />
-                  <label htmlFor="weightGoal"> kg </label>
+                  <label htmlFor="weightGoal"> {p.kg} </label>
                 </div>:
                 <p>
-                  {currentWeight !== goalWeight ? <>Weight Goal • {getPercentOfWeightGoalCompletion()}% {currentWeight<goalWeight ? "of weight gain done":"of weight loss done"} | Target: {goalWeight}kg</>:<>Weight Goal • You are right on your goal of {goalWeight}kg</>}
+                  {currentWeight !== goalWeight ? <>{p.weightGoal} {getPercentOfWeightGoalCompletion()}% {currentWeight<goalWeight ? p.weightGainDone : p.weightLossDone} | {p.target} {goalWeight}kg</>:<>{p.weightGoal} {p.onGoal} {goalWeight}kg</>}
                 </p>
                 }
                 <div className="progressTrack progressTrackProfile">

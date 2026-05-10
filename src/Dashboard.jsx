@@ -1,6 +1,7 @@
 import { useCallback, useState, useRef, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { useDashboard } from "./DashboardContext.jsx";
+import { useLanguage } from "./LanguageContext.jsx";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -57,6 +58,8 @@ export function Dashboard() {
   const sleepBarRef = useRef(null);
   const caloriesWidth = useContainerWidth(caloriesRef);
   const sleepBarWidth = useContainerWidth(sleepBarRef);
+  const { t } = useLanguage();
+  const d = t.dashboard;
 
   const chartWidth = (containerWidth) =>
     containerWidth > 0 ? Math.max(containerWidth - 40, 200) : 450;
@@ -98,14 +101,14 @@ export function Dashboard() {
 
   const weightWeekSubtitle = (() => {
     const entries = (weightWeekData || []).filter((e) => e.weight > 0);
-    if (entries.length < 2) return "No data yet";
+    if (entries.length < 2) return d.noDataYet;
     const sorted = [...entries].sort(
       (a, b) => new Date(a.date) - new Date(b.date),
     );
     const diff = (sorted[sorted.length - 1].weight - sorted[0].weight).toFixed(
       1,
     );
-    return diff > 0 ? `+${diff}Kg this Week` : `${diff}Kg this Week`;
+    return diff > 0 ? `+${diff}Kg ${d.thisWeek}` : `${diff}Kg ${d.thisWeek}`;
   })();
 
   const sleepComparison = getSleepComparison();
@@ -259,10 +262,10 @@ export function Dashboard() {
         <Sidebar />
 
         <div className="widgetContainer">
-          <p className="siteTitle">Dashboard</p>
+          <p className="siteTitle">{d.title}</p>
           <div className="topWidgets">
             <div className="smallWidget" onClick={goToFood}>
-              <p className="smallWidgetTitle">Calories</p>
+              <p className="smallWidgetTitle">{d.calories}</p>
               <p className="smalWidgetDesc">
                 {caloriesCount} / {caloriesGoal}
               </p>
@@ -282,7 +285,7 @@ export function Dashboard() {
             </div>
 
             <div className="smallWidget" onClick={goToWater}>
-              <p className="smallWidgetTitle">Water</p>
+              <p className="smallWidgetTitle">{d.water}</p>
               <p className="smalWidgetDesc">
                 {currentHydration.toFixed(1)} L /{" "}
                 {(hydrationGoal * 1).toFixed(1)} L
@@ -298,10 +301,10 @@ export function Dashboard() {
             </div>
 
             <div className="smallWidget">
-              <p className="smallWidgetTitle">Weight</p>
+              <p className="smallWidgetTitle">{d.weight}</p>
               <div className="descLine">
                 <p className="smalWidgetDesc">
-                  {currentWeight ? `${currentWeight}Kg` : "No data"}
+                  {currentWeight ? `${currentWeight}Kg` : d.noData}
                 </p>
                 <img
                   src={weightComparison?.isIncrease ? TrendUp : TrendDown}
@@ -312,22 +315,22 @@ export function Dashboard() {
                 </p>
               </div>
               <p className="smallWidgetGrayDesc">
-                Goal: {goalWeight} Kg (
+                {d.goal}: {goalWeight} Kg (
                 {goalWeight - currentWeight > 0
-                  ? `+${goalWeight - currentWeight}Kg to gain`
-                  : `${goalWeight - currentWeight}Kg to lose`}
+                  ? `+${goalWeight - currentWeight}Kg ${d.toGain}`
+                  : `${goalWeight - currentWeight}Kg ${d.toLose}`}
                 )
               </p>
             </div>
 
             <div className="smallWidget" onClick={goToSleep}>
-              <p className="smallWidgetTitle">Sleep</p>
+              <p className="smallWidgetTitle">{d.sleep}</p>
               <div className="descLine">
                 <p className="smalWidgetDesc">
                   {lastNightSleep[0] > 0 ? `${lastNightSleep[0]}h ` : ""}
                   {lastNightSleep[1] > 0 ? `${lastNightSleep[1]}min ` : ""}
                   {lastNightSleep[0] <= 0 && lastNightSleep[1] <= 0
-                    ? "No sleep "
+                    ? `${d.noSleep} `
                     : ""}
                 </p>
                 <img
@@ -339,10 +342,10 @@ export function Dashboard() {
                 </p>
               </div>
               <p className="smallWidgetGrayDesc">
-                Last:{" "}
+                {d.last}:{" "}
                 {sleepComparison?.yesterdayMinutes > 0
                   ? `${Math.floor(sleepComparison?.yesterdayMinutes / 60)}h`
-                  : `No sleep before`}
+                  : d.noSleepBefore}
               </p>
             </div>
           </div>
@@ -353,7 +356,7 @@ export function Dashboard() {
               onClick={goToFood}
               ref={caloriesRef}
             >
-              <p className="caloriesTitle">Calories vs Goal</p>
+              <p className="caloriesTitle">{d.caloriesVsGoal}</p>
               <div className="barContainer">
                 <div className="lineTarget" />
                 <div className="data">
@@ -365,11 +368,11 @@ export function Dashboard() {
                   />
                 </div>
               </div>
-              <p className="waterTarget">4 / 7 days on target</p>
+              <p className="waterTarget">4 / 7 {d.daysOnTarget}</p>
             </div>
 
             <div className="dailyChallenges">
-              <p className="widgetTitle">Daily Challenges</p>
+              <p className="widgetTitle">{d.dailyChallenges}</p>
               <form>
                 {currentChallenge?.map((item) => (
                   <div key={item.id} className="inputGroup2">
@@ -397,7 +400,7 @@ export function Dashboard() {
               onClick={goToSleep}
               ref={sleepBarRef}
             >
-              <p className="caloriesTitle">Sleep This Week</p>
+              <p className="caloriesTitle">{d.sleepThisWeek}</p>
               <div className="barContainer">
                 <div className="lineTarget" />
                 <div className="data">
@@ -409,18 +412,18 @@ export function Dashboard() {
                   />
                 </div>
               </div>
-              <p className="waterTarget">4 / 7 days on target</p>
+              <p className="waterTarget">4 / 7 {d.daysOnTarget}</p>
             </div>
           </div>
           <div className="botWidgets">
             <LineChart
-              title="Weight Trend"
+              title={d.weightTrend}
               values={weightValues}
               options={sleepOptions}
               subtitle={weightWeekSubtitle}
             />
             <div className="smallWaterContainer" onClick={goToWater}>
-              <p className="caloriesTitle">Water</p>
+              <p className="caloriesTitle">{d.water}</p>
               <div className="donutDashboardChartContainer">
                 <DonutChart
                   current={currentHydration}
@@ -435,7 +438,7 @@ export function Dashboard() {
             </div>
             <div className="lineChartContainer" onClick={goToWorkouts}>
               <LineChart
-                title="Activity Minutes"
+                title={d.activityMinutes}
                 values={activityValues}
                 options={activityOptions}
                 min={0}

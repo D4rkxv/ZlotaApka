@@ -46,7 +46,8 @@
 
 .todayWorkoutContainer {
   width: 27.541vw;
-  height: 41.693vh;
+  min-height: 41.693vh;
+  height: auto;
   border: 1px solid var(--primary-10);
   border-radius: 12px;
   padding: 12px 32px;
@@ -75,7 +76,7 @@
   margin: 0;
 }
 .workoutGroup {
-  margin-top: 16px;
+  margin-top: 12px;
 }
 .todaysWorkoutProgress {
   font-size: 16px;
@@ -89,7 +90,7 @@
   width: 60%;
 }
 .todaysWorkoutRight {
-  width: 45%;
+  width: 35%;
   display: flex;
   flex-direction: column;
   align-items: center;

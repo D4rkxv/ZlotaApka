@@ -8,6 +8,8 @@ import { Bar } from "react-chartjs-2";
 import Sidebar from "./Sidebar";
 import { useDashboard } from "./DashboardContext";
 import WaterPopup from "./WaterPopup";
+import { useLanguage } from "./LanguageContext.jsx";
+
 
 const WaterManagement = () => {
   const {
@@ -19,6 +21,8 @@ const WaterManagement = () => {
     waterWeek,
     deleteWaterEntry,
   } = useDashboard();
+  const { t } = useLanguage();
+  const w = t.water;
 
   const [showCustomAdd, setShowCustomAdd] = useState(false);
 
@@ -31,9 +35,9 @@ const WaterManagement = () => {
 
   const getBestDay = () => {
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    if (!waterWeek || waterWeek.length === 0) return "No data";
+    if (!waterWeek || waterWeek.length === 0) return w.noData;
     const max = Math.max(...waterWeek);
-    if (max === 0) return "No data";
+    if (max === 0) return w.noData;
     const index = waterWeek.indexOf(max);
     return `${days[index]} - ${max.toFixed(1)}L`;
   };
@@ -76,32 +80,7 @@ const WaterManagement = () => {
     return labels;
   };
 
-  const [tips] = useState([
-    "Drink a glass of water first thing in the morning to rehydrate your body.",
-    "Carry a reusable water bottle to remind yourself to drink throughout the day.",
-    "Add lemon, cucumber, or mint to your water for a refreshing taste.",
-    "Set a daily water goal, like 8 glasses, and track your progress.",
-    "Drink water before meals to support digestion and control appetite.",
-    "Choose water over sugary drinks to stay hydrated without extra calories.",
-    "Stay hydrated during workouts to improve performance and recovery.",
-    "Use phone reminders or app notifications to drink water regularly.",
-    "Monitor the color of your urine – light yellow indicates proper hydration.",
-    "Drink water at different temperatures to keep it interesting.",
-    "Sip water slowly throughout the day instead of chugging all at once.",
-    "Replace one cup of coffee or tea with water to reduce dehydration.",
-    "Keep a glass of water at your desk or bedside to drink more often.",
-    "Infuse water with berries or herbs for a natural flavor boost.",
-    "Drink a glass of water after each bathroom break to maintain intake.",
-    "Hydrate before, during, and after long periods of sun exposure.",
-    "Use a water tracking app to gamify your hydration habits.",
-    "Drink water before feeling thirsty to stay ahead of dehydration.",
-    "Pair water breaks with routine activities, like after brushing teeth.",
-    "Remember that sparkling water counts toward your daily intake too.",
-    "Eat water-rich foods like fruits and vegetables to supplement hydration.",
-    "Replace soda or juice with water during meals for healthier habits.",
-    "Drink a small glass of water before and after exercise.",
-    "Make drinking water a part of your mindfulness routine.",
-  ]);
+  const tips = t.waterTips;
 
   const [selectedTips, setSelectedTips] = useState([]);
 
@@ -168,12 +147,12 @@ useEffect(() => {
       <div className="waterManagementContainer siteContainer">
         <Sidebar />
         <div className="widgetContainer">
-          <p className="siteTitle">Water Management</p>
+          <p className="siteTitle">{w.title}</p>
 
           <div className="divider">
             <div className="leftSide">
               <div className="hydrationTrackerContainer">
-                <p className="sectionTitle">Hydration Tracker</p>
+                <p className="sectionTitle">{w.hydrationTracker}</p>
                 <div className="centeredContainer">
                   <div className="donutChartContainer">
                     <DonutChart
@@ -212,23 +191,23 @@ useEffect(() => {
               </div>
 
               <div className="hydrationSummaryContainer">
-                <p className="sectionTitle">Hydration summary</p>
+                <p className="sectionTitle">{w.hydrationSummary}</p>
                 <ul>
-                  <li>Average this week: {getWeeklyAverage()}L</li>
-                  <li>Best day: {getBestDay()}</li>
+                  <li>{w.averageThisWeek} {getWeeklyAverage()}L</li>
+                  <li>{w.bestDay} {getBestDay()}</li>
                 </ul>
               </div>
             </div>
             <div className="rightSide">
               <div className="intakeTrendsContainer">
-                <p className="sectionTitle">Intake trends</p>
+                <p className="sectionTitle">{w.intakeTrends}</p>
                 <div className="barChartContainer">
                   <Bar data={data} options={options} key={location.pathname} />
                 </div>
               </div>
               <div className="divider">
                 <div className="waterLogContainer">
-                  <p className="sectionTitle">Water log</p>
+                  <p className="sectionTitle">{w.waterLog}</p>
                   <div className="waterLog">
                     {waterLog.map((entry, index) => (
                       <div className="logEntry" key={index}>
@@ -248,7 +227,7 @@ useEffect(() => {
                   </div>
                 </div>
                 <div className="usefulTipsContainer">
-                  <p className="sectionTitle">Useful tips</p>
+                  <p className="sectionTitle">{w.usefulTips}</p>
                   <ul>
                     {selectedTips.map((tip, index) => (
                       <li key={index}>{tip}</li>

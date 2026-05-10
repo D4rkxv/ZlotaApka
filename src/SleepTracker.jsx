@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar.jsx";
 import { useDashboard } from "./DashboardContext.jsx";
 import "./SleepTracker.css";
+import { useLanguage } from "./LanguageContext.jsx";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -14,38 +15,7 @@ import { Bar, Doughnut } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function SleepTracker() {
-  const [tips, setTips] = useState([
-    "Go to bed and wake up at the same time every day to regulate your sleep cycle.",
-    "Create a relaxing bedtime routine to signal your body that it’s time to sleep.",
-    "Avoid screens at least one hour before bedtime to improve sleep quality.",
-    "Keep your bedroom cool, dark, and quiet for better sleep.",
-    "Limit caffeine intake in the afternoon and evening.",
-    "Avoid heavy meals close to bedtime.",
-    "Get natural sunlight exposure during the day to support your circadian rhythm.",
-    "Use your bed only for sleep and rest, not for work or scrolling.",
-    "Practice deep breathing or meditation before bed to relax your mind.",
-    "Avoid naps longer than 20–30 minutes during the day.",
-    "Try to go to bed before midnight for more restorative sleep.",
-    "Reduce noise and light disturbances in your sleeping environment.",
-    "Keep a consistent pre-sleep wind-down period every night.",
-    "Avoid intense exercise right before bedtime.",
-    "Limit alcohol consumption, as it can disrupt sleep cycles.",
-    "Write down worries or to-do lists before bed to clear your mind.",
-    "Make sure your mattress and pillow support comfortable sleep.",
-    "Stop using electronic devices once you’re in bed.",
-    "Wake up naturally if possible, instead of using loud alarms.",
-    "Use soft lighting in the evening to prepare your body for sleep.",
-    "Try reading a book instead of using your phone before bed.",
-    "Avoid checking the clock if you wake up during the night.",
-    "Maintain a comfortable room temperature for sleeping.",
-    "Get out of bed if you can’t fall asleep after 20 minutes and relax elsewhere.",
-    "Limit fluid intake right before bedtime to reduce night awakenings.",
-    "Stretch gently in the evening to release tension.",
-    "Establish a calming sleep environment with familiar scents or sounds.",
-    "Expose yourself to daylight early in the morning.",
-    "Avoid stressful conversations or tasks late at night.",
-    "Focus on sleep consistency rather than perfection.",
-  ]);
+  const tips = [];
   const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   const {
@@ -64,10 +34,13 @@ function SleepTracker() {
     sleepTime,
   } = useDashboard();
   const [selectedTip, setSelectedTip] = useState("");
+  const { t } = useLanguage();
+  const s = t.sleep;
+  const sleepTips = t.sleepTips;
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * tips.length);
-    setSelectedTip(tips[randomIndex]);
-  }, []);
+    const randomIndex = Math.floor(Math.random() * sleepTips.length);
+    setSelectedTip(sleepTips[randomIndex]);
+  }, [sleepTips]);
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -162,20 +135,20 @@ useEffect(() => {
     <div className="sleepContainer siteContainer">
       <Sidebar />
       <div className="widgetContainer">
-        <p className="siteTitle">Sleep Tracking</p>
+        <p className="siteTitle">{s.title}</p>
         <div className="divider">
           <div className="sleepSummaryContainer">
-            <p className="sectionTitle">Sleep Summary</p>
+            <p className="sectionTitle">{s.sleepSummary}</p>
             <p className="lastNightSummary">
               {lastNightSleep[0] > 0 ? `${lastNightSleep[0]}h ` : ""}
               {lastNightSleep[1] > 0 ? `${lastNightSleep[1]}min ` : ""}
               {lastNightSleep[0] <= 0 && lastNightSleep[1] <= 0
-                ? "No sleep "
+                ? `${s.noSleep} `
                 : ""}
-              last night
+              {s.lastNight}
             </p>
             <p className="sleepGoal">
-              Sleep goal: {sleepTime[0] > 0 ? `${sleepTime[0]}h` : ""}
+              {s.sleepGoal} {sleepTime[0] > 0 ? `${sleepTime[0]}h` : ""}
               {sleepTime[1] > 0 ? `${sleepTime[1]}min` : ""}
             </p>
             <div className="progressTrack">
@@ -190,37 +163,37 @@ useEffect(() => {
               />
             </div>
             <p className="sleepStartEndTime">
-              In bed at: {profileInBedTime || "N/A"} • Woke up at:{" "}
-              {profileOutOfBedTime || "N/A"}
+              {s.inBedAt} {profileInBedTime || s.na} • {s.wokeUpAt}{" "}
+              {profileOutOfBedTime || s.na}
             </p>
           </div>
           <div className="sleepScoreContainer">
-            <p className="sectionTitle">Sleep Score</p>
+            <p className="sectionTitle">{s.sleepScore}</p>
             <div className="divider">
               <div className="chartContainer">
                 <Doughnut data={sleepScoreData} options={sleepScoreOptions} key={windowWidth} />
               </div>
               <div className="sleepScoreDetails">
                 <p>
-                  Time Asleep:
+                  {s.timeAsleep}
                   {lastNightSleep[0] > 0 ? ` ${lastNightSleep[0]}h` : ""}
                   {lastNightSleep[1] > 0 ? ` ${lastNightSleep[1]}min` : ""}
                   {lastNightSleep[0] <= 0 && lastNightSleep[1] <= 0
-                    ? " No sleep"
+                    ? ` ${s.noSleep}`
                     : ""}
                 </p>
-                <p>Woke up at: {profileOutOfBedTime}</p>
-                <p>Sleep score: {score > 0 ? score : "0"}%</p>
+                <p>{s.wokeUpAt} {profileOutOfBedTime}</p>
+                <p>{s.scoreLabel} {score > 0 ? score : "0"}%</p>
               </div>
             </div>
           </div>
         </div>
         <div className="divider">
           <div className="sleepLogContainer">
-            <p className="sectionTitle">Sleep Log</p>
+            <p className="sectionTitle">{s.sleepLog}</p>
             <form onSubmit={handleSave}>
               <div className="goneToBedInputContainer">
-                <label htmlFor="goneToBedInput">Gone to bed at:</label>
+                <label htmlFor="goneToBedInput">{s.goneToBed}</label>
                 <input
                   type="time"
                   id="goneToBedInput"
@@ -231,7 +204,7 @@ useEffect(() => {
                 />
               </div>
               <div className="outOfBedInputContainer">
-                <label htmlFor="outOfBedInput">Out of bed at:</label>
+                <label htmlFor="outOfBedInput">{s.outOfBed}</label>
                 <input
                   type="time"
                   id="outOfBedInput"
@@ -242,72 +215,40 @@ useEffect(() => {
                 />
               </div>
               <div className="sleepQualityContainer">
-                <p>Sleep quality:</p>
+                <p>{s.sleepQuality}</p>
                 <div className="optionContainer">
-                  <input
-                    type="radio"
-                    id="poorSleep"
-                    value={"poor"}
-                    checked={sleepQuality === "poor"}
-                    onChange={handleChange}
-                    name="sleepQuality"
-                    required
-                  />
-                  <label htmlFor="poorSleep">Poor</label>
+                  <input type="radio" id="poorSleep" value={"poor"} checked={sleepQuality === "poor"} onChange={handleChange} name="sleepQuality" required />
+                  <label htmlFor="poorSleep">{s.poor}</label>
                 </div>
                 <div className="optionContainer">
-                  <input
-                    type="radio"
-                    id="averageSleep"
-                    value={"average"}
-                    checked={sleepQuality === "average"}
-                    onChange={handleChange}
-                    name="sleepQuality"
-                    required
-                  />
-                  <label htmlFor="averageSleep">Average</label>
+                  <input type="radio" id="averageSleep" value={"average"} checked={sleepQuality === "average"} onChange={handleChange} name="sleepQuality" required />
+                  <label htmlFor="averageSleep">{s.average}</label>
                 </div>
                 <div className="optionContainer">
-                  <input
-                    type="radio"
-                    id="goodSleep"
-                    value={"good"}
-                    checked={sleepQuality === "good"}
-                    onChange={handleChange}
-                    name="sleepQuality"
-                    required
-                  />
-                  <label htmlFor="goodSleep">Good</label>
+                  <input type="radio" id="goodSleep" value={"good"} checked={sleepQuality === "good"} onChange={handleChange} name="sleepQuality" required />
+                  <label htmlFor="goodSleep">{s.good}</label>
                 </div>
                 <div className="optionContainer">
-                  <input
-                    type="radio"
-                    id="excellentSleep"
-                    value={"excellent"}
-                    checked={sleepQuality === "excellent"}
-                    onChange={handleChange}
-                    name="sleepQuality"
-                    required
-                  />
-                  <label htmlFor="excellentSleep">Excellent</label>
+                  <input type="radio" id="excellentSleep" value={"excellent"} checked={sleepQuality === "excellent"} onChange={handleChange} name="sleepQuality" required />
+                  <label htmlFor="excellentSleep">{s.excellent}</label>
                 </div>
               </div>
               <button className="workoutBtn1">
                 {profileOutOfBedTime && profileInBedTime
-                  ? "Update last night's sleep"
-                  : "Log last night's sleep"}
+                  ? s.updateSleep
+                  : s.logSleep}
               </button>
             </form>
           </div>
           <div className="sleepWeekChartContainer">
-            <p className="sectionTitle">Sleep This Week</p>
+            <p className="sectionTitle">{s.sleepThisWeek}</p>
             <div className="chartContainer">
               <Bar data={sleepThisWeekData} options={sleepThisWeekOptions} key={windowWidth}/>
             </div>
           </div>
         </div>
         <div className="tip-container">
-          <p className="sectionTitle">Tip of the day</p>
+          <p className="sectionTitle">{s.tipOfDay}</p>
           <p>{selectedTip}</p>
         </div>
       </div>

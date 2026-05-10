@@ -4,9 +4,11 @@ import React, {
   useContext,
   useCallback,
   useEffect,
+  useMemo,
 } from "react";
 import profilePic from "./assets/BigProfilePic.png";
 import { AuthContext, api } from "./AuthContext.jsx";
+import { useLanguage } from "./LanguageContext.jsx";
 
 const DashboardContext = createContext();
 
@@ -23,6 +25,7 @@ export class Meal {
 
 export const DashboardProvider = ({ children }) => {
   const { userProfile, updateUserProfile, token } = useContext(AuthContext);
+  const { t } = useLanguage();
 
   const getCurrentWeekKey = () => {
     const now = new Date();
@@ -247,181 +250,9 @@ export const DashboardProvider = ({ children }) => {
     }
   }, [token]);
 
-  const allWorkouts = [
-    {
-      name: "Full Body Starter",
-      exercises: [
-        { id: "w1-1", name: "Squats - 3x12" },
-        { id: "w1-2", name: "Elevated push-ups 3x8" },
-        { id: "w1-3", name: "One-arm dumbbell row 3x10" },
-        { id: "w1-4", name: "Dumbbell overhead press 3x10" },
-        { id: "w1-5", name: "Plank 3x40s" },
-        { id: "w1-6", name: "Glute bridge 3x12" },
-      ],
-    },
-    {
-      name: "Bodyweight Blast",
-      exercises: [
-        { id: "w2-1", name: "Bodyweight squats - 3x15" },
-        { id: "w2-2", name: "Push-ups - 3x10" },
-        { id: "w2-3", name: "Superman hold - 3x30s" },
-        { id: "w2-4", name: "Pike push-ups - 3x8" },
-        { id: "w2-5", name: "Lunges per leg - 3x12" },
-        { id: "w2-6", name: "Dead bug - 3x12/side" },
-      ],
-    },
-    {
-      name: "Dumbbell Power",
-      exercises: [
-        { id: "w3-1", name: "Goblet squats - 3x12" },
-        { id: "w3-2", name: "Dumbbell bench press- 3x10" },
-        { id: "w3-3", name: "Single-arm rows - 3x12/arm" },
-        { id: "w3-4", name: "Dumbbell lunges - 3x10/leg" },
-        { id: "w3-5", name: "Russian twists - 3x20" },
-        { id: "w3-6", name: "Side plank - 3x30s/side" },
-      ],
-    },
-    {
-      name: "Strength Builder",
-      exercises: [
-        { id: "w4-1", name: "Bulgarian split squats - 3x10/leg" },
-        { id: "w4-2", name: "Diamond push-ups - 3x8" },
-        { id: "w4-3", name: "Inverted rows (table) - 3x12" },
-        { id: "w4-4", name: "Dumbbell deadlifts - 3x12" },
-        { id: "w4-5", name: "Bicycle crunches - 3x15/side" },
-        { id: "w4-6", name: "Wall sit - 3x40s" },
-      ],
-    },
-    {
-      name: "Push & Pull",
-      exercises: [
-        { id: "w5-1", name: "Reverse lunges - 3x12/leg" },
-        { id: "w5-2", name: "Wide push-ups - 3x10" },
-        { id: "w5-3", name: "Dumbbell rows - 3x10" },
-        { id: "w5-4", name: "Chair dips - 3x12" },
-        { id: "w5-5", name: "Leg raises - 3x12" },
-        { id: "w5-6", name: "Plank shoulder taps - 3x20" },
-      ],
-    },
-    {
-      name: "Sumo & Press",
-      exercises: [
-        { id: "w6-1", name: "Sumo squats - 3x15" },
-        { id: "w6-2", name: "Floor press dumbbells - 3x12" },
-        { id: "w6-3", name: "Bent-over rows - 3x12" },
-        { id: "w6-4", name: "Lateral raises - 3x12" },
-        { id: "w6-5", name: "Overhead tricep ext - 3x12" },
-        { id: "w6-6", name: "Bird dog - 3x10/side" },
-      ],
-    },
-    {
-      name: "Easy Movement",
-      exercises: [
-        { id: "w7-1", name: "Air squats - 3x15" },
-        { id: "w7-2", name: "Wall push-ups - 3x12" },
-        { id: "w7-3", name: "Prone cobra - 3x30s" },
-        { id: "w7-4", name: "Step-ups (chair) - 3x12/leg" },
-        { id: "w7-5", name: "Seated twists - 3x20" },
-        { id: "w7-6", name: "Bridge march - 3x20" },
-      ],
-    },
-    {
-      name: "Advanced Challenge",
-      exercises: [
-        { id: "w8-1", name: "Jump squats - 3x10" },
-        { id: "w8-2", name: "Archer push-ups - 3x8/side" },
-        { id: "w8-3", name: "Australian rows - 3x12" },
-        { id: "w8-4", name: "Pistol squat assist - 3x8/leg" },
-        { id: "w8-5", name: "Mountain climbers - 3x30s" },
-        { id: "w8-6", name: "Hollow hold - 3x30s" },
-      ],
-    },
-    {
-      name: "Balance & Stability",
-      exercises: [
-        { id: "w9-1", name: "Single-leg deadlift - 3x10/leg" },
-        { id: "w9-2", name: "Incline push-ups - 3x12" },
-        { id: "w9-3", name: "Face pulls (band) - 3x15" },
-        { id: "w9-4", name: "Calf raises - 3x15" },
-        { id: "w9-5", name: "Windmill - 3x10/side" },
-        { id: "w9-6", name: "Side plank dips - 3x12/side" },
-      ],
-    },
-    {
-      name: "MetCon Circuit",
-      exercises: [
-        { id: "w10-1", name: "Thrusters (dumbbell) - 3x10" },
-        { id: "w10-2", name: "Renegade rows - 3x8/arm" },
-        { id: "w10-3", name: "Burpee push-ups - 3x8" },
-        { id: "w10-4", name: "Goblet lunges - 3x10/leg" },
-        { id: "w10-5", name: "V-ups - 3x12" },
-        { id: "w10-6", name: "Bear crawl hold - 3x40s" },
-      ],
-    },
-  ];
+  const allWorkouts = t.allWorkouts;
 
-  const dailyChallenges = [
-    [
-      { id: "c1-1", name: "No caffeine after 2 PM" },
-      { id: "c1-2", name: "Read book 15 min" },
-      { id: "c1-3", name: "Walk 5000 steps" },
-      { id: "c1-4", name: "No sweets today" },
-    ],
-    [
-      { id: "c2-1", name: "Deep work 90 min" },
-      { id: "c2-2", name: "Bed before 11:00 PM" },
-      { id: "c2-3", name: "Eat 3 meals only" },
-      { id: "c2-4", name: "Plank 2 min total" },
-    ],
-    [
-      { id: "c3-1", name: "Cold shower" },
-      { id: "c3-2", name: "No social media morning" },
-      { id: "c3-3", name: "Outdoor walk 45 min" },
-      { id: "c3-4", name: "Protein 25g per meal" },
-    ],
-    [
-      { id: "c4-1", name: "Stretch 15 min" },
-      { id: "c4-2", name: "Drink 3L Water" },
-      { id: "c4-3", name: "Call family/friend" },
-      { id: "c4-4", name: "No fast food" },
-    ],
-    [
-      { id: "c5-1", name: "Run or Jog 20 min" },
-      { id: "c5-2", name: "Journal 5 min" },
-      { id: "c5-3", name: "Sunlight exposure 15 min" },
-      { id: "c5-4", name: "Screen time under 3h" },
-    ],
-    [
-      { id: "c6-1", name: "Learn new skill 30 min" },
-      { id: "c6-2", name: "Clean room/desk 10 min" },
-      { id: "c6-3", name: "100 Push-ups total" },
-      { id: "c6-4", name: "Eat 2 pieces of fruit" },
-    ],
-    [
-      { id: "c7-1", name: "Zero alcohol today" },
-      { id: "c7-2", name: "Meditate 10 min" },
-      { id: "c7-3", name: "Bike or Swim 30 min" },
-      { id: "c7-4", name: "Track all calories" },
-    ],
-    [
-      { id: "c8-1", name: "Walk 10 min after dinner" },
-      { id: "c8-2", name: "No phone in bed" },
-      { id: "c8-3", name: "Stand while working 1h" },
-      { id: "c8-4", name: "Listen to edu podcast" },
-    ],
-    [
-      { id: "c9-1", name: "Squats 50 reps total" },
-      { id: "c9-2", name: "Write 3 gratitude things" },
-      { id: "c9-3", name: "Water before coffee" },
-      { id: "c9-4", name: "Sleep 7h 30m" },
-    ],
-    [
-      { id: "c10-1", name: "Power nap 20 min" },
-      { id: "c10-2", name: "No bread/pasta today" },
-      { id: "c10-3", name: "Visualize goals 5 min" },
-      { id: "c10-4", name: "Walk 8000 steps" },
-    ],
-  ];
+  const dailyChallenges = t.challenges;
 
   //water Section backend
   const [currentHydration, setCurrentHydration] = useState(0);
@@ -1284,6 +1115,40 @@ export const DashboardProvider = ({ children }) => {
     return () => clearInterval(checkDateAndWeekChange);
   }, [token]);
 
+  const translatedCurrentWorkout = useMemo(() => {
+    if (!currentWorkout || !t.allWorkouts) return currentWorkout;
+    const firstExId = currentWorkout.exercises?.[0]?.id;
+    if (firstExId) {
+      const match = t.allWorkouts.find(w => w.exercises?.some(e => e.id === firstExId));
+      if (match) {
+        return {
+          ...currentWorkout,
+          name: match.name,
+          exercises: currentWorkout.exercises.map(ex => {
+            const translatedEx = match.exercises.find(e => e.id === ex.id);
+            return { ...ex, name: translatedEx ? translatedEx.name : ex.name };
+          })
+        };
+      }
+    }
+    return currentWorkout;
+  }, [currentWorkout, t.allWorkouts]);
+
+  const translatedCurrentChallenge = useMemo(() => {
+    if (!currentChallenge || !t.challenges) return currentChallenge;
+    return currentChallenge.map(item => {
+      let translatedName = item.name;
+      for (const group of t.challenges) {
+        const match = group.find(c => c.id === item.id);
+        if (match) {
+           translatedName = match.name;
+           break;
+        }
+      }
+      return { ...item, name: translatedName };
+    });
+  }, [currentChallenge, t.challenges]);
+
   return (
     <DashboardContext.Provider
       value={{
@@ -1313,7 +1178,7 @@ export const DashboardProvider = ({ children }) => {
         setCurrentHeight,
         currentAge,
         setCurrentAge,
-        currentChallenge,
+        currentChallenge: translatedCurrentChallenge,
         setCurrentChallenge,
         toggleChallengeItem,
         //switching
@@ -1356,7 +1221,7 @@ export const DashboardProvider = ({ children }) => {
         allCalories,
         addCalories,
         addTime,
-        currentWorkout,
+        currentWorkout: translatedCurrentWorkout,
         todayKey,
         //water
         currentHydration,

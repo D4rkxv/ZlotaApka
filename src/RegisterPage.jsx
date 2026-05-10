@@ -1,10 +1,11 @@
 import Diving from "./assets/Diving2.png";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Logo from "./assets/Ellipse4.png";
 import Google from "./assets/Google.svg";
 import Github from "./assets/Github.svg";
 import "./LoginPage.css";
 import { useAuthLayout } from "./AuthContext";
+import { useLanguage } from "./LanguageContext.jsx";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -14,10 +15,11 @@ function RegisterPage() {
     confirmPassword: "",
   });
 
-  const [ localError , setLocalError ] = useState("");
+  const [localError, setLocalError] = useState("");
+  const { t } = useLanguage();
+  const l = t.register;
 
-  const { goToLanding, goToLogin, register, isLoading, error } =
-    useAuthLayout();
+  const { goToLanding, goToLogin, register, isLoading } = useAuthLayout();
   const handleChange = (e) => {
     setLocalError("");
     setFormData({
@@ -35,26 +37,22 @@ function RegisterPage() {
       !formData.password ||
       !formData.confirmPassword
     ) {
-      setLocalError("All fields are required");
+      setLocalError(l.allFieldsRequired);
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setLocalError("Passwords do not match");
+      setLocalError(l.passwordsMismatch);
       return;
     }
     if (formData.password.length < 8) {
-      setLocalError("Password must be at least 8 characters long");
-
+      setLocalError(l.passwordTooShort);
       return;
     }
 
-    const result = await register(
-      formData.name,
-      formData.email,
-      formData.password
-    );
+    await register(formData.name, formData.email, formData.password);
   };
+
   return (
     <div className="formContainer">
       <div className="leftContainer">
@@ -67,8 +65,8 @@ function RegisterPage() {
           </p>
         </div>
         <div className="loginForm">
-          <p>Create an Account</p>
-          <p>Join now to change your life forever</p>
+          <p>{l.createAccount}</p>
+          <p>{l.subtitle}</p>
           <form className="inputForm" onSubmit={handleSubmit}>
             <div className="inputGroup">
               <input
@@ -80,7 +78,7 @@ function RegisterPage() {
                 disabled={isLoading}
                 required
               />
-              <label>Name</label>
+              <label>{l.name}</label>
             </div>
             <div className="inputGroup">
               <input
@@ -92,7 +90,7 @@ function RegisterPage() {
                 disabled={isLoading}
                 required
               />
-              <label>Login</label>
+              <label>{l.emailLabel}</label>
             </div>
             <div className="inputGroup">
               <input
@@ -104,7 +102,7 @@ function RegisterPage() {
                 disabled={isLoading}
                 required
               />
-              <label>Password</label>
+              <label>{l.password}</label>
             </div>
             <div className="inputGroup">
               <input
@@ -116,15 +114,15 @@ function RegisterPage() {
                 disabled={isLoading}
                 required
               />
-              <label>Confirm Password</label>
+              <label>{l.confirmPassword}</label>
             </div>
             <p className="errorHandler">{localError}</p>
             <button type="submit" className="logInBtn">
-              {isLoading ? "Creating account..." : "Sign Up"}
+              {isLoading ? l.creatingAccount : l.signUp}
             </button>
           </form>
           <div className="anotherOptions">
-            <p>Or Login With</p>
+            <p>{l.orLoginWith}</p>
           </div>
           <div className="buttons">
             <button>
@@ -137,18 +135,18 @@ function RegisterPage() {
             </button>
           </div>
           <div className="underButton">
-            <p>Already Have Account?</p>
+            <p>{l.alreadyHaveAccount}</p>
             <a className="link">
               <p className="underlineLink" onClick={goToLogin}>
-                Login Now
+                {l.loginNow}
               </p>
             </a>
           </div>
         </div>
         <div className="loginFooter">
-          <p>© 2025 VitaTrack. All rights reserved.</p>
+          <p>{l.footer}</p>
           <a href="https://www.otomoto.pl/osobowe/polonez" className="link">
-            <p className="underlineLink">PrivacyPolicy</p>
+            <p className="underlineLink">{l.privacyPolicy}</p>
           </a>
         </div>
       </div>

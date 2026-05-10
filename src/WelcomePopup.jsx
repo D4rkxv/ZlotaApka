@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Popups.css";
 import { useDashboard } from "./DashboardContext";
+import { useLanguage } from "./LanguageContext.jsx";
 
 const WelcomePopup = ({ setPopupVisibility }) => {
   const {
@@ -28,49 +29,42 @@ const WelcomePopup = ({ setPopupVisibility }) => {
     setCurrentAge,
     saveProfileData,
   } = useDashboard();
+  const { t } = useLanguage();
+  const w = t.welcome;
   const [isSaving, setIsSaving] = useState(false);
+
   useEffect(() => {
     setSleepTime([(sleepTimeInput / 60).toFixed(0), sleepTimeInput % 60]);
   }, [sleepTimeInput]);
+
   const handleGenderChange = (e) => {
-    const value = e.target.value;
-    setGender(value);
+    setGender(e.target.value);
   };
+
   const handleSaveProfile = async (e) => {
     e.preventDefault();
-    if (
-      !currentWeight ||
-      !goalWeight ||
-      !gender ||
-      !currentHeight ||
-      !currentAge
-    ) {
-      alert("Please fill in all required fields");
+    if (!currentWeight || !goalWeight || !gender || !currentHeight || !currentAge) {
+      alert(w.fillAllFields);
       return;
     }
     setIsSaving(true);
     const result = await saveProfileData();
     setIsSaving(false);
     if (result.success) {
-      console.log("Profile saved successfully!");
       setPopupVisibility(false);
     } else {
-      alert("Error saving profile: " + (result.error || "Unknown error"));
+      alert(w.errorSaving + " " + (result.error || w.unknownError));
     }
   };
+
   return (
     <div className="popupBackground">
       <div className="welcomePopup popupContainer">
         <form onSubmit={handleSaveProfile}>
-          <p className="popupTitle">Welcome to VitaTrack!</p>
-          <p className="popupDescription">
-            Before we start, we need to ask you a few important questions about
-            your current weight, age, gender, and your goals for sleep,
-            calories, and exercise.
-          </p>
+          <p className="popupTitle">{w.title}</p>
+          <p className="popupDescription">{w.description}</p>
           <div className="popupSection">
-            <p className="popupSectionTitle">Your details</p>
-
+            <p className="popupSectionTitle">{w.yourDetails}</p>
             <div className="inputGroup">
               <input
                 type="number"
@@ -80,7 +74,7 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                 required
                 min={1}
               />
-              <label>Current Height</label>
+              <label>{w.currentHeight}</label>
             </div>
             <div className="inputGroup">
               <input
@@ -91,7 +85,7 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                 required
                 min={1}
               />
-              <label>Current Weight</label>
+              <label>{w.currentWeight}</label>
             </div>
             <div className="inputGroup">
               <input
@@ -102,10 +96,10 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                 required
                 min={1}
               />
-              <label>Current Age</label>
+              <label>{w.currentAge}</label>
             </div>
             <div className="popupSubSection">
-              <p>Gender</p>
+              <p>{w.gender}</p>
               <div className="divider">
                 <div className="radioButtonContainer">
                   <input
@@ -116,7 +110,7 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                     onChange={handleGenderChange}
                     checked={gender === "Male"}
                   />
-                  <label htmlFor="maleGender">Male</label>
+                  <label htmlFor="maleGender">{w.male}</label>
                 </div>
                 <div className="radioButtonContainer">
                   <input
@@ -127,13 +121,13 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                     onChange={handleGenderChange}
                     checked={gender === "Female"}
                   />
-                  <label htmlFor="femaleGender">Female</label>
+                  <label htmlFor="femaleGender">{w.female}</label>
                 </div>
               </div>
             </div>
           </div>
           <div className="popupSection">
-            <p className="popupSectionTitle">Your Goals</p>
+            <p className="popupSectionTitle">{w.yourGoals}</p>
             <div className="inputGroup">
               <input
                 type="number"
@@ -143,10 +137,10 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                 onChange={(e) => setGoalWeight(e.target.value)}
                 required
               />
-              <label>Goal Weight</label>
+              <label>{w.goalWeight}</label>
             </div>
             <p className="popupSubSection">
-              Daily sleep goal • {sleepTime[0]}h{" "}
+              {w.dailySleepGoal} {sleepTime[0]}h{" "}
               {sleepTime[1] > 0 ? `${sleepTime[1]}min` : null}
             </p>
             <div className="sliderContainer">
@@ -158,15 +152,13 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                 min={240}
                 max={600}
                 value={sleepTimeInput}
-                onChange={(e) => {
-                  setSleepTimeInput(e.target.value);
-                }}
+                onChange={(e) => setSleepTimeInput(e.target.value)}
                 required
               />
               <p>10h</p>
             </div>
             <p className="popupSubSection">
-              Daily calories goal • {caloriesGoal}kcal
+              {w.dailyCaloriesGoal} {caloriesGoal}kcal
             </p>
             <div className="sliderContainer">
               <p>1000kcal</p>
@@ -177,15 +169,13 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                 min={1000}
                 max={5000}
                 value={caloriesGoal}
-                onChange={(e) => {
-                  setCaloriesGoal(e.target.value);
-                }}
+                onChange={(e) => setCaloriesGoal(e.target.value)}
                 required
               />
               <p>5000kcal</p>
             </div>
             <p className="popupSubSection">
-              Daily activity • {dailyActivity}min
+              {w.dailyActivity} {dailyActivity}min
             </p>
             <div className="sliderContainer">
               <p>10min</p>
@@ -196,15 +186,13 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                 min={10}
                 max={120}
                 value={dailyActivity}
-                onChange={(e) => {
-                  setDailyActivity(e.target.value);
-                }}
+                onChange={(e) => setDailyActivity(e.target.value)}
                 required
               />
               <p>120min</p>
             </div>
             <p className="popupSubSection">
-              Weekly workouts • {weeklyWorkouts}
+              {w.weeklyWorkouts} {weeklyWorkouts}
             </p>
             <div className="sliderContainer">
               <p>1</p>
@@ -215,14 +203,12 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                 min={1}
                 max={7}
                 value={weeklyWorkouts}
-                onChange={(e) => {
-                  setWeeklyWorkouts(e.target.value);
-                }}
+                onChange={(e) => setWeeklyWorkouts(e.target.value)}
                 required
               />
               <p>7</p>
             </div>
-            <p className="popupSubSection">Daily Water • {hydrationGoal}</p>
+            <p className="popupSubSection">{w.dailyWater} {hydrationGoal}</p>
             <div className="sliderContainer">
               <p>2L</p>
               <input
@@ -232,16 +218,14 @@ const WelcomePopup = ({ setPopupVisibility }) => {
                 min={2}
                 max={6}
                 value={hydrationGoal}
-                onChange={(e) => {
-                  setHydrationGoal(e.target.value);
-                }}
+                onChange={(e) => setHydrationGoal(e.target.value)}
                 required
               />
               <p>6L</p>
             </div>
           </div>
           <div className="popupButtonContainer">
-            <button type="submit">Save</button>
+            <button type="submit">{w.save}</button>
           </div>
         </form>
       </div>

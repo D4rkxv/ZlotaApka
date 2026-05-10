@@ -9,9 +9,13 @@ import Line1 from "./assets/line1.svg";
 import Line2 from "./assets/line2.svg";
 import "./LandingPage.css";
 import { useAuthLayout } from "./AuthContext";
+import { useLanguage } from "./LanguageContext.jsx";
 
 function LandingPage() {
   const { goToLogin, goToRegister } = useAuthLayout();
+  const { t, language, setLanguage } = useLanguage();
+  const l = t.landing;
+
   return (
     <>
       <div className="navbar">
@@ -23,38 +27,50 @@ function LandingPage() {
         </div>
         <div className="links">
           <a href="#home" className="landingLink">
-            <p className="underlineLandingLink">Home</p>
+            <p className="underlineLandingLink">{l.navHome}</p>
           </a>
           <a href="#about" className="landingLink">
-            <p className="underlineLandingLink">About</p>
+            <p className="underlineLandingLink">{l.navAbout}</p>
           </a>
           <a href="#features" className="landingLink">
-            <p className="underlineLandingLink">Features</p>
+            <p className="underlineLandingLink">{l.navFeatures}</p>
           </a>
           <a href="#howItWork" className="landingLink">
-            <p className="underlineLandingLink">How it works</p>
+            <p className="underlineLandingLink">{l.navHowItWorks}</p>
           </a>
         </div>
         <div className="loginButtons">
+          <div className="landingLangSwitch">
+            <button
+              className={`landingLangBtn ${language === "en" ? "landingLangActive" : ""}`}
+              onClick={() => setLanguage("en")}
+            >
+              EN
+            </button>
+            <span className="landingLangSep">|</span>
+            <button
+              className={`landingLangBtn ${language === "pl" ? "landingLangActive" : ""}`}
+              onClick={() => setLanguage("pl")}
+            >
+              PL
+            </button>
+          </div>
           <button className="loginBtn" onClick={goToLogin}>
-            Login
+            {l.login}
           </button>
           <button className="registerBtn" onClick={goToRegister}>
-            Get Started
+            {l.getStarted}
           </button>
         </div>
       </div>
       <div className="heroContainer">
         <img src={HeroImg} className="heroImg" id="home" />
         <div className="heroP">
-          <h1 className="heroLine1">Track your health.</h1>
-          <h1 className="heroLine2">Transform your habits.</h1>
-          <p>
-            VitaTrack helps you log workouts, calories, water and weight in
-            <br /> one simple dashboard, so you can see real progress every day.
-          </p>
+          <h1 className="heroLine1">{l.heroLine1}</h1>
+          <h1 className="heroLine2">{l.heroLine2}</h1>
+          <p>{l.heroDesc}</p>
           <button className="registerBtn2" onClick={goToRegister}>
-            Start tracking now
+            {l.startTracking}
           </button>
         </div>
       </div>
@@ -62,26 +78,26 @@ function LandingPage() {
         <div className="statistic">
           <div className="stat">
             <div className="textInside">
-              <p className="statTop">500+</p>
-              <p className="statBot">Users</p>
+              <p className="statTop">{l.stat1Top}</p>
+              <p className="statBot">{l.stat1Bot}</p>
             </div>
           </div>
           <div className="stat">
             <div className="textInside">
-              <p className="statTop">30+</p>
-              <p className="statBot">minutes of activity daily</p>
+              <p className="statTop">{l.stat2Top}</p>
+              <p className="statBot">{l.stat2Bot}</p>
             </div>
           </div>
           <div className="stat">
             <div className="textInside">
-              <p className="statTop">50+</p>
-              <p className="statBot">goals completed</p>
+              <p className="statTop">{l.stat3Top}</p>
+              <p className="statBot">{l.stat3Bot}</p>
             </div>
           </div>
           <div className="stat">
             <div className="textInside">
-              <p className="statTop">100%</p>
-              <p className="statBot">data in one place</p>
+              <p className="statTop">{l.stat4Top}</p>
+              <p className="statBot">{l.stat4Bot}</p>
             </div>
           </div>
         </div>
@@ -90,111 +106,85 @@ function LandingPage() {
         <div className="aboutUs">
           <div className="aboutLeft">
             <p className="aboutTop" id="about">
-              A few words about us
+              {l.aboutTop}
             </p>
-            <p className="aboutBot">
-              VitaTrack started as a side project after noticing how many
-              fitness apps are bloated with complex features and noisy
-              dashboards. The goal was to create something lightweight and
-              friendly that feels more like a daily check‑in than another task
-              on your to‑do list. Every screen is designed to be calm, focused
-              and easy to understand at a glance.
-            </p>
+            <p className="aboutBot">{l.aboutBot}</p>
           </div>
           <div className="aboutRight">
             <img src={AboutUsImg} draggable={false} />
           </div>
         </div>
         <div className="features">
-          <p id="features">Stay on top of your health, one habit at a time.</p>
+          <p id="features">{l.featuresTagline}</p>
           <div className="cardContainer">
             <div className="card">
               <div className="cardContent">
                 <img src={Files} draggable={false} />
-                <p className="cardTop">All your habits in one place</p>
-                <p className="cardBot">
-                  View sleep, water and calories in a clean, simple dashboard so
-                  you always know where you stand.
-                </p>
+                <p className="cardTop">{l.card1Title}</p>
+                <p className="cardBot">{l.card1Desc}</p>
               </div>
             </div>
             <div className="card">
               <div className="cardContent">
                 <img src={Cloud} draggable={false} />
-                <p className="cardTop">Log progress in seconds</p>
-                <p className="cardBot">
-                  Add water or calories with one tap using smart presets,
-                  without digging through complex menus.
-                </p>
+                <p className="cardTop">{l.card2Title}</p>
+                <p className="cardBot">{l.card2Desc}</p>
               </div>
             </div>
             <div className="card">
               <div className="cardContent">
                 <img src={Trends} draggable={false} />
-                <p className="cardTop">See trends, not just numbers</p>
-                <p className="cardBot">
-                  Track weekly and monthly patterns to spot what is working and
-                  adjust your habits faster.
-                </p>
+                <p className="cardTop">{l.card3Title}</p>
+                <p className="cardBot">{l.card3Desc}</p>
               </div>
             </div>
           </div>
         </div>
         <div className="howItWork">
-          <p id="howItWork">How VitaTrack works</p>
+          <p id="howItWork">{l.howTitle}</p>
           <div className="steps">
             <div className="step step1">
               <div className="circle">1</div>
               <div className="circleP">
-                <p className="circleTitle">Create your profile</p>
-                <p className="circleDesc">
-                  Set your daily goals for water, sleep and calories.
-                </p>
+                <p className="circleTitle">{l.step1Title}</p>
+                <p className="circleDesc">{l.step1Desc}</p>
               </div>
             </div>
-
             <img src={Line1} className="line line1" draggable={false} />
-
             <div className="step step2">
               <div className="circle">2</div>
               <div className="circleP">
-                <p className="circleTitle">Log your day</p>
-                <p className="circleDesc">
-                  Add entries in a few taps using smart presets.
-                </p>
+                <p className="circleTitle">{l.step2Title}</p>
+                <p className="circleDesc">{l.step2Desc}</p>
               </div>
             </div>
-
             <img src={Line2} className="line line2" draggable={false} />
-
             <div className="step step3">
               <div className="circle">3</div>
               <div className="circleP">
-                <p className="circleTitle">See your progress</p>
-                <p className="circleDesc">
-                  Track trends and adjust your habits with simple charts.
-                </p>
+                <p className="circleTitle">{l.step3Title}</p>
+                <p className="circleDesc">{l.step3Desc}</p>
               </div>
             </div>
           </div>
         </div>
         <div className="footer">
-          <p>© 2025 VitaTrack. All rights reserved.</p>
+          <p>{l.footerRights}</p>
           <div className="footerLinks">
             <a href="#home" className="link">
-              <p className="underlineLink">Home</p>
+              <p className="underlineLink">{l.navHome}</p>
             </a>
             <a href="#about" className="link">
-              <p className="underlineLink">About</p>
+              <p className="underlineLink">{l.navAbout}</p>
             </a>
             <a href="#features" className="link">
-              <p className="underlineLink">Features</p>
+              <p className="underlineLink">{l.navFeatures}</p>
             </a>
             <a href="#howItWork" className="link">
-              <p className="underlineLink">How it works</p>
+              <p className="underlineLink">{l.navHowItWorks}</p>
             </a>
             <a href="https://www.otomoto.pl/osobowe/polonez" className="link">
-              <p className="underlineLink">PrivacyPolicy</p>
+              <p className="underlineLink">{l.privacyPolicy}</p>
             </a>
           </div>
         </div>

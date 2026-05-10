@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { useDashboard } from "./DashboardContext.jsx";
 import { api } from "./AuthContext.jsx";
 import "./Popups.css";
+import { useLanguage } from "./LanguageContext.jsx";
 
 const WeightUpdatePopup = ({ setDailyWeightUpdated }) => {
   const { currentWeight, setCurrentWeight, fetchWeightData } = useDashboard();
+  const { t } = useLanguage();
+  const w = t.weightUpdate;
   const [newWeight, setNewWeight] = useState(currentWeight);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -17,14 +20,11 @@ const WeightUpdatePopup = ({ setDailyWeightUpdated }) => {
             setIsLoading(true);
             try {
               const parsed = parseFloat(newWeight);
-
               await api.post("/weight", {
                 weight: parsed,
                 date: new Date().toISOString().split("T")[0],
               });
-
               await api.put("/profile", { current_weight: parsed });
-
               setCurrentWeight(parsed);
               await fetchWeightData();
             } catch (error) {
@@ -35,10 +35,10 @@ const WeightUpdatePopup = ({ setDailyWeightUpdated }) => {
             }
           }}
         >
-          <p className="popupTitle">Daily weight update</p>
+          <p className="popupTitle">{w.title}</p>
           <div className="popupSection">
             <div className="inputContainer">
-              <label htmlFor="weightInput">Today's weight in kg:</label>
+              <label htmlFor="weightInput">{w.label}</label>
               <input
                 type="number"
                 id="weightInput"
@@ -50,7 +50,7 @@ const WeightUpdatePopup = ({ setDailyWeightUpdated }) => {
           </div>
           <div className="popupButtonContainer">
             <button type="submit" className="coloredBtn" disabled={isLoading}>
-              {isLoading ? "Saving..." : "Confirm"}
+              {isLoading ? w.saving : w.save}
             </button>
           </div>
         </form>

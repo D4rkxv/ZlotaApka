@@ -6,60 +6,12 @@ import "./FoodDiary.css";
 import "./Dashboard.css";
 import { useDashboard } from "./DashboardContext";
 import WorkoutPopup from "./WorkoutPopup";
+import { useLanguage } from "./LanguageContext.jsx";
 
 function Workouts() {
-    const [tips, setTips] = useState([
-    "Plan one “non-negotiable” 20-minute activity today – schedule it in your calendar like a meeting and treat it as something you can’t cancel.",
-    "Commit to one “non-negotiable” 15-minute walk after breakfast – add it to your phone and do it rain or shine.",
-    "Set one “non-negotiable” 10-minute stretch session tonight – calendar it like an important call.",
-    "Pick one “non-negotiable” 5-minute push-up series first thing in the morning – set a reminder, no excuses.",
-    "Schedule one “non-negotiable” 10-minute meditation at noon – treat it like a boss meeting.",
-    "Do one “non-negotiable” 20-minute FBW workout after work – plan it in your app and stick to it.",
-    "Lock in one “non-negotiable” 15-minute bike ride – note the time and prioritize it.",
-    "Choose one “non-negotiable” 10-minute yoga before bed – alarm on, no skipping.",
-    "Plan one “non-negotiable” 5-minute squat set upon waking – add to calendar now.",
-    "Make one “non-negotiable” 20-minute dog walk – map the route and commit.",
-    "Set one “non-negotiable” 10-minute core work in your break – calendar as essential.",
-    "Do one “non-negotiable” 5-minute jump rope morning blast – timer ready.",
-    "Schedule one “non-negotiable” 15-minute leg stretch evening routine – non-optional.",
-    "Commit to one “non-negotiable” 3-minute plank daily – reminder set.",
-    "Pick one “non-negotiable” 10-minute brisk lunch walk – calendar block it.",
-    "Lock in one “non-negotiable” 5-minute pull-up session – no cancellations.",
-    "Plan one “non-negotiable” 10-minute breathing exercise – time it precisely.",
-    "Do one “non-negotiable” 15-minute dance to music – playlist queued, calendar added.",
-    "Set one “non-negotiable” 5-set diamond push-ups – treat as mandatory.",
-    "Choose one “non-negotiable” 20-minute post-dinner stroll – route planned.",
-    "Schedule one “non-negotiable” 10-minute face yoga – build into routine.",
-    "Commit to one “non-negotiable” 5-minute burpees morning kickoff – don't miss.",
-    "Pick one “non-negotiable” 15-minute arm work with dumbbells – meeting status.",
-    "Lock in one “non-negotiable” 10-minute deep breathing – alarm essential.",
-    "Plan one “non-negotiable” 20-minute upper body FBW – top priority.",
-    "Do one “non-negotiable” 10-minute home stairs climb – scheduled tight.",
-    "Set one “non-negotiable” 15-minute full-body stretch – calendar locked.",
-    "Choose one “non-negotiable” 5-minute jumping jacks – every single day.",
-    "Schedule one “non-negotiable” 20-minute walking meditation – no rescheduling.",
-    "Commit to one “non-negotiable” 10-set sumo squats – reminder active.",
-    "Pick one “non-negotiable” 15-minute stationary bike – must-do.",
-    "Lock in one “non-negotiable” 3-minute side plank – time blocked.",
-    "Plan one “non-negotiable” 10-minute glutes focus – take it seriously.",
-    "Do one “non-negotiable” 20-minute weighted walk – calendar entry.",
-    "Set one “non-negotiable” 5-minute HIIT burst morning – never skip.",
-    "Choose one “non-negotiable” 15-minute back stretch – plan ahead.",
-    "Schedule one “non-negotiable” 10-minute knee push-ups – priority high.",
-    "Commit to one “non-negotiable” 5-set deep squats – alarm on.",
-    "Pick one “non-negotiable” 10-minute mindfulness session – like a meeting.",
-    "Lock in one “non-negotiable” 15-minute in-place jog – daily habit.",
-    "Plan one “non-negotiable” 20-minute lower body FBW – no backing out.",
-    "Do one “non-negotiable” 3-minute wall sit – hour noted.",
-    "Set one “non-negotiable” 10-minute hip stretch – obligatory.",
-    "Choose one “non-negotiable” 5-minute mountain climbers – scheduled.",
-    "Schedule one “non-negotiable” 20-minute reflective walk – meeting-level.",
-    "Commit to one “non-negotiable” 10-set chair dips – reminder set.",
-    "Pick one “non-negotiable” 15-minute 4-7-8 breathing – calendar it.",
-    "Lock in one “non-negotiable” 5-minute supermans on floor – non-debatable.",
-    "Plan one “non-negotiable” 20-minute light yoga evening – always do.",
-    "Do one “non-negotiable” 15-minute calf raises – slot into your day.",
-  ]);
+  const { t } = useLanguage();
+  const wk = t.workouts;
+  const tips = t.workoutTips;
   const {
     logWorkout,
     activityHistory = [],
@@ -201,9 +153,9 @@ function Workouts() {
   const renderLogActivity = () => (
     <>
       <div className="workoutManagerTop">
-        <p className="sectionTitle">Log activity</p>
+        <p className="sectionTitle">{wk.logActivity}</p>
         <p className="addActivity" onClick={() => setShowWorkoutPopup(true)}>
-          Add Activity
+          {wk.addActivity}
         </p>
       </div>
       <div className="workoutList">
@@ -231,17 +183,17 @@ function Workouts() {
       <div className="workoutsContainer">
         <Sidebar />
         <div className="widgetContainer">
-          <p className="siteTitle">Workouts</p>
+          <p className="siteTitle">{wk.title}</p>
           <div className="topWorkoutContainer">
             <div className="leftTopContainer">
               <div className="leftTopWorkoutContainer">
                 <div className="caloriesGoalContainer">
-                  <p className="sectionTitle">Workout Summary</p>
+                  <p className="sectionTitle">{wk.workoutSummary}</p>
                   <p className="caloriesCompletion">
-                    {workoutsDone > 0 ? workoutsDone : "0"} / {weeklyWorkouts} workouts this week
+                    {workoutsDone > 0 ? workoutsDone : "0"} / {weeklyWorkouts} {wk.workoutsThisWeek}
                   </p>
                   <p className="caloriesLeft">
-                    Total time: {(allSeconds / 60).toFixed(1)} min • {allCalories > 0 ? allCalories : "0"}kcal burned
+                    {wk.totalTime} {(allSeconds / 60).toFixed(1)} min • {allCalories > 0 ? allCalories : "0"}kcal {wk.burned}
                   </p>
                   <div className="progressTrack">
                     <div className="progressFill" style={{ width: `${workoutProgressWidth}%` }} />
@@ -256,7 +208,7 @@ function Workouts() {
               </div>
               <div className="leftBotWorkoutContainer">
                 <div className="todayWorkoutContainer">
-                  <p className="sectionTitle">Today's workout</p>
+                  <p className="sectionTitle">{wk.todaysWorkout}</p>
                   <div className="todaysWorkoutInsideContainer">
                     <div className="todaysWorkoutLeft">
                       <div className="topTodaysWorkoutP">
@@ -264,7 +216,7 @@ function Workouts() {
                           {currentWorkout?.name || "Full Body Workout"}• {currentWorkout?.exercises?.length * 5 || 45}min
                         </p>
                         <p className="todaysWorkoutProgress">
-                          {exerciseDone}/{currentWorkout?.exercises?.length || 6} exercises done
+                          {exerciseDone}/{currentWorkout?.exercises?.length || 6} {wk.exercisesDone}
                         </p>
                       </div>
                       <form>
@@ -285,11 +237,11 @@ function Workouts() {
                         ))}
                       </form>
                       <div className="todaysWorkoutProgressP">
-                        <p className="todaysWorkoutProgress">Estimated calories: ~280 kcal</p>
+                        <p className="todaysWorkoutProgress">{wk.estimatedCalories}</p>
                       </div>
                     </div>
                     <div className="todaysWorkoutRight">
-                      <p className="timer">Timer</p>
+                      <p className="timer">{wk.timer}</p>
                       <div className="timerContainer">
                         <svg viewBox="0 0 120 120" className="timerSvg">
                           <circle cx="60" cy="60" r="50" fill="none" stroke="#00a8ff"
@@ -303,21 +255,21 @@ function Workouts() {
                       </div>
                       <div className="todaysWorkoutRightBot">
                         {workoutStatus === "idle" ? (
-                          <button className="workoutBtn1" onClick={handleClick}>Start Workout</button>
+                          <button className="workoutBtn1" onClick={handleClick}>{wk.startWorkout}</button>
                         ) : workoutStatus === "running" ? (
                           <>
-                            <button className="workoutBtn2" onClick={handlePause}>Pause</button>
-                            <button className="workoutBtn1" onClick={handleStop}>Stop workout</button>
+                            <button className="workoutBtn2" onClick={handlePause}>{wk.pause}</button>
+                            <button className="workoutBtn1" onClick={handleStop}>{wk.stopWorkout}</button>
                           </>
                         ) : (
-                          <button className="workoutBtn1" onClick={handleFinalClick}>Finish Workout</button>
+                          <button className="workoutBtn1" onClick={handleFinalClick}>{wk.finishWorkout}</button>
                         )}
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="activityHistory">
-                  <p className="sectionTitle">Activity History</p>
+                  <p className="sectionTitle">{wk.activityHistory}</p>
                   <div className="activityHistoryContainer">
                     {activityHistory.slice(0, 100).map((item) => (
                       <div key={item.id} className="historyItem">
@@ -335,7 +287,7 @@ function Workouts() {
 
           <div className="botWorkoutContainer">
             <div className="workoutTip">
-              <p className="sectionTitle">Tip of the day</p>
+              <p className="sectionTitle">{wk.tipOfDay}</p>
               <p>{selectedTip}</p>
             </div>
           </div>

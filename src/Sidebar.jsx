@@ -16,6 +16,8 @@ import profile from "./assets/profile.svg";
 import settings from "./assets/settings.svg";
 import logoutImg from "./assets/logout.svg";
 import { useAuthLayout } from "./AuthContext.jsx";
+import { useLanguage } from "./LanguageContext.jsx";
+
 
 function Sidebar() {
   const [open, setOpen] = useState(false);
@@ -23,6 +25,8 @@ function Sidebar() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [popupPos, setPopupPos] = useState({ top: 0, left: 0 });
   const accountCardRef = useRef(null);
+  const { t } = useLanguage();
+  const s = t.sidebar;
 
   const isTablet = windowWidth > 768 && windowWidth <= 1200;
   const isMobile = windowWidth <= 768;
@@ -148,7 +152,7 @@ function Sidebar() {
               }}
             >
               <img src={profile} alt="" width={24} height={24} />
-              <p style={{ margin: 0, fontSize: 16, color: "var(--textColor)" }}>Profile</p>
+              <p style={{ margin: 0, fontSize: 16, color: "var(--textColor)" }}>{s.profile}</p>
             </div>
             <div
               className="accountItem"
@@ -158,7 +162,7 @@ function Sidebar() {
               }}
             >
               <img src={settings} alt="" width={24} height={24} />
-              <p style={{ margin: 0, fontSize: 16, color: "var(--textColor)" }}>Settings</p>
+              <p style={{ margin: 0, fontSize: 16, color: "var(--textColor)" }}>{s.settings}</p>
             </div>
             <div
               className="accountItem"
@@ -168,7 +172,7 @@ function Sidebar() {
               }}
             >
               <img src={logoutImg} alt="" width={24} height={24} />
-              <p style={{ margin: 0, fontSize: 16, color: "var(--textColor)" }}>Logout</p>
+              <p style={{ margin: 0, fontSize: 16, color: "var(--textColor)" }}>{s.logout}</p>
             </div>
           </div>,
           document.body
@@ -212,35 +216,35 @@ function Sidebar() {
               onClick={() => handleNav(goToDashboard)}
             >
               <img src={dashboard} alt="Dashboard" width={24} height={24} title="Dashboard" style={{ display: "block" }} />
-              <p>Dashboard</p>
+              <p>{s.dashboard}</p>
             </div>
             <div
               className={`waterSidebarContainer ${selectedWidget === "water" ? "selected" : ""}`}
               onClick={() => handleNav(goToWater)}
             >
               <img src={water} alt="Water" width={24} height={24} title="Water" style={{ display: "block" }} />
-              <p>Water</p>
+              <p>{s.water}</p>
             </div>
             <div
               className={`foodSidebarContainer ${selectedWidget === "food" ? "selected" : ""}`}
               onClick={() => handleNav(goToFood)}
             >
               <img src={food} alt="Food Diary" width={24} height={24} title="Food Diary" style={{ display: "block" }} />
-              <p>Food Diary</p>
+              <p>{s.foodDiary}</p>
             </div>
             <div
               className={`workoutSidebarContainer ${selectedWidget === "workouts" ? "selected" : ""}`}
               onClick={() => handleNav(goToWorkouts)}
             >
               <img src={workout} alt="Workouts" width={24} height={24} title="Workouts" style={{ display: "block" }} />
-              <p>Workouts</p>
+              <p>{s.workouts}</p>
             </div>
             <div
               className={`sleepSidebarContainer ${selectedWidget === "sleep" ? "selected" : ""}`}
               onClick={() => handleNav(goToSleep)}
             >
               <img src={sleep} alt="Sleep Tracker" width={24} height={24} title="Sleep Tracker" style={{ display: "block" }} />
-              <p>Sleep Tracker</p>
+              <p>{s.sleepTracker}</p>
             </div>
           </div>
         </div>
@@ -254,7 +258,7 @@ function Sidebar() {
             }}
           >
             <img src={help} alt="Help" width={24} height={24} title="Help" style={{ display: "block" }} />
-            <p>Help</p>
+            <p>{s.help}</p>
           </div>
 
           <div
@@ -288,7 +292,7 @@ function Sidebar() {
                   }}
                 >
                   <img src={profile} alt="" />
-                  <p>Profile</p>
+                  <p>{s.profile}</p>
                 </div>
                 <div
                   className="accountItem"
@@ -298,7 +302,7 @@ function Sidebar() {
                   }}
                 >
                   <img src={settings} alt="" />
-                  <p>Settings</p>
+                  <p>{s.settings}</p>
                 </div>
                 <div
                   className="accountItem"
@@ -308,7 +312,7 @@ function Sidebar() {
                   }}
                 >
                   <img src={logoutImg} alt="" />
-                  <p>Logout</p>
+                  <p>{s.logout}</p>
                 </div>
               </div>
             )}

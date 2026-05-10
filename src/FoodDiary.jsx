@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./FoodDiary.css";
 import Sidebar from "./Sidebar.jsx";
+import { useLanguage } from "./LanguageContext.jsx";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -50,39 +51,10 @@ const FoodDiary = () => {
     deleteMeal,
     updateMeal,
   } = useDashboard();
+  const { t } = useLanguage();
+  const f = t.food;
 
-  const [tips] = useState([
-    "Eat regular meals to keep your energy levels stable throughout the day.",
-    "Include vegetables or fruit in every meal for essential vitamins and fiber.",
-    "Choose whole foods over highly processed products whenever possible.",
-    "Start your day with a balanced breakfast containing protein and fiber.",
-    "Drink water before meals to support digestion and portion control.",
-    "Eat slowly and mindfully to better recognize hunger and fullness cues.",
-    "Aim to fill half your plate with vegetables at main meals.",
-    "Include a source of protein in every meal to stay full longer.",
-    "Limit sugary snacks and opt for fruit, nuts, or yogurt instead.",
-    "Plan your meals ahead to avoid unhealthy food choices.",
-    "Choose whole grains instead of refined carbohydrates.",
-    "Listen to your body's hunger signals instead of eating out of habit.",
-    "Keep healthy snacks available to avoid reaching for junk food.",
-    "Include healthy fats like nuts, seeds, and olive oil in your diet.",
-    "Avoid skipping meals, as it can lead to overeating later.",
-    "Balance your plate with carbohydrates, protein, and fats.",
-    "Reduce portion sizes if you often feel overly full after meals.",
-    "Limit sugary drinks and choose water or unsweetened beverages.",
-    "Eat more home-cooked meals to control ingredients and portions.",
-    "Add variety to your meals to ensure a wide range of nutrients.",
-    "Choose lean protein sources like fish, chicken, beans, or tofu.",
-    "Pay attention to how foods make you feel after eating them.",
-    "Avoid eating while distracted, such as while watching TV.",
-    "Read food labels to better understand what you are consuming.",
-    "Include fiber-rich foods to support digestion and gut health.",
-    "Allow yourself occasional treats to maintain a balanced relationship with food.",
-    "Stop eating when you feel comfortably full, not stuffed.",
-    "Eat meals at consistent times to support metabolism.",
-    "Focus on long-term habits instead of quick diet fixes.",
-    "Enjoy your food without guilt and appreciate each meal.",
-  ]);
+  const foodTips = t.foodTips;
   const [selectedTip, setSelectedTip] = useState("");
   const [popupMealType, setPopupMealType] = useState("");
   const [showEntryViewPopup, setShowEntryViewPopup] = useState(false);
@@ -98,9 +70,9 @@ useEffect(() => {
 }, []);
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * tips.length);
-    setSelectedTip(tips[randomIndex]);
-  }, []);
+    const randomIndex = Math.floor(Math.random() * foodTips.length);
+    setSelectedTip(foodTips[randomIndex]);
+  }, [foodTips]);
 
   const macrosData = {
     labels: ["Protein", "Fat", "Carbs"],
@@ -264,18 +236,18 @@ useEffect(() => {
       <div className="foodContainer siteContainer">
         <Sidebar />
         <div className="widgetContainer">
-          <p className="siteTitle">Food Diary</p>
+          <p className="siteTitle">{f.title}</p>
           <div className="mainDivider">
             <div className="leftSide">
               <div className="caloriesGoalContainer">
-                <p className="sectionTitle">Calories left</p>
+                <p className="sectionTitle">{f.caloriesLeft}</p>
                 <p className="caloriesCompletion">
                   {caloriesCount} / {caloriesGoal} kcal
                 </p>
                 <p className="caloriesLeft">
                   {caloriesGoal - caloriesCount > 0
-                    ? `${caloriesGoal - caloriesCount} kcal left`
-                    : `${-1 * (caloriesGoal - caloriesCount)} kcal more than your goal`}
+                    ? `${caloriesGoal - caloriesCount} ${f.kcalLeft}`
+                    : `${-1 * (caloriesGoal - caloriesCount)} ${f.kcalOverGoal}`}
                 </p>
                 <div className="progressTrack">
                   <div
@@ -292,20 +264,20 @@ useEffect(() => {
               <div className="mealManagerContainer breakfast">
                 <div className="mealManagerTop">
                   <div className="mealTitleContainer">
-                    <p className="mealTitle">Breakfast•</p>
+                    <p className="mealTitle">{f.breakfast}•</p>
                     <p className="mealCaloriesGoal">{countCalories(breakfastList)} kcal</p>
                   </div>
-                  <p className="addMeal" onClick={() => setPopupMealType("breakfast")}>Add meal</p>
+                  <p className="addMeal" onClick={() => setPopupMealType("breakfast")}>{f.addMeal}</p>
                 </div>
                 <div className="mealList">{renderMealList(breakfastList)}</div>
               </div>
               <div className="mealManagerContainer dinner">
                 <div className="mealManagerTop">
                   <div className="mealTitleContainer">
-                    <p className="mealTitle">Dinner•</p>
+                    <p className="mealTitle">{f.dinner}•</p>
                     <p className="mealCaloriesGoal">{countCalories(dinnerList)} kcal</p>
                   </div>
-                  <p className="addMeal" onClick={() => setPopupMealType("dinner")}>Add meal</p>
+                  <p className="addMeal" onClick={() => setPopupMealType("dinner")}>{f.addMeal}</p>
                 </div>
                 <div className="mealList">{renderMealList(dinnerList)}</div>
               </div>
@@ -314,7 +286,7 @@ useEffect(() => {
             <div className="rightSide">
               <div className="divider macrosRow">
                 <div className="macrosContainer">
-                  <p className="sectionTitle">Macros</p>
+                  <p className="sectionTitle">{f.macros}</p>
                   <div className="chartContainer">
                     <Doughnut key={`donut-${windowWidth}`} data={macrosData} options={macrosOptions} />
                   </div>
@@ -327,15 +299,15 @@ useEffect(() => {
                 <div className="mealManagerContainer lunch">
                   <div className="mealManagerTop">
                     <div className="mealTitleContainer">
-                      <p className="mealTitle">Lunch•</p>
+                      <p className="mealTitle">{f.lunch}•</p>
                       <p className="mealCaloriesGoal">{countCalories(lunchList)} kcal</p>
                     </div>
-                    <p className="addMeal" onClick={() => setPopupMealType("lunch")}>Add meal</p>
+                    <p className="addMeal" onClick={() => setPopupMealType("lunch")}>{f.addMeal}</p>
                   </div>
                   <div className="mealList">{renderMealList(lunchList)}</div>
                 </div>
                 <div className="mealDistributionContainer">
-                  <p className="sectionTitle">Meal Distribution</p>
+                  <p className="sectionTitle">{f.mealDistribution}</p>
                   <div className="chartContainer">
                     <Bar key={`bar-dist-${windowWidth}`} data={mealDistributionData} options={mealDistributionOptions} />
                   </div>
@@ -345,15 +317,15 @@ useEffect(() => {
                 <div className="mealManagerContainer snacks">
                   <div className="mealManagerTop">
                     <div className="mealTitleContainer">
-                      <p className="mealTitle">Snacks•</p>
+                      <p className="mealTitle">{f.snacks}•</p>
                       <p className="mealCaloriesGoal">{countCalories(snacksList)} kcal</p>
                     </div>
-                    <p className="addMeal" onClick={() => setPopupMealType("snacks")}>Add meal</p>
+                    <p className="addMeal" onClick={() => setPopupMealType("snacks")}>{f.addMeal}</p>
                   </div>
                   <div className="mealList">{renderMealList(snacksList)}</div>
                 </div>
                 <div className="dailyTipContainer">
-                  <p className="sectionTitle">Daily tip</p>
+                  <p className="sectionTitle">{f.dailyTip}</p>
                   <ul>
                     <li>{selectedTip}</li>
                   </ul>
