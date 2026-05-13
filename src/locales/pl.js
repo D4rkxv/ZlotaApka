@@ -97,6 +97,8 @@ const pl = {
   // ── Dashboard ───────────────────────────────────────────────
   dashboard: {
     title: "Panel główny",
+    weekDays: ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"],
+    monthsShort: ["Sty", "Lut", "Mar", "Kwi", "Maj", "Cze", "Lip", "Sie", "Wrz", "Paź", "Lis", "Gru"],
     calories: "Kalorie",
     water: "Woda",
     weight: "Waga",
@@ -173,6 +175,7 @@ const pl = {
     caloriesLeft: "Pozostałe kalorie",
     kcalLeft: "kcal pozostało",
     kcalOverGoal: "kcal powyżej celu",
+    goalMet: "Cel kalorii osiągnięty",
     breakfast: "Śniadanie",
     dinner: "Obiad",
     lunch: "Lunch",

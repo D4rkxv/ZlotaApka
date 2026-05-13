@@ -3,6 +3,7 @@ import { useDashboard } from "./DashboardContext.jsx";
 import { api } from "./AuthContext.jsx";
 import "./Popups.css";
 import { useLanguage } from "./LanguageContext.jsx";
+import { getLocalDateString } from "./utils/date.js";
 
 const WeightUpdatePopup = ({ setDailyWeightUpdated }) => {
   const { currentWeight, setCurrentWeight, fetchWeightData } = useDashboard();
@@ -22,7 +23,7 @@ const WeightUpdatePopup = ({ setDailyWeightUpdated }) => {
               const parsed = parseFloat(newWeight);
               await api.post("/weight", {
                 weight: parsed,
-                date: new Date().toISOString().split("T")[0],
+                date: getLocalDateString(),
               });
               await api.put("/profile", { current_weight: parsed });
               setCurrentWeight(parsed);

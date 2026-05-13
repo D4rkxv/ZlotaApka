@@ -1,6 +1,7 @@
 const express = require("express");
 const db = require("../database");
 const { authenticateToken } = require("../middleware/auth.js");
+const { getLocalDateString } = require("../utils/date.js");
 
 const router = express.Router();
 
@@ -53,7 +54,7 @@ router.post("/", authenticateToken, async (req, res) => {
     });
   }
 
-  const workoutDate = date || new Date().toISOString().split("T")[0];
+  const workoutDate = date || getLocalDateString();
   const workoutTime =
     time ||
     new Date().toLocaleTimeString("pl-PL", {
@@ -132,7 +133,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
 
 router.get("/stats", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateString();
 
   const getLastWeekDates = () => {
     const now = req.query.date ? new Date(req.query.date) : new Date();
@@ -146,7 +147,7 @@ router.get("/stats", authenticateToken, async (req, res) => {
     for (let i = 0; i < 7; i++) {
       const date = new Date(monday);
       date.setDate(monday.getDate() + i);
-      weekDays.push(date.toISOString().split("T")[0]);
+      weekDays.push(getLocalDateString(date));
     }
     return weekDays;
   };

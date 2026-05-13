@@ -34,7 +34,7 @@ const WaterManagement = () => {
   };
 
   const getBestDay = () => {
-    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const days = t.dashboard.weekDays || ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     if (!waterWeek || waterWeek.length === 0) return w.noData;
     const max = Math.max(...waterWeek);
     if (max === 0) return w.noData;
@@ -43,7 +43,7 @@ const WaterManagement = () => {
   };
 
   const generateLabels = () => {
-    const mS = [
+    const mS = t.dashboard.monthsShort || [
       "Jan",
       "Feb",
       "Mar",

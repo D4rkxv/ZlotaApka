@@ -1,6 +1,6 @@
 import Diving from "./assets/Swimming2.png";
 import React, { useState } from "react";
-import Logo from "./assets/Ellipse4.png";
+import Logo from "./assets/logo.png";
 import Google from "./assets/Google.svg";
 import Github from "./assets/Github.svg";
 

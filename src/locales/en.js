@@ -97,6 +97,8 @@ const en = {
   // ── Dashboard ───────────────────────────────────────────────
   dashboard: {
     title: "Dashboard",
+    weekDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     calories: "Calories",
     water: "Water",
     weight: "Weight",
@@ -173,6 +175,7 @@ const en = {
     caloriesLeft: "Calories left",
     kcalLeft: "kcal left",
     kcalOverGoal: "kcal more than your goal",
+    goalMet: "Calorie goal met",
     breakfast: "Breakfast",
     dinner: "Dinner",
     lunch: "Lunch",

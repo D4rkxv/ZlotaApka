@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const db = require("../database");
 const { authenticateToken } = require("../middleware/auth");
+const { getLocalDateString } = require("../utils/date");
 
 router.get("/", authenticateToken, (req, res) => {
   const userId = req.user.userId;
-  const date = req.query.date || new Date().toISOString().split("T")[0];
+  const date = req.query.date || getLocalDateString();
 
   db.get(
     "SELECT * FROM daily_workout WHERE user_id = ? AND date = ?",

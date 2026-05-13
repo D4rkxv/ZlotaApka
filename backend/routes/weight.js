@@ -2,16 +2,16 @@ const express = require("express");
 const router = express.Router();
 const db = require("../database");
 const { authenticateToken } = require("../middleware/auth");
+const { getLocalDateString } = require("../utils/date");
 
 router.get("/stats", authenticateToken, (req, res) => {
   const userId = req.user.userId;
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateString();
   const weekStart = new Date();
   const dayOfWeek = weekStart.getDay();
   const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   weekStart.setDate(weekStart.getDate() - daysFromMonday);
-  weekStart.setHours(0, 0, 0, 0);
-  const weekStartStr = weekStart.toISOString().split("T")[0];
+  const weekStartStr = getLocalDateString(weekStart);
 
   db.get(
     `SELECT * FROM weight_logs WHERE user_id = ? AND date = ? ORDER BY created_at DESC LIMIT 1`,
@@ -67,7 +67,7 @@ router.post("/", authenticateToken, (req, res) => {
       .status(400)
       .json({ status: "error", message: "weight is required" });
 
-  const entryDate = date || new Date().toISOString().split("T")[0];
+  const entryDate = date || getLocalDateString();
 
   db.get(
     `SELECT id FROM weight_logs WHERE user_id = ? AND date = ?`,

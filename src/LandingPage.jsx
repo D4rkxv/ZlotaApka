@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "./assets/Ellipse4.png";
+import Logo from "./assets/logo.png";
 import HeroImg from "./assets/Background.png";
 import AboutUsImg from "./assets/Running.png";
 import Files from "./assets/Files.png";

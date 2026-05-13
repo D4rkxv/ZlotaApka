@@ -2,13 +2,8 @@ import { Line } from "react-chartjs-2";
 import { useRef } from "react";
 import useContainerWidth from "./useContainerWidth";
 
-const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-function LineChart({ title, values, min, max, subtitle }) {
-  const containerRef = useRef(null);
-  const containerWidth = useContainerWidth(containerRef);
-  const chartWidth =
-    containerWidth > 0 ? Math.max(containerWidth - 40, 200) : 450;
+function LineChart({ title, values, min, max, subtitle, labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] }) {
 
   const validValues = values.filter((v) => v !== null && v !== undefined);
   const computedMax =
@@ -72,14 +67,14 @@ function LineChart({ title, values, min, max, subtitle }) {
   };
 
   return (
-    <div className="botWidgetBar" ref={containerRef}>
+    <div className="botWidgetBar">
       <p className="caloriesTitle">{title}</p>
       <div className="barContainer">
         <div className="data">
-          <Line data={data} options={options} width={chartWidth} height={180} />
+          <Line data={data} options={options} />
         </div>
       </div>
-      <p className="waterTarget">{subtitle ?? "+0.6Kg last Week"}</p>
+      <p className="waterTarget">{subtitle}</p>
     </div>
   );
 }

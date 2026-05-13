@@ -247,7 +247,9 @@ useEffect(() => {
                 <p className="caloriesLeft">
                   {caloriesGoal - caloriesCount > 0
                     ? `${caloriesGoal - caloriesCount} ${f.kcalLeft}`
-                    : `${-1 * (caloriesGoal - caloriesCount)} ${f.kcalOverGoal}`}
+                    : caloriesGoal - caloriesCount === 0
+                      ? f.goalMet
+                      : `${-1 * (caloriesGoal - caloriesCount)} ${f.kcalOverGoal}`}
                 </p>
                 <div className="progressTrack">
                   <div

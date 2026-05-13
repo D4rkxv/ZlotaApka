@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { createPortal } from "react-dom";
 import { AuthContext } from "./AuthContext.jsx";
 import "./Sidebar.css";
-import Logo from "./assets/Ellipse4.png";
+import Logo from "./assets/logo.png";
 import "./LoginPage.css";
 import dashboard from "./assets/dashboard.svg";
 import water from "./assets/water.svg";

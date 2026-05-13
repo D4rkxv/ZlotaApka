@@ -9,6 +9,7 @@ import React, {
 import profilePic from "./assets/BigProfilePic.png";
 import { AuthContext, api } from "./AuthContext.jsx";
 import { useLanguage } from "./LanguageContext.jsx";
+import { getLocalDateString } from "./utils/date.js";
 
 const DashboardContext = createContext();
 
@@ -33,8 +34,7 @@ export const DashboardProvider = ({ children }) => {
     const monday = new Date(now);
     const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
     monday.setDate(now.getDate() - daysFromMonday);
-    monday.setHours(0, 0, 0, 0);
-    return monday.toISOString().split("T")[0];
+    return getLocalDateString(monday);
   };
 
   //Welcome popup
@@ -213,7 +213,7 @@ export const DashboardProvider = ({ children }) => {
   const fetchWorkoutData = useCallback(async () => {
     try {
       if (!token) return;
-      const today = new Date().toISOString().split("T")[0];
+      const today = getLocalDateString();
 
       const response = await api.get(`/workouts?date=${today}&limit=1000`);
       if (response.data.status === "success") {
@@ -266,7 +266,7 @@ export const DashboardProvider = ({ children }) => {
     if (!token) return;
 
     try {
-      const currentDate = new Date().toISOString().split("T")[0];
+      const currentDate = getLocalDateString();
 
       const logsResponse = await api.get(
         `/water?date=${currentDate}&limit=1000`,
@@ -285,7 +285,7 @@ export const DashboardProvider = ({ children }) => {
         setCurrentHydration(total);
       }
 
-      const today = new Date().toISOString().split("T")[0];
+      const today = getLocalDateString();
       const statsResponse = await api.get(`/water/stats?currentDate=${today}`);
       if (statsResponse.data.status === "success") {
         const { weekly, twelve_day, cycle_start } = statsResponse.data.data;
@@ -303,7 +303,7 @@ export const DashboardProvider = ({ children }) => {
     try {
       const newEntry = {
         amount: amount,
-        date: new Date().toISOString().split("T")[0],
+        date: getLocalDateString(),
         time: new Date().toLocaleTimeString("pl-PL", {
           hour: "2-digit",
           minute: "2-digit",
@@ -400,7 +400,7 @@ export const DashboardProvider = ({ children }) => {
     if (!token) return;
 
     try {
-      const today = new Date().toISOString().split("T")[0];
+      const today = getLocalDateString();
 
       const statsResponse = await api.get("/sleep/stats");
       if (statsResponse.data.status === "success") {
@@ -442,7 +442,7 @@ export const DashboardProvider = ({ children }) => {
         in_bed_time: inBedTime,
         out_of_bed_time: outOfBedTime,
         sleep_quality: sleepQuality,
-        date: new Date().toISOString().split("T")[0],
+        date: getLocalDateString(),
       };
 
       const response = await api.post("/sleep", payload);
@@ -540,7 +540,7 @@ export const DashboardProvider = ({ children }) => {
           activity_name: workoutData.name || currentWorkout?.name || "Workout", // ← zmiana
           duration_minutes: workoutData.time || Math.floor(seconds / 60),
           calories_burned: workoutData.calories || 0,
-          date: new Date().toISOString().split("T")[0],
+          date: getLocalDateString(),
         };
 
         const response = await api.post("/workouts", payload);
@@ -679,7 +679,7 @@ export const DashboardProvider = ({ children }) => {
   useEffect(() => {
     if (!token) return;
     const loadDailyWorkout = async () => {
-      const today = new Date().toISOString().split("T")[0];
+      const today = getLocalDateString();
 
       try {
         const res = await api.get(`/daily-workout?date=${today}`);
@@ -733,7 +733,7 @@ export const DashboardProvider = ({ children }) => {
     if (!token) return;
 
     const loadDailyChallenge = async () => {
-      const today = new Date().toISOString().split("T")[0];
+      const today = getLocalDateString();
 
       try {
         const res = await api.get(`/daily-challenge?date=${today}`);
@@ -793,7 +793,7 @@ export const DashboardProvider = ({ children }) => {
   }, [token]);
 
   const toggleChallengeItem = useCallback(async (itemId) => {
-    const today = new Date().toISOString().split("T")[0];
+    const today = getLocalDateString();
 
     // Optimistic update
     let previousChallenge;
@@ -829,7 +829,7 @@ export const DashboardProvider = ({ children }) => {
       const saved = localStorage.getItem("dailyWeightUpdate");
       if (!saved) return false;
       const data = JSON.parse(saved);
-      const today = new Date().toISOString().split("T")[0];
+      const today = getLocalDateString();
       if (typeof data === "boolean") {
         localStorage.removeItem("dailyWeightUpdate");
         return false;
@@ -847,7 +847,7 @@ export const DashboardProvider = ({ children }) => {
   const [weightUpdated, setWeightUpdated] = useState(getWeightUpdated);
 
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
+    const today = getLocalDateString();
     localStorage.setItem(
       "dailyWeightUpdate",
       JSON.stringify({ updated: weightUpdated, date: today }),
@@ -870,7 +870,7 @@ export const DashboardProvider = ({ children }) => {
     if (!token) return;
 
     try {
-      const today = new Date().toISOString().split("T")[0];
+      const today = getLocalDateString();
 
       const response = await api.get(`/meals?date=${today}&limit=1000`);
 
@@ -973,7 +973,7 @@ export const DashboardProvider = ({ children }) => {
         carbs: Number(meal.carbs) || 0,
         fats: Number(meal.fats) || 0,
         grammage: Number(meal.grammage) || 0,
-        date: new Date().toISOString().split("T")[0],
+        date: getLocalDateString(),
       };
 
       console.log("Sending meal payload:", payload);
@@ -1064,7 +1064,7 @@ export const DashboardProvider = ({ children }) => {
         localStorage.setItem("lastCheckedWeek", currentWeekKey);
       }
 
-      const currentDate = new Date().toISOString().split("T")[0];
+      const currentDate = getLocalDateString();
       if (!localStorage.getItem("lastCheckedDate")) {
         localStorage.setItem("lastCheckedDate", currentDate);
       }
@@ -1080,7 +1080,7 @@ export const DashboardProvider = ({ children }) => {
   //new data, data update
   useEffect(() => {
     const checkDateAndWeekChange = setInterval(() => {
-      const currentDate = new Date().toISOString().split("T")[0];
+      const currentDate = getLocalDateString();
       const savedDate = localStorage.getItem("lastCheckedDate");
 
       const currentWeekKey = getCurrentWeekKey();

@@ -14,6 +14,25 @@ import {
   Filler,
 } from "chart.js";
 
+const goalLinePlugin = {
+  id: 'goalLine',
+  afterDraw(chart) {
+    const yValue = chart.config.options?.plugins?.goalLine?.yValue;
+    if (yValue === undefined) return;
+    const { ctx, chartArea: { left, right }, scales: { y } } = chart;
+    const yPos = y.getPixelForValue(yValue);
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(left, yPos);
+    ctx.lineTo(right, yPos);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#d1d5db';
+    ctx.setLineDash([5, 5]);
+    ctx.stroke();
+    ctx.restore();
+  }
+};
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,6 +42,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   Filler,
+  goalLinePlugin
 );
 import Sidebar from "./Sidebar.jsx";
 import "./Dashboard.css";
@@ -33,8 +53,7 @@ import DonutChart from "./DonutChart.jsx";
 import WelcomePopup from "./WelcomePopup.jsx";
 import WeightUpdatePopup from "./WeightUpdatePopup.jsx";
 
-const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const deficit = [0, -50, 120, 80, 0, -30, -100];
+
 
 
 function useContainerWidth(ref) {
@@ -60,6 +79,7 @@ export function Dashboard() {
   const sleepBarWidth = useContainerWidth(sleepBarRef);
   const { t } = useLanguage();
   const d = t.dashboard;
+  const labels = d.weekDays || ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   const chartWidth = (containerWidth) =>
     containerWidth > 0 ? Math.max(containerWidth - 40, 200) : 450;
@@ -86,6 +106,7 @@ export function Dashboard() {
     weightUpdated,
     setWeightUpdated,
     weightWeekData,
+    sleepTime,
   } = useDashboard();
 
   const weightValues = (() => {
@@ -116,10 +137,18 @@ export function Dashboard() {
 
   const sleepValues = sleepWeekMinutes;
   const activityValues = weekMinutes.map((v) => (v === 0 ? null : v));
+  const activitySum = weekMinutes.reduce((a, b) => a + b, 0);
+  const activitySubtitle = `${activitySum} ${d.activityMinutes || 'min'} ${d.thisWeek}`;
+
+  const isWeightLoss = goalWeight <= currentWeight;
+  const caloriesDaysMet = weekFood.filter(c => isWeightLoss ? (c > 0 && c <= caloriesGoal) : (c >= caloriesGoal)).length;
+  const sleepGoalMinutes = sleepTime ? (sleepTime[0] * 60 + sleepTime[1]) : 0;
+  const sleepDaysMet = sleepGoalMinutes > 0 ? sleepWeekMinutes.filter(m => m >= sleepGoalMinutes).length : 0;
 
   const activityOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: { padding: { right: 15 } },
     plugins: {
       legend: { display: false },
       tooltip: { enabled: true },
@@ -155,8 +184,8 @@ export function Dashboard() {
       {
         label: "Calories vs Goal",
         data: weekFood,
-        backgroundColor: deficit.map((d) =>
-          d <= 0 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)",
+        backgroundColor: weekFood.map((c) =>
+          c > 0 && (isWeightLoss ? c <= caloriesGoal : c >= caloriesGoal) ? "#00A8FF" : "rgba(0, 168, 255, 0.25)"
         ),
         borderRadius: 6,
         borderSkipped: false,
@@ -168,9 +197,11 @@ export function Dashboard() {
   const caloriesOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: { padding: { right: 15 } },
     plugins: {
       legend: { display: false },
       tooltip: { enabled: true },
+      goalLine: { yValue: caloriesGoal },
     },
     scales: {
       x: {
@@ -184,7 +215,7 @@ export function Dashboard() {
         display: false,
         min: 0,
         beginAtZero: true,
-        suggestedMax: 3200,
+        suggestedMax: Math.max(...weekFood, caloriesGoal ? caloriesGoal * 1.2 : 0, 3200),
       },
     },
     datasets: {
@@ -202,7 +233,7 @@ export function Dashboard() {
         label: "Sleep This Week",
         data: sleepValues,
         backgroundColor: sleepValues.map((v) =>
-          v >= 7 ? "#00A8FF" : "rgba(0, 168, 255, 0.25)",
+          v > 0 && v >= sleepGoalMinutes ? "#00A8FF" : "rgba(0, 168, 255, 0.25)"
         ),
         borderRadius: 6,
         borderSkipped: false,
@@ -214,9 +245,11 @@ export function Dashboard() {
   const sleepOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: { padding: { right: 15 } },
     plugins: {
       legend: { display: false },
       tooltip: { enabled: true },
+      goalLine: { yValue: sleepGoalMinutes },
     },
     scales: {
       x: {
@@ -230,7 +263,7 @@ export function Dashboard() {
         display: false,
         min: 0,
         beginAtZero: true,
-        suggestedMax: 10,
+        suggestedMax: Math.max(...sleepValues, sleepGoalMinutes ? sleepGoalMinutes * 1.2 : 0, 10 * 60),
       },
     },
     datasets: {
@@ -358,17 +391,14 @@ export function Dashboard() {
             >
               <p className="caloriesTitle">{d.caloriesVsGoal}</p>
               <div className="barContainer">
-                <div className="lineTarget" />
                 <div className="data">
                   <Bar
                     data={caloriesData}
                     options={caloriesOptions}
-                    width={chartWidth(caloriesWidth)}
-                    height={180}
                   />
                 </div>
               </div>
-              <p className="waterTarget">4 / 7 {d.daysOnTarget}</p>
+              <p className="waterTarget">{caloriesDaysMet} / 7 {d.daysOnTarget}</p>
             </div>
 
             <div className="dailyChallenges">
@@ -402,17 +432,14 @@ export function Dashboard() {
             >
               <p className="caloriesTitle">{d.sleepThisWeek}</p>
               <div className="barContainer">
-                <div className="lineTarget" />
                 <div className="data">
                   <Bar
                     data={sleepData}
                     options={sleepOptions}
-                    width={chartWidth(sleepBarWidth)}
-                    height={180}
                   />
                 </div>
               </div>
-              <p className="waterTarget">4 / 7 {d.daysOnTarget}</p>
+              <p className="waterTarget">{sleepDaysMet} / 7 {d.daysOnTarget}</p>
             </div>
           </div>
           <div className="botWidgets">
@@ -421,6 +448,7 @@ export function Dashboard() {
               values={weightValues}
               options={sleepOptions}
               subtitle={weightWeekSubtitle}
+              labels={labels}
             />
             <div className="smallWaterContainer" onClick={goToWater}>
               <p className="caloriesTitle">{d.water}</p>
@@ -442,6 +470,8 @@ export function Dashboard() {
                 values={activityValues}
                 options={activityOptions}
                 min={0}
+                subtitle={activitySubtitle}
+                labels={labels}
               />
             </div>
           </div>
