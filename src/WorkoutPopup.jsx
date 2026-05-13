@@ -58,6 +58,7 @@ const WorkoutPopup = ({ setPopupVisibility }) => {
               type="number"
               placeholder="Time (min)"
               value={formData.time}
+              min={1}
               onChange={(e) =>
                 setFormData({ ...formData, time: e.target.value })
               }
@@ -66,6 +67,7 @@ const WorkoutPopup = ({ setPopupVisibility }) => {
             <input
               type="number"
               placeholder="Calories lost"
+              min={1}
               value={formData.calories}
               onChange={(e) =>
                 setFormData({ ...formData, calories: e.target.value })

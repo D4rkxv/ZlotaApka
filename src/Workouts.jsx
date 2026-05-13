@@ -64,7 +64,9 @@ function Workouts() {
     setIsChecked((prev) => {
       const current = Array.isArray(prev) ? prev : Array(6).fill(false);
       const wasChecked = current[index];
-      setExerciseDone((prevCount) => wasChecked ? prevCount - 1 : prevCount + 1);
+      setExerciseDone((prevCount) =>
+        wasChecked ? prevCount - 1 : prevCount + 1,
+      );
       const newChecked = [...current];
       newChecked[index] = !newChecked[index];
       return newChecked;
@@ -122,15 +124,17 @@ function Workouts() {
 
   const workoutData = {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    datasets: [{
-      label: "Workout",
-      data: weekMinutes,
-      backgroundColor: weekMinutes.map((val) =>
-        val > 40 ? "#00A8FF" : "rgba(0,168,255,0.25)"
-      ),
-      borderRadius: 6,
-      barThickness: 32,
-    }],
+    datasets: [
+      {
+        label: "Workout",
+        data: weekMinutes,
+        backgroundColor: weekMinutes.map((val) =>
+          val > 40 ? "#00A8FF" : "rgba(0,168,255,0.25)",
+        ),
+        borderRadius: 6,
+        barThickness: 32,
+      },
+    ],
   };
 
   const caloriesOptions = {
@@ -160,13 +164,18 @@ function Workouts() {
       </div>
       <div className="workoutList">
         {quickActivities.map((item) => (
-          <div key={item.id} className="workoutItem"
-            onClick={() => handleWorkoutItemClick(item)}>
+          <div
+            key={item.id}
+            className="workoutItem"
+            onClick={() => handleWorkoutItemClick(item)}
+          >
             <div className="workoutImgContainer">
               <img src={item.icon} alt={item.name} />
             </div>
             <div className="workoutRightDesc">
-              <p className="activityType">{item.name} • {item.time} min</p>
+              <p className="activityType">
+                {item.name} • {item.time} min
+              </p>
               <p className="calories">~{item.calories}kcal</p>
             </div>
           </div>
@@ -196,7 +205,10 @@ function Workouts() {
                     {wk.totalTime} {(allSeconds / 60).toFixed(1)} min • {allCalories > 0 ? allCalories : "0"}kcal {wk.burned}
                   </p>
                   <div className="progressTrack">
-                    <div className="progressFill" style={{ width: `${workoutProgressWidth}%` }} />
+                    <div
+                      className="progressFill"
+                      style={{ width: `${workoutProgressWidth}%` }}
+                    />
                   </div>
                 </div>
                 <div className="workoutsGoalStreakContainer">
@@ -213,7 +225,8 @@ function Workouts() {
                     <div className="todaysWorkoutLeft">
                       <div className="topTodaysWorkoutP">
                         <p className="leftTodaysWorkoutTitle">
-                          {currentWorkout?.name || "Full Body Workout"}• {currentWorkout?.exercises?.length * 5 || 45}min
+                          {currentWorkout?.name || "Full Body Workout"}•{" "}
+                          {currentWorkout?.exercises?.length * 5 || 45}min
                         </p>
                         <p className="todaysWorkoutProgress">
                           {exerciseDone}/{currentWorkout?.exercises?.length || 6} {wk.exercisesDone}
@@ -244,13 +257,29 @@ function Workouts() {
                       <p className="timer">{wk.timer}</p>
                       <div className="timerContainer">
                         <svg viewBox="0 0 120 120" className="timerSvg">
-                          <circle cx="60" cy="60" r="50" fill="none" stroke="#00a8ff"
-                            strokeWidth="15" strokeDasharray="314" pathLength="1"
-                            className="progressCircle" />
+                          <circle
+                            cx="60"
+                            cy="60"
+                            r="50"
+                            fill="none"
+                            stroke="#00a8ff"
+                            strokeWidth="15"
+                            strokeDasharray="314"
+                            pathLength="1"
+                            className="progressCircle"
+                          />
                           <foreignObject x="30" y="45" width="60" height="30">
-                            <div className="timerText">{seconds > 0 ? seconds : "00"}s</div>
+                            <div className="timerText">
+                              {seconds > 0 ? seconds : "00"}s
+                            </div>
                           </foreignObject>
-                          <circle cx="108" cy="12" r="6" fill="#000000" className="dot" />
+                          <circle
+                            cx="108"
+                            cy="12"
+                            r="6"
+                            fill="#000000"
+                            className="dot"
+                          />
                         </svg>
                       </div>
                       <div className="todaysWorkoutRightBot">

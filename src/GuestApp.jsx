@@ -1,6 +1,6 @@
 import "./App.css";
 import { useAuthLayout } from "./AuthContext.jsx";
-import LandingPage from "./LandingPage.jsx";
+import LandingRouter from "./LandingRouter.jsx";
 import LoginPage from "./LoginPage.jsx";
 import RegisterPage from "./RegisterPage.jsx";
 
@@ -10,13 +10,13 @@ function GuestApp() {
   const renderPage = () => {
     switch (currentPage) {
       case "landing":
-        return <LandingPage />;
+        return <LandingRouter />;
       case "login":
         return <LoginPage />;
       case "register":
         return <RegisterPage />;
       default:
-        return <LandingPage />;
+        return <LandingRouter />;
     }
   };
 

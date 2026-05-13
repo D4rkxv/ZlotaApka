@@ -19,7 +19,9 @@
   padding-left: 240px;
   box-sizing: border-box;
 }
-
+.workoutSummaryContainer {
+  width: 100%;
+}
 .leftTopContainer {
   flex: 1;
   min-width: 0;
@@ -119,7 +121,9 @@
   -ms-overflow-style: none;
   border-radius: 12px;
 }
-.activityHistory::-webkit-scrollbar { display: none; }
+.activityHistory::-webkit-scrollbar {
+  display: none;
+}
 
 .timerContainer {
   width: 200px;
@@ -137,10 +141,17 @@
 .progressCircle {
   transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.dot { animation: pulse 2s infinite; }
+.dot {
+  animation: pulse 2s infinite;
+}
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .topWorkoutContainer {
@@ -175,7 +186,9 @@
   color: var(--primary);
   cursor: pointer;
 }
-.addActivity:hover { text-decoration: underline; }
+.addActivity:hover {
+  text-decoration: underline;
+}
 
 .workoutList {
   color: var(--textColor);
@@ -184,7 +197,9 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.workoutList::-webkit-scrollbar { display: none; }
+.workoutList::-webkit-scrollbar {
+  display: none;
+}
 
 .workoutItem {
   cursor: pointer;
@@ -199,11 +214,20 @@
   align-items: center;
   justify-content: center;
 }
-.workoutRightDesc p { margin: 0; padding: 0; }
-.workoutRightDesc { margin-left: 20px; }
-.calories { color: var(--textColor-50); }
+.workoutRightDesc p {
+  margin: 0;
+  padding: 0;
+}
+.workoutRightDesc {
+  margin-left: 20px;
+}
+.calories {
+  color: var(--textColor-50);
+}
 
-.botWorkoutContainer { margin-top: 36px; }
+.botWorkoutContainer {
+  margin-top: 36px;
+}
 .workoutTip {
   color: var(--textColor);
   width: 95%;
@@ -242,13 +266,25 @@
   justify-content: center;
   align-items: center;
 }
-.btn.shake { animation: shake1 0.4s; }
+.btn.shake {
+  animation: shake1 0.4s;
+}
 @keyframes shake1 {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  50% { transform: translateX(4px); }
-  75% { transform: translateX(-4px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 @media (max-width: 1500px) {
@@ -257,6 +293,10 @@
   }
   .rightTopInline {
     display: block;
+  }
+
+  .workoutSummaryContainer .progressTrack {
+    height: 1vh;
   }
 
   .workoutsContainer .topWorkoutContainer {

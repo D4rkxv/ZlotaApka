@@ -43,6 +43,7 @@
   border: var(--primary-10) 1px solid;
   border-radius: 12px;
   padding: 12px 32px;
+  height: 160px;
 }
 .caloriesGoalContainer .sectionTitle {
   margin: 0;
@@ -60,7 +61,6 @@
   margin-top: 0px;
 }
 .caloriesGoalContainer .progressTrack {
-  width: 22vw;
   height: 2vh;
 }
 
@@ -221,8 +221,8 @@
 .dailyTipContainer li::marker {
   color: var(--primary);
 }
-@media (max-width: 1400px){
-   .mainDivider {
+@media (max-width: 1400px) {
+  .mainDivider {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -244,14 +244,30 @@
     order: 2;
   }
 
-  .foodContainer .caloriesGoalContainer       { order: 1; }
-  .foodContainer .macrosRow                   { order: 2; }
-  .foodContainer .mealDistributionContainer   { order: 3; }
-  .foodContainer .breakfast                   { order: 4; }
-  .foodContainer .lunch                       { order: 5; }
-  .foodContainer .dinner                      { order: 6; }
-  .foodContainer .snacks                      { order: 7; }
-  .foodContainer .dailyTipContainer           { order: 8; }
+  .foodContainer .caloriesGoalContainer {
+    order: 1;
+  }
+  .foodContainer .macrosRow {
+    order: 2;
+  }
+  .foodContainer .mealDistributionContainer {
+    order: 3;
+  }
+  .foodContainer .breakfast {
+    order: 4;
+  }
+  .foodContainer .lunch {
+    order: 5;
+  }
+  .foodContainer .dinner {
+    order: 6;
+  }
+  .foodContainer .snacks {
+    order: 7;
+  }
+  .foodContainer .dailyTipContainer {
+    order: 8;
+  }
 
   .foodContainer .caloriesGoalContainer,
   .foodContainer .mealManagerContainer,
@@ -263,7 +279,12 @@
     box-sizing: border-box;
     flex: unset;
   }
-
+  /* .caloriesGoalContainer {
+    height: 90%;
+  } */
+  .foodContainer .caloriesGoalContainer .progressTrack {
+    height: 1vh;
+  }
   .foodContainer .macrosContainer,
   .foodContainer .coloriesGoalStreakContainer {
     flex: 1;
@@ -310,14 +331,30 @@
     order: 2;
   }
 
-  .foodContainer .caloriesGoalContainer       { order: 1; }
-  .foodContainer .macrosRow                   { order: 2; }
-  .foodContainer .mealDistributionContainer   { order: 3; }
-  .foodContainer .breakfast                   { order: 4; }
-  .foodContainer .lunch                       { order: 5; }
-  .foodContainer .dinner                      { order: 6; }
-  .foodContainer .snacks                      { order: 7; }
-  .foodContainer .dailyTipContainer           { order: 8; }
+  .foodContainer .caloriesGoalContainer {
+    order: 1;
+  }
+  .foodContainer .macrosRow {
+    order: 2;
+  }
+  .foodContainer .mealDistributionContainer {
+    order: 3;
+  }
+  .foodContainer .breakfast {
+    order: 4;
+  }
+  .foodContainer .lunch {
+    order: 5;
+  }
+  .foodContainer .dinner {
+    order: 6;
+  }
+  .foodContainer .snacks {
+    order: 7;
+  }
+  .foodContainer .dailyTipContainer {
+    order: 8;
+  }
 
   .foodContainer .caloriesGoalContainer,
   .foodContainer .mealManagerContainer,
@@ -376,15 +413,33 @@
     display: contents;
   }
 
-  .foodContainer .caloriesGoalContainer       { order: 1; }
-  .foodContainer .macrosContainer             { order: 2; }
-  .foodContainer .coloriesGoalStreakContainer { order: 3; }
-  .foodContainer .mealDistributionContainer   { order: 4; }
-  .foodContainer .breakfast                   { order: 5; }
-  .foodContainer .lunch                       { order: 6; }
-  .foodContainer .dinner                      { order: 7; }
-  .foodContainer .snacks                      { order: 8; }
-  .foodContainer .dailyTipContainer           { order: 9; }
+  .foodContainer .caloriesGoalContainer {
+    order: 1;
+  }
+  .foodContainer .macrosContainer {
+    order: 2;
+  }
+  .foodContainer .coloriesGoalStreakContainer {
+    order: 3;
+  }
+  .foodContainer .mealDistributionContainer {
+    order: 4;
+  }
+  .foodContainer .breakfast {
+    order: 5;
+  }
+  .foodContainer .lunch {
+    order: 6;
+  }
+  .foodContainer .dinner {
+    order: 7;
+  }
+  .foodContainer .snacks {
+    order: 8;
+  }
+  .foodContainer .dailyTipContainer {
+    order: 9;
+  }
 
   .foodContainer .caloriesGoalContainer,
   .foodContainer .mealManagerContainer,
@@ -426,16 +481,38 @@
     height: 120px;
   }
 
-  .foodContainer .caloriesCompletion { font-size: 20px; }
-  .foodContainer .caloriesLeft       { font-size: 14px; }
-  .foodContainer .mealName           { font-size: 16px; }
-  .foodContainer .mealDescription    { font-size: 12px; }
-  .foodContainer .addMeal            { font-size: 14px; }
-  .foodContainer .mealTitle          { font-size: 14px; }
-  .foodContainer .mealCaloriesGoal   { font-size: 14px; }
-  .foodContainer .dailyTipContainer ul { padding-left: 16px; }
-  .foodContainer .dailyTipContainer li { font-size: 14px; }
+  .foodContainer .caloriesCompletion {
+    font-size: 20px;
+  }
+  .foodContainer .caloriesLeft {
+    font-size: 14px;
+  }
+  .foodContainer .mealName {
+    font-size: 16px;
+  }
+  .foodContainer .mealDescription {
+    font-size: 12px;
+  }
+  .foodContainer .addMeal {
+    font-size: 14px;
+  }
+  .foodContainer .mealTitle {
+    font-size: 14px;
+  }
+  .foodContainer .mealCaloriesGoal {
+    font-size: 14px;
+  }
+  .foodContainer .dailyTipContainer ul {
+    padding-left: 16px;
+  }
+  .foodContainer .dailyTipContainer li {
+    font-size: 14px;
+  }
 
-  .foodContainer .mealItem .entryDescription    { width: 65%; }
-  .foodContainer .mealItem .entryOptions button { margin-left: 10px; }
+  .foodContainer .mealItem .entryDescription {
+    width: 65%;
+  }
+  .foodContainer .mealItem .entryOptions button {
+    margin-left: 10px;
+  }
 }

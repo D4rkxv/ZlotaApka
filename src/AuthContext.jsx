@@ -1,11 +1,6 @@
-import React, {
-  useState,
-  useContext,
-  createContext,
-  useEffect,
-  use,
-} from "react";
+import React, { useState, useContext, createContext, useEffect } from "react";
 import axios from "axios";
+
 export const AuthContext = createContext();
 
 const api = axios.create({
@@ -22,13 +17,13 @@ api.interceptors.request.use(
   (config) => {
     const token = getStoredToken();
     if (token) {
-      config.headers["Authorization"] = token;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 export const AuthProvider = ({ children }) => {
@@ -39,15 +34,6 @@ export const AuthProvider = ({ children }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [error, setError] = useState(null);
   const isAuthenticated = !!user && !!token;
-
-  useEffect(() => {
-    if (token) {
-      
-    } else {
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
-    }
-  }, [token]);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -136,7 +122,11 @@ export const AuthProvider = ({ children }) => {
     setError(null);
 
     try {
-      const response = await api.post("/auth/login", { email, password, rememberMe });
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+        rememberMe,
+      });
 
       if (response.data.status === "success") {
         const { token, rememberMe: rm } = response.data.data;
@@ -178,8 +168,11 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (response.data.status === "success") {
+        const { token } = response.data.data;
+        sessionStorage.setItem("token", token);
+        localStorage.removeItem("token");
         setUser(response.data.data.user);
-        setToken(response.data.data.token);
+        setToken(token);
         setCurrentPage("dashboard");
         return { success: true };
       } else {
@@ -206,21 +199,23 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
   };
+
   const setName = async (newName, imageFile = null) => {
-  try {
-    const formData = new FormData();
-    formData.append("name", newName);
-    if (imageFile) formData.append("image", imageFile);
+    try {
+      const formData = new FormData();
+      formData.append("name", newName);
+      if (imageFile) formData.append("image", imageFile);
 
-    await api.put("/profile/name", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+      await api.put("/profile/name", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-    setUser({ ...user, name: newName });
-  } catch (error) {
-    console.error("Error updating name:", error);
-  }
-}
+      setUser({ ...user, name: newName });
+    } catch (error) {
+      console.error("Error updating name:", error);
+    }
+  };
+
   const switchPage = (page) => {
     setCurrentPage(page);
   };
