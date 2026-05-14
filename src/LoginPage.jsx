@@ -104,11 +104,11 @@ function LoginPage() {
             <p>{l.orLoginWith}</p>
           </div>
           <div className="buttons">
-            <button>
+            <button disabled>
               <img src={Google} />
               <p>Google</p>
             </button>
-            <button>
+            <button disabled>
               <img src={Github} />
               <p>GitHub</p>
             </button>
@@ -129,8 +129,7 @@ function LoginPage() {
           </a>
         </div>
       </div>
-      <div className="rightContainer">
-        <img src={Diving} />
+      <div className="rightContainer" style={{ backgroundImage: `url(${Diving})` }}>
       </div>
     </div>
   );

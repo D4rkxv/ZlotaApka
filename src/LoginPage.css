@@ -24,6 +24,7 @@ body {
   overflow-x: hidden;
   position: relative;
   display: flex;
+  height: 100vh;
 }
 .leftContainer {
   display: flex;
@@ -127,10 +128,12 @@ body {
   display: flex;
   align-items: center;
 }
-.rightContainer img {
-  z-index: -1;
-  position: absolute;
-  top: -25%;
+.rightContainer {
+  flex: 1;
+  height: 100vh;
+  overflow: hidden;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 .underLogin {
   margin-top: 12px;
@@ -204,6 +207,7 @@ body {
   display: flex;
   width: 100%;
   justify-content: space-between;
+  gap: 16px;
 }
 .buttons button {
   border-radius: 8px;
@@ -217,6 +221,11 @@ body {
   justify-content: center;
   justify-items: center;
   font-size: 20px;
+}
+.buttons button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 .buttons img {
   width: 20px;
@@ -247,4 +256,88 @@ body {
 }
 .errorHandler1{
   padding-top: 16px;
+}
+
+/* ─── Tablet (≤ 1200px) ──────────────────────────────────────── */
+@media (max-width: 1400px) {
+  .leftContainer {
+    width: 65%;
+    min-width: 480px;
+  }
+  .loginForm {
+    width: 80%;
+    max-width: 460px;
+  }
+  .buttons button {
+    width: auto;
+    flex: 1;
+  }
+  .rightContainer img{
+    right: -30%;
+  }
+}
+
+/* ─── Hide image, full-width form (≤ 1150px) ─────────────────── */
+@media (max-width: 1200px) {
+  .formContainer {
+    min-height: 100vh;
+  }
+  .rightContainer {
+    display: none;
+  }
+  .leftContainer {
+    width: 100%;
+    min-width: unset;
+    border-radius: 0;
+  }
+  .loginForm {
+    width: 88%;
+    max-width: 500px;
+  }
+}
+
+/* ─── Small tablet (≤ 900px) ─────────────────────────────────── */
+@media (max-width: 900px) {
+  .loginForm > p:first-child {
+    font-size: 36px;
+  }
+  .loginForm > p:nth-child(2) {
+    font-size: 17px;
+  }
+  .buttons button {
+    width: auto;
+    flex: 1;
+    font-size: 17px;
+    padding: 10px 8px;
+  }
+  .logInBtn {
+    font-size: 19px;
+  }
+}
+@media (max-width: 480px) {
+  .loginForm {
+    width: 92%;
+  }
+  .loginForm > p:first-child {
+    font-size: 28px;
+  }
+  .loginForm > p:nth-child(2) {
+    font-size: 15px;
+  }
+  .buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .buttons button {
+    width: 100%;
+    font-size: 16px;
+  }
+  .logInBtn {
+    font-size: 17px;
+  }
+  .loginFooter p {
+    margin-left: 24px;
+    margin-right: 24px;
+    font-size: 13px;
+  }
 }

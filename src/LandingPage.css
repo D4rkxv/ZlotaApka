@@ -56,6 +56,7 @@ a {
   height: 100vh;
 }
 .navbar {
+  gap: 24px;
   position: sticky;
   top: 0;
   color: var(--textColor);
@@ -65,7 +66,7 @@ a {
   display: flex;
   height: 8.466vh;
   background-color: var(--primary-10);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(40px);
 }
 .vitaLogo {
   display: flex;
@@ -393,4 +394,318 @@ a {
 }
 #howItWork {
   scroll-margin-top: 90px;
+}
+
+/* ─── Tablet (≤ 1200px) ─────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .vitaLogo {
+    margin-left: 32px;
+  }
+  .loginButtons {
+    margin-right: 32px;
+  }
+  .links {
+    width: auto;
+    gap: 8px;
+  }
+  .links > a > p {
+    font-size: 16px;
+  }
+  .loginBtn,
+  .registerBtn {
+    font-size: 16px;
+    padding: 8px 14px;
+  }
+
+  .heroP {
+    width: clamp(340px, 55vw, 706px);
+    margin-left: 32px;
+    margin-top: 80px;
+  }
+  .heroP > h1 {
+    font-size: 44px;
+  }
+  .heroP > p {
+    font-size: 18px;
+  }
+  .registerBtn2 {
+    font-size: 18px;
+    margin-top: 32px;
+  }
+
+  .statistic {
+    margin: 100px 80px 0;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+  }
+  .stat {
+    width: clamp(140px, 20vw, 200px);
+    height: auto;
+    padding-bottom: 12px;
+  }
+
+  .aboutLeft {
+    width: clamp(280px, 40vw, 500px);
+  }
+  .aboutTop {
+    font-size: 36px;
+  }
+  .aboutBot {
+    font-size: 22px;
+    padding-top: 40px;
+  }
+  .aboutRight {
+    width: clamp(260px, 44vw, 600px);
+    height: auto;
+  }
+  .aboutRight > img {
+    width: 100%;
+    height: auto;
+  }
+
+  .features {
+    margin-top: 140px;
+    margin-left: 32px;
+    margin-right: 32px;
+  }
+  .features > p {
+    font-size: 38px;
+  }
+  .card {
+    width: clamp(200px, 28vw, 360px);
+    height: auto;
+    padding-bottom: 24px;
+  }
+  .cardContent > img {
+    width: clamp(60px, 8vw, 110px);
+    height: auto;
+  }
+
+  .howItWork {
+    margin: 160px 32px 0;
+  }
+  .howItWork > p {
+    font-size: 38px;
+  }
+
+  .step2 {
+    left: 480px;
+  }
+  .step3 {
+    left: 900px;
+  }
+  .line1 {
+    left: 250px;
+  }
+  .line2 {
+    left: 700px;
+  }
+
+  .footerLinks {
+    width: auto;
+    gap: 12px;
+  }
+}
+
+/* ─── Small tablet (≤ 900px) ────────────────────────────────── */
+@media (max-width: 900px) {
+  /* Navbar collapses — hide nav links, keep logo + buttons */
+  .navbar {
+    height: auto;
+    padding: 12px 0;
+    flex-wrap: wrap;
+    row-gap: 24px;
+  }
+  .links {
+    display: none;
+  }
+  .vitaLogo {
+    margin-left: 20px;
+  }
+  .loginButtons {
+    margin-right: 20px;
+  }
+  .loginBtn,
+  .registerBtn {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  /* Hero */
+ 
+  .heroImg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin-top: 0;
+  }
+  .heroP {
+    position: relative;
+    z-index: 1;
+    width: calc(100% - 80px);
+    max-width: 600px;
+    margin: 40px 20px 40px;
+    height: auto;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .heroP > h1 {
+    font-size: 32px;
+  }
+  .heroLine2 {
+    margin-top: -28px;
+  }
+  .heroP > p {
+    font-size: 16px;
+    margin-top: -24px;
+  }
+  .registerBtn2 {
+    font-size: 16px;
+    margin-top: 20px;
+  }
+
+  /* Statistics — 2×2 grid */
+  .statisticContainer {
+    margin-top: 0;
+    height: auto;
+    padding: 40px 0 20px;
+  }
+  .statistic {
+    margin: 0 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  .stat {
+    flex: 0 0 calc(50% - 8px);
+    height: auto;
+    padding-bottom: 16px;
+  }
+  .statTop {
+    font-size: 28px;
+  }
+  .statBot {
+    font-size: 14px;
+  }
+
+  /* About — stack vertically */
+  .aboutUs {
+    flex-direction: column;
+    padding: 60px 40px 0;
+  }
+  .aboutLeft {
+    width: 100%;
+  }
+  .aboutTop {
+    font-size: 30px;
+  }
+  .aboutBot {
+    font-size: 18px;
+    padding-top: 24px;
+  }
+  .aboutRight {
+    margin-left: 0;
+    margin-top: 32px;
+    width: 100%;
+    height: auto;
+  }
+  .aboutRight > img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+
+  /* Features / Cards — wrap to single column */
+  .features {
+    margin-top: 80px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .features > p {
+    font-size: 28px;
+  }
+  .cardContainer {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    gap: 20px;
+  }
+  .card {
+    width: calc(100% - 32px);
+    max-width: 420px;
+    height: auto;
+    padding-bottom: 24px;
+  }
+  .cardContent > img {
+    width: 64px;
+    height: auto;
+  }
+  .cardTop {
+    font-size: 20px;
+  }
+  .cardBot {
+    font-size: 16px;
+  }
+
+  /* How it works — vertical list, hide connector lines */
+  .howItWork {
+    margin: 80px 20px 0;
+  }
+  .howItWork > p {
+    font-size: 28px;
+  }
+  .steps {
+    position: static;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+    padding: 40px 0 60px;
+    background-color: transparent;
+  }
+  .step {
+    position: static;
+    width: 100%;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 20px;
+  }
+  .circle {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    font-size: 24px;
+  }
+  .circleP {
+    margin-top: 0;
+  }
+  .circleTitle {
+    font-size: 22px;
+  }
+  .circleDesc {
+    font-size: 16px;
+  }
+  .line {
+    display: none;
+  }
+
+  /* Footer */
+  .footer {
+    flex-direction: column;
+    gap: 16px;
+    padding: 28px 20px;
+  }
+  .footerLinks {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 12px;
+  }
 }

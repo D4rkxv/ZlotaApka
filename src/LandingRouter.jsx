@@ -4,7 +4,7 @@ import { useWindowWidth } from "./hooks/useWindowWidth";
 
 function LandingRouter() {
   const width = useWindowWidth();
-  return width < 768 ? <MobileLandingPage /> : <LandingPage />;
+  return width < 900 ? <MobileLandingPage /> : <LandingPage />;
 }
 
 export default LandingRouter;
